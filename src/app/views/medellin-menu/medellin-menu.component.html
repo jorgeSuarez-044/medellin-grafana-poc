@@ -1,0 +1,46 @@
+<div class="menu-container">
+  <img class="menu-logo" src="https://i.ibb.co/Ksh0J2w/alcaldia-Medellin.png" alt="Logo Alcaldía de Medellín" style="background-color: rgb(61, 165, 244);">
+  <a href="https://imgbb.com/"></a>
+
+  <!-- Menu Principal -->
+  <ul class="menu-list">
+    <li *ngFor="let opcion of opciones">
+      <a (click)="navegar(opcion.ruta)" class="menu-item">
+        <mat-icon>{{ opcion.icono }}</mat-icon>
+        <span>{{ opcion.texto }}</span>
+      </a>
+    </li>
+
+    <!-- Botón de Cuadros de Control -->
+    <li>
+      <a (click)="toggleCuadrosControl()" class="menu-item submenu-toggle">
+        <mat-icon>dashboard</mat-icon> <!-- Icono de cuadro de control -->
+        <span>Cuadros de Control</span>
+      </a>
+      <ul *ngIf="mostrarCuadrosControl" class="submenu">
+        <li *ngFor="let subOpcion of opcionesCuadrosControl">
+          <a (click)="navegar(subOpcion.ruta)" class="menu-item">
+            <mat-icon>{{ subOpcion.icono }}</mat-icon>
+            <span>{{ subOpcion.texto }}</span>
+          </a>
+        </li>
+      </ul>
+    </li>
+
+    <!-- Botón de Mapas -->
+    <li>
+      <a (click)="toggleMapas()" class="menu-item submenu-toggle">
+        <mat-icon>place</mat-icon> <!-- Icono de mapas -->
+        <span>Mapas</span>
+      </a>
+      <ul *ngIf="mostrarMapas" class="submenu">
+        <li *ngFor="let subOpcion of opcionesMapas">
+          <a (click)="navegar(subOpcion.ruta)" class="menu-item">
+            <mat-icon>{{ subOpcion.icono }}</mat-icon>
+            <span>{{ subOpcion.texto }}</span>
+          </a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>

@@ -1,0 +1,15 @@
+.iframe-container {
+    width: 75%;
+    height: 50%;
+    display: flex;
+    margin-left: 25%;
+    justify-content: right;
+
+  
+    iframe {
+      border: none;
+      width: 60%;
+      height: 800px; // Ajusta según sea necesario
+    }
+  }
+  
