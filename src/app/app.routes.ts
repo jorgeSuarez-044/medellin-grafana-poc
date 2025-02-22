@@ -7,6 +7,10 @@ import { ReportesMedicos } from './views/reportes-medicos/reportesmed.component'
 import { PuntosWifi } from './views/puntos-wifi/puntoswifi.component';
 import { Vamosmed } from './views/vamosmedellin/vamosmed.component';
 import { Pqrsd } from './views/PQRSD/pqrsd.component';
+import { WhatsApp } from './views/whatsap/whatsap.component';
+import { Turismo } from './views/turismo/turismo.component';
+import { Siata } from './views/siata/siata.component';
+import { MapasCamiones } from './views/mapas-camiones/mapas-camiones.component';
 
 export const routes: Routes = [
   { path: '', component: MenuOpcionesComponent },  // Página principal con el menú
@@ -17,5 +21,9 @@ export const routes: Routes = [
   { path: 'puntos-wifi', component: PuntosWifi }, 
   { path: 'vamosmed', component: Vamosmed }, 
   { path: 'pqrsd', component: Pqrsd }, 
+  { path: 'whatsapp', component: WhatsApp }, 
+  { path: 'turismo', component: Turismo }, 
+  { path: 'siata', component: Siata }, 
+  { path: 'mapas/camiones', component: MapasCamiones }, 
 
 ];

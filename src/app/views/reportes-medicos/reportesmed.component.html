@@ -1,14 +1,14 @@
-<h2>Reportes Médicos</h2>
+<h2 class="page-title">Reportes Medicos</h2>
 <div class="iframe-container">
   <!-- Contenedor para los dos primeros iframes en fila -->
   <div class="iframe-row">
     <iframe
       src="http://grafana-fiware.apps.preprodalcaldia.medellin.gov.co/territoriointeligente/d/rm_ta/reportesmed?orgId=1&from=1734607826803&to=1735212626803&viewPanel=2&kiosk"
-      allowfullscreen>
+      >
     </iframe>
     <iframe
       src="http://grafana-fiware.apps.preprodalcaldia.medellin.gov.co/territoriointeligente/d/rm_ta/reportesmed?orgId=1&from=1734613212216&to=1735218012216&viewPanel=3&kiosk"
-      allowfullscreen>
+      >
     </iframe>
   </div>
 
@@ -41,9 +41,21 @@
     flex-direction: column;
     margin-left: 300px; /* Ajusta este valor según el ancho del menú */
     padding: 10px;
+    height: 20%;
     gap: 20px;
   }
-
+  .page-title {
+    font-size: 36px;
+    font-weight: bold;
+    color: #333; /* Color oscuro para el título */
+    text-align: left;
+    padding: 20px;
+    margin: 0;
+    background-color: #fff; /* Fondo blanco para el título */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra suave */
+    margin-left: 300px; /* Para alinearlo con el contenido del iframe */
+    margin-bottom: 20px; /* Espacio debajo del título */
+  }
   .iframe-row {
     display: flex;
     gap: 20px;

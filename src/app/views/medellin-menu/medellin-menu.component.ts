@@ -32,7 +32,7 @@ export class MenuOpcionesComponent {
     { icono: 'email', texto: 'PQRSD', ruta: '/mapas/pqr' },
     { icono: 'chat_bubble', texto: 'WhatsApp', ruta: '/mapas/whatsapp' },
     { icono: 'language', texto: 'Turismo', ruta: '/mapas/turismo' },
-    { icono: 'business', texto: 'SIAJA', ruta: '/mapas/siaja' }
+    { icono: 'business', texto: 'SIATA', ruta: '/mapas/siata' }
   ];
 
   // Opciones que aparecerán bajo "Cuadros de Control"
@@ -45,7 +45,7 @@ export class MenuOpcionesComponent {
     { icono: 'email', texto: 'PQRSD', ruta: '/pqrsd' },
     { icono: 'chat_bubble', texto: 'WhatsApp', ruta: '/whatsapp' },
     { icono: 'language', texto: 'Turismo', ruta: '/turismo' },
-    { icono: 'business', texto: 'SIAJA', ruta: '/siaja' }
+    { icono: 'business', texto: 'SIATA', ruta: '/siata' }
   ];
 
   mostrarCuadrosControl: boolean = false; // Controlar la visibilidad del submenú Cuadros de Control

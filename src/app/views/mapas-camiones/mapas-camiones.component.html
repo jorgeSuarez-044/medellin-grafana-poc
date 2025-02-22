@@ -1,0 +1,72 @@
+<h2 class="page-title">Ciudad Inteligente - Camiones EMVARIAS</h2>
+<div class="iframe-container">
+  <div class="iframe-row">
+    <iframe
+      src="http://grafana-fiware.apps.preprodalcaldia.medellin.gov.co/territoriointeligente/d/em_ma/emvarias-map?orgId=1&refresh=1m&var-barrios=--Seleccionar--&from=1740169770252&to=1740256170252&viewPanel=10&kiosk"
+      allowfullscreen>
+    </iframe>
+    <iframe
+      src="http://grafana-fiware.apps.preprodalcaldia.medellin.gov.co/territoriointeligente/d/em_ma/emvarias-map?orgId=1&refresh=1m&var-barrios=--Seleccionar--&from=1740169943092&to=1740256343092&viewPanel=11&kiosk"
+      allowfullscreen>
+    </iframe>
+  </div>
+</div>
+<div class="iframe-container">
+<iframe
+  src="http://grafana-fiware.apps.preprodalcaldia.medellin.gov.co/territoriointeligente/d/em_ma/emvarias-map?orgId=1&refresh=1m&var-barrios=--Seleccionar--&from=1740174676193&to=1740261076193&viewPanel=1&kiosk"
+  allowfullscreen>
+</iframe>
+</div>
+<div class="iframe-container">
+  <iframe
+    src="http://grafana-fiware.apps.preprodalcaldia.medellin.gov.co/territoriointeligente/d/em_ma/emvarias-map?orgId=1&refresh=1m&var-barrios=--Seleccionar--&from=1740170890221&to=1740257290221&viewPanel=16&kiosk"
+    allowfullscreen>
+  </iframe>
+  </div>
+
+<style>
+  body {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .page-title {
+    font-size: 36px;
+    font-weight: bold;
+    color: #333;
+    /* Color oscuro para el título */
+    text-align: left;
+    padding: 20px;
+    margin: 0;
+    background-color: #fff;
+    /* Fondo blanco para el título */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    /* Sombra suave */
+    margin-left: 300px;
+    /* Para alinearlo con el contenido del iframe */
+    margin-bottom: 20px;
+    /* Espacio debajo del título */
+  }
+
+  .iframe-container {
+    display: flex;
+    flex-direction: column;
+    margin-left: 300px;
+    /* Ajusta este valor según el ancho del menú */
+    padding: 10px;
+    gap: 20px;
+  }
+
+  .iframe-row {
+    display: flex;
+    gap: 20px;
+  }
+
+  iframe {
+    flex: 1;
+    height: 400px;
+    border: none;
+  }
+</style>
