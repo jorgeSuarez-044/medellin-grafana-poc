@@ -1,26 +1,24 @@
-<h2 class="page-title">Reportes Medicos</h2>
+<h2 class="page-title">Reportes Médicos</h2>
 <div class="iframe-container">
-  <!-- Contenedor para los dos primeros iframes en fila -->
-  <div class="iframe-row">
+  <!-- Dos primeros iframes en fila con menos altura -->
+  <div class="iframe-row small-iframes">
     <iframe
-      src="http://grafana-fiware.apps.preprodalcaldia.medellin.gov.co/territoriointeligente/d/rm_ta/reportesmed?orgId=1&from=1734607826803&to=1735212626803&viewPanel=2&kiosk"
-      >
+      src="http://grafana-fiware.apps.preprodalcaldia.medellin.gov.co/territoriointeligente/d/rm_ta/reportesmed?orgId=1&from=1734607826803&to=1735212626803&viewPanel=2&kiosk">
     </iframe>
     <iframe
-      src="http://grafana-fiware.apps.preprodalcaldia.medellin.gov.co/territoriointeligente/d/rm_ta/reportesmed?orgId=1&from=1734613212216&to=1735218012216&viewPanel=3&kiosk"
-      >
+      src="http://grafana-fiware.apps.preprodalcaldia.medellin.gov.co/territoriointeligente/d/rm_ta/reportesmed?orgId=1&from=1734613212216&to=1735218012216&viewPanel=3&kiosk">
     </iframe>
   </div>
 
-  <!-- Contenedor para los siguientes iframes (uno por fila) como estaban antes -->
-  <div class="iframe-row">
+  <!-- Siguientes iframes más anchos y centrados -->
+  <div class="iframe-row large-iframe">
     <iframe
       src="http://grafana-fiware.apps.preprodalcaldia.medellin.gov.co/territoriointeligente/d/rm_ta/reportesmed?orgId=1&from=1734613644066&to=1735218444067&viewPanel=56&kiosk"
       allowfullscreen>
     </iframe>
   </div>
   
-  <div class="iframe-row">
+  <div class="iframe-row large-iframe">
     <iframe
       src="http://grafana-fiware.apps.preprodalcaldia.medellin.gov.co/territoriointeligente/d/rm_ta/reportesmed?orgId=1&from=1734613814858&to=1735218614858&viewPanel=57&kiosk"
       allowfullscreen>
@@ -39,40 +37,45 @@
   .iframe-container {
     display: flex;
     flex-direction: column;
-    margin-left: 300px; /* Ajusta este valor según el ancho del menú */
+    margin-left: 300px;
     padding: 10px;
-    height: 20%;
     gap: 20px;
   }
+
   .page-title {
     font-size: 36px;
     font-weight: bold;
-    color: #333; /* Color oscuro para el título */
+    color: #333;
     text-align: left;
     padding: 20px;
     margin: 0;
-    background-color: #fff; /* Fondo blanco para el título */
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra suave */
-    margin-left: 300px; /* Para alinearlo con el contenido del iframe */
-    margin-bottom: 20px; /* Espacio debajo del título */
-  }
-  .iframe-row {
-    display: flex;
-    gap: 20px;
-    justify-content: space-between; /* Distribuye el espacio entre los iframes */
+    background-color: #fff;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-left: 300px;
     margin-bottom: 20px;
   }
 
-  iframe {
+  .iframe-row {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+
+  .small-iframes iframe {
     flex: 1;
-    height: 400px;
-    border: none;
-    max-width: 48%; /* Los iframes ocuparán hasta el 48% del ancho del contenedor */
+    height: 250px;
+    max-width: 48%;
+  }
+
+  .large-iframe iframe {
+    flex: 1;
+    height: 500px;
+    max-width: 80%;
   }
 
   @media (max-width: 1200px) {
-    iframe {
-      max-width: 100%; /* En pantallas más pequeñas, los iframes ocuparán todo el ancho */
+    .small-iframes iframe, .large-iframe iframe {
+      max-width: 100%;
     }
   }
 </style>
