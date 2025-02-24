@@ -1,50 +1,79 @@
 <h2 class="page-title">Camiones</h2>
 <div class="iframe-container">
-    <div class="iframe-row">
-      <iframe
-        src="http://grafana-fiware.apps.preprodalcaldia.medellin.gov.co/territoriointeligente/d/em_ta/emvarias?orgId=1&from=1734455124927&to=1734498324927&viewPanel=16&kiosk"
-        allowfullscreen>
-      </iframe>
-     
-    </div>
+  <div class="iframe-row">
+    <iframe
+      src="http://grafana-fiware.apps.preprodalcaldia.medellin.gov.co/territoriointeligente/d/em_ta/emvarias?orgId=1&from=1734455124927&to=1734498324927&viewPanel=16&kiosk"
+      allowfullscreen>
+    </iframe>
+
   </div>
-  
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      display: flex;
-      flex-direction: column;
-    }
-    .page-title {
+  <div class="iframe-row">
+    <iframe
+      src="http://grafana-fiware.apps.preprodalcaldia.medellin.gov.co/territoriointeligente/d/em_ta/emvarias?orgId=1&from=1740352844880&to=1740396044880&viewPanel=10&kiosk"
+      allowfullscreen>
+    </iframe>
+
+  </div>
+  <div class="iframe-row">
+    <iframe
+      src="http://grafana-fiware.apps.preprodalcaldia.medellin.gov.co/territoriointeligente/d/em_ta/emvarias?orgId=1&from=1740352870706&to=1740396070706&viewPanel=13&kiosk"
+      allowfullscreen>
+    </iframe>
+
+  </div>
+
+  <div class="iframe-row">
+    <iframe
+      src="http://grafana-fiware.apps.preprodalcaldia.medellin.gov.co/territoriointeligente/d/em_ta/emvarias?orgId=1&from=1740352901739&to=1740396101739&viewPanel=9&kiosk"
+      allowfullscreen>
+    </iframe>
+
+  </div>
+</div>
+
+<style>
+  body {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .page-title {
     font-size: 36px;
     font-weight: bold;
-    color: #333; /* Color oscuro para el título */
+    color: #333;
+    /* Color oscuro para el título */
     text-align: left;
     padding: 20px;
     margin: 0;
-    background-color: #fff; /* Fondo blanco para el título */
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra suave */
-    margin-left: 300px; /* Para alinearlo con el contenido del iframe */
-    margin-bottom: 20px; /* Espacio debajo del título */
+    background-color: #fff;
+    /* Fondo blanco para el título */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    /* Sombra suave */
+    margin-left: 300px;
+    /* Para alinearlo con el contenido del iframe */
+    margin-bottom: 20px;
+    /* Espacio debajo del título */
   }
-    .iframe-container {
-      display: flex;
-      flex-direction: column;
-      margin-left: 300px; /* Ajusta este valor según el ancho del menú */
-      padding: 10px;
-      gap: 20px;
-    }
-  
-    .iframe-row {
-      display: flex;
-      gap: 20px;
-    }
-  
-    iframe {
-      flex: 1;
-      height: 400px;
-      border: none;
-    }
-  </style>
-  
+
+  .iframe-container {
+    display: flex;
+    flex-direction: column;
+    margin-left: 300px;
+    /* Ajusta este valor según el ancho del menú */
+    padding: 10px;
+    gap: 20px;
+  }
+
+  .iframe-row {
+    display: flex;
+    gap: 20px;
+  }
+
+  iframe {
+    flex: 1;
+    height: 400px;
+    border: none;
+  }
+</style>

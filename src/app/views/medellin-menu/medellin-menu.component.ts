@@ -29,8 +29,6 @@ export class MenuOpcionesComponent {
     { icono: 'wifi', texto: 'Puntos Wi-Fi', ruta: '/mapas/puntos-wifi' },
     { icono: 'commute', texto: 'VamosMed', ruta: '/mapas/vamosmed' },
     { icono: 'volume_up', texto: 'Sensores de ruido', ruta: '/mapas/sensores-ruido' },
-    { icono: 'email', texto: 'PQRSD', ruta: '/mapas/pqr' },
-    { icono: 'chat_bubble', texto: 'WhatsApp', ruta: '/mapas/whatsapp' },
     { icono: 'language', texto: 'Turismo', ruta: '/mapas/turismo' },
     { icono: 'business', texto: 'SIATA', ruta: '/mapas/siata' }
   ];
