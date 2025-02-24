@@ -11,6 +11,12 @@ import { WhatsApp } from './views/whatsap/whatsap.component';
 import { Turismo } from './views/turismo/turismo.component';
 import { Siata } from './views/siata/siata.component';
 import { MapasCamiones } from './views/mapas-camiones/mapas-camiones.component';
+import { ReportesMedMap } from './views/reportes-medmap/reportesmed-map.component';
+import { WifiMaps } from './views/wifi-maps/wifi-maps.component';
+import { VamosMedMap } from './views/vamosmedmap/vamosmed-map.component';
+import { SensoresMap } from './views/sensoresmap/sensoresmap.component';
+import { TurismoMaps } from './views/turismomaps/turismomaps.component';
+import { SiataMaps } from './views/siatamaps/siatamaps.component';
 
 export const routes: Routes = [
   { path: '', component: MenuOpcionesComponent },  // Página principal con el menú
@@ -24,6 +30,12 @@ export const routes: Routes = [
   { path: 'whatsapp', component: WhatsApp }, 
   { path: 'turismo', component: Turismo }, 
   { path: 'siata', component: Siata }, 
-  { path: 'mapas/camiones', component: MapasCamiones }, 
+  { path: 'mapas/camiones', component: MapasCamiones },
+  { path: 'mapas/reportes', component: ReportesMedMap },  
+  { path: 'mapas/puntos-wifi', component: WifiMaps },  
+  { path: 'mapas/vamosmed', component: VamosMedMap }, 
+  { path: 'mapas/sensores-ruido', component: SensoresMap }, 
+  { path: 'mapas/turismo', component: TurismoMaps }, 
+  { path: 'mapas/siata', component: SiataMaps }, 
 
 ];

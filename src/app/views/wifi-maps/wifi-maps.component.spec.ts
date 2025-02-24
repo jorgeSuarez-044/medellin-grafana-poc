@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ReportesMedMap } from './reportesmed-map.component';
+import { WifiMaps } from './wifi-maps.component';
 
-describe('ReportesMedMap', () => {
-  let component: ReportesMedMap;
-  let fixture: ComponentFixture<ReportesMedMap>;
+describe('WifiMaps', () => {
+  let component: WifiMaps;
+  let fixture: ComponentFixture<WifiMaps>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ReportesMedMap]
+      imports: [WifiMaps]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(ReportesMedMap);
+    fixture = TestBed.createComponent(WifiMaps);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

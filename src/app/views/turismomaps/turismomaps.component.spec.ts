@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ReportesMedMap } from './reportesmed-map.component';
+import { TurismoMaps } from './turismomaps.component';
 
-describe('ReportesMedMap', () => {
-  let component: ReportesMedMap;
-  let fixture: ComponentFixture<ReportesMedMap>;
+describe('CamionesComponent', () => {
+  let component: TurismoMaps;
+  let fixture: ComponentFixture<TurismoMaps>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ReportesMedMap]
+      imports: [TurismoMaps]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(ReportesMedMap);
+    fixture = TestBed.createComponent(TurismoMaps);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

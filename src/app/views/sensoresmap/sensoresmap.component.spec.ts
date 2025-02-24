@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ReportesMedMap } from './reportesmed-map.component';
+import { SensoresMap } from './sensoresmap.component';
 
-describe('ReportesMedMap', () => {
-  let component: ReportesMedMap;
-  let fixture: ComponentFixture<ReportesMedMap>;
+describe('CamionesComponent', () => {
+  let component: SensoresMap;
+  let fixture: ComponentFixture<SensoresMap>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ReportesMedMap]
+      imports: [SensoresMap]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(ReportesMedMap);
+    fixture = TestBed.createComponent(SensoresMap);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

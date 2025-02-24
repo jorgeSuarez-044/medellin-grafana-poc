@@ -4,9 +4,9 @@ import { Component } from '@angular/core';
   selector: 'app-camiones',
   imports: [],
   standalone:true,
-  templateUrl: './mapas-camiones.component.html',
-  styleUrl: './mapas-camiones.component.scss'
+  templateUrl: './reportesmed-map.component.html',
+  styleUrl: './reportesmed-map.component.scss'
 })
-export class MapasCamiones {
+export class ReportesMedMap {
 
 }
