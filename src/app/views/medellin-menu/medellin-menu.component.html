@@ -1,32 +1,45 @@
 <div class="menu-container">
-  <img class="menu-logo" src="https://i.ibb.co/Ksh0J2w/alcaldia-Medellin.png" alt="Logo Alcaldía de Medellín">
-  <img class="menu-logon" src="https://www.fiware.org/custom/brand-guide/img/logo/fiware/primary/png/logo-fiware-blue.png" alt="Logo FIWARE">
+  <img class="menu-logo" src="https://i.ibb.co/Ksh0J2w/alcaldia-Medellin.png" alt="Logo Alcaldía de Medellín" style="background-color: rgb(250, 250, 250);">
+  <img class="menu-logon" src="  https://www.fiware.org/custom/brand-guide/img/logo/fiware/primary/png/logo-fiware-blue.png?" alt="Logo Alcaldía de Medellín" style="background-color: rgb(252, 252, 252);">
+  <a href="https://imgbb.com/"></a>
 
+  <!-- Menu Principal -->
   <ul class="menu-list">
-    <li *ngFor="let opcion of menuOpciones">
-      <a (click)="toggleSubMenu(opcion)" class="menu-item">
+    <li *ngFor="let opcion of opciones">
+      <a (click)="navegar(opcion.ruta)" class="menu-item">
         <mat-icon>{{ opcion.icono }}</mat-icon>
         <span>{{ opcion.texto }}</span>
-        <mat-icon *ngIf="opcion.subOpciones">{{ opcion.expanded ? 'expand_less' : 'expand_more' }}</mat-icon>
       </a>
+    </li>
 
-      <ul *ngIf="opcion.expanded" class="submenu">
-        <li *ngFor="let subOpcion of opcion.subOpciones">
-          <a (click)="subOpcion.subOpciones ? toggleSubMenu(subOpcion) : navegar(subOpcion.ruta)" class="menu-item">
+    <!-- Botón de Cuadros de Control -->
+    <li>
+      <a (click)="toggleCuadrosControl()" class="menu-item submenu-toggle">
+        <mat-icon>dashboard</mat-icon> <!-- Icono de cuadro de control -->
+        <span>Cuadros de Control</span>
+      </a>
+      <ul *ngIf="mostrarCuadrosControl" class="submenu">
+        <li *ngFor="let subOpcion of opcionesCuadrosControl">
+          <a (click)="navegar(subOpcion.ruta)" class="menu-item">
             <mat-icon>{{ subOpcion.icono }}</mat-icon>
             <span>{{ subOpcion.texto }}</span>
-            <mat-icon *ngIf="subOpcion.subOpciones">{{ subOpcion.expanded ? 'expand_less' : 'expand_more' }}</mat-icon>
           </a>
+        </li>
+      </ul>
+    </li>
 
-          <ul *ngIf="subOpcion.expanded" class="sub-submenu">
-            <li *ngFor="let subSubOpcion of subOpcion.subOpciones">
-              <a (click)="navegar(subSubOpcion.ruta)" class="menu-item">
-                <mat-icon>{{ subSubOpcion.icono }}</mat-icon>
-                <span>{{ subSubOpcion.texto }}</span>
-              </a>
-            </li>
-          </ul>
-
+    <!-- Botón de Mapas -->
+    <li>
+      <a (click)="toggleMapas()" class="menu-item submenu-toggle">
+        <mat-icon>place</mat-icon> <!-- Icono de mapas -->
+        <span>Mapas</span>
+      </a>
+      <ul *ngIf="mostrarMapas" class="submenu">
+        <li *ngFor="let subOpcion of opcionesMapas">
+          <a (click)="navegar(subOpcion.ruta)" class="menu-item">
+            <mat-icon>{{ subOpcion.icono }}</mat-icon>
+            <span>{{ subOpcion.texto }}</span>
+          </a>
         </li>
       </ul>
     </li>
