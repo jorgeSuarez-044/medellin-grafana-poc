@@ -1,13 +1,12 @@
 import { Routes } from '@angular/router';
 import { MenuOpcionesComponent } from './views/medellin-menu/medellin-menu.component';
-import { InicioComponent } from './views/inicio/inicio.component';  // Asegúrate de que el componente esté correctamente importado
+import { InicioComponent } from './views/inicio/inicio.component';
 import { CamionesComponent } from './views/camiones/camiones.component';
 import { SensoresRuidoComponent } from './views/sensores-ruido/sensores-ruido.component';
 import { ReportesMedicos } from './views/reportes-medicos/reportesmed.component';
 import { PuntosWifi } from './views/puntos-wifi/puntoswifi.component';
 import { Vamosmed } from './views/vamosmedellin/vamosmed.component';
 import { Pqrsd } from './views/PQRSD/pqrsd.component';
-import { WhatsApp } from './views/whatsap/whatsap.component';
 import { Turismo } from './views/turismo/turismo.component';
 import { Siata } from './views/siata/siata.component';
 import { MapasCamiones } from './views/mapas-camiones/mapas-camiones.component';
@@ -19,23 +18,21 @@ import { TurismoMaps } from './views/turismomaps/turismomaps.component';
 import { SiataMaps } from './views/siatamaps/siatamaps.component';
 
 export const routes: Routes = [
-  { path: '', component: MenuOpcionesComponent },  // Página principal con el menú
-  { path: 'inicio', component: InicioComponent },  // Componente al que se navega cuando se hace clic en "Camiones"
-  { path: 'camiones', component: CamionesComponent },   // Componente al que se navega cuando se hace clic en "Reportes"
-  { path: 'sensores-ruido', component: SensoresRuidoComponent },       // Reemplaza con el componente correspondiente
-  { path: 'reportes', component: ReportesMedicos },   // Reemplaza con el componente correspondiente
-  { path: 'puntos-wifi', component: PuntosWifi }, 
-  { path: 'vamosmed', component: Vamosmed }, 
-  { path: 'pqrsd', component: Pqrsd }, 
-  { path: 'whatsapp', component: WhatsApp }, 
-  { path: 'turismo', component: Turismo }, 
-  { path: 'siata', component: Siata }, 
+  { path: '', component: MenuOpcionesComponent },
+  { path: 'inicio', component: InicioComponent },
+  { path: 'ambiente/gestion-residuos/camiones', component: CamionesComponent },
+  { path: 'ambiente/calidad-ambiental/sensores-ruido', component: SensoresRuidoComponent },
+  { path: 'ambiente/calidad-ambiental/tablero-siata', component: Siata },
+  { path: 'gobernanza/reportesmed-tablero', component: ReportesMedicos },
+  { path: 'desarrollo-economico/transformacion-digital/tablero', component: PuntosWifi },
+  { path: 'movilidad-inteligente/vamosmed-tablero', component: Vamosmed },
+  { path: 'gobernanza/pqrs-tablero', component: Pqrsd },
+  { path: 'calidad-vida/turismo-tablero', component: Turismo },
   { path: 'mapas/camiones', component: MapasCamiones },
-  { path: 'mapas/reportes', component: ReportesMedMap },  
+  { path: 'mapas/reportesmed', component: ReportesMedMap },  
   { path: 'mapas/puntos-wifi', component: WifiMaps },  
   { path: 'mapas/vamosmed', component: VamosMedMap }, 
   { path: 'mapas/sensores-ruido', component: SensoresMap }, 
   { path: 'mapas/turismo', component: TurismoMaps }, 
-  { path: 'mapas/siata', component: SiataMaps }, 
-
+  { path: 'mapas/siata', component: SiataMaps }
 ];

@@ -1,67 +1,149 @@
-import { Component } from '@angular/core';
-import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { Component } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
-
-interface Opcion {
-  icono: string;
-  texto: string;
-  ruta?: string;
-}
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-menu-opciones',
   templateUrl: './medellin-menu.component.html',
-  standalone: true,
-  imports: [CommonModule, MatIconModule],
-  styleUrls: ['./medellin-menu.component.scss']
+  styleUrls: ['./medellin-menu.component.scss'],
+  imports: [CommonModule, MatIconModule]
 })
 export class MenuOpcionesComponent {
-  // Opciones generales que se mostrarán en el menú
-  opciones: Opcion[] = [
-    { icono: 'home', texto: 'inicio', ruta: '/inicio' }
-  ];
-
-  // Opciones que aparecerán bajo "Mapas"
-  opcionesMapas: Opcion[] = [
-    { icono: 'directions_car', texto: 'Camiones EMVARIAS', ruta: '/mapas/camiones' },
-    { icono: 'description', texto: 'ReportesMed', ruta: '/mapas/reportes' },
-    { icono: 'wifi', texto: 'Puntos Wi-Fi', ruta: '/mapas/puntos-wifi' },
-    { icono: 'commute', texto: 'VamosMed', ruta: '/mapas/vamosmed' },
-    { icono: 'volume_up', texto: 'Sensores de ruido', ruta: '/mapas/sensores-ruido' },
-    { icono: 'language', texto: 'Turismo', ruta: '/mapas/turismo' },
-    { icono: 'business', texto: 'SIATA', ruta: '/mapas/siata' }
-  ];
-
-  // Opciones que aparecerán bajo "Cuadros de Control"
-  opcionesCuadrosControl: Opcion[] = [
-    { icono: 'directions_car', texto: 'Camiones EMVARIAS', ruta: '/camiones' },
-    { icono: 'description', texto: 'ReportesMed', ruta: '/reportes' },
-    { icono: 'wifi', texto: 'Puntos Wi-Fi', ruta: '/puntos-wifi' },
-    { icono: 'commute', texto: 'VamosMed', ruta: '/vamosmed' },
-    { icono: 'volume_up', texto: 'Sensores de ruido', ruta: '/sensores-ruido' },
-    { icono: 'email', texto: 'PQRSD', ruta: '/pqrsd' },
-    { icono: 'chat_bubble', texto: 'WhatsApp', ruta: '/whatsapp' },
-    { icono: 'language', texto: 'Turismo', ruta: '/turismo' },
-    { icono: 'business', texto: 'SIATA', ruta: '/siata' }
-  ];
-
-  mostrarCuadrosControl: boolean = false; // Controlar la visibilidad del submenú Cuadros de Control
-  mostrarMapas: boolean = false; // Controlar la visibilidad del submenú Mapas
-
-  constructor(private router: Router) { }
-
-  navegar(ruta: string | undefined) {
-    if (ruta) {
-      this.router.navigateByUrl(ruta);
+  menuOpciones = [
+    { texto: 'Inicio', icono: 'home', ruta: '/inicio' },
+    {
+      texto: 'Ambiente',
+      icono: 'eco',
+      expanded: false,
+      subOpciones: [
+        { texto: 'Gestión de Recursos', ruta: '/ambiente/gestion-recursos', icono: 'recycling' },
+        {
+          texto: 'Calidad Ambiental',
+          icono: 'landscape',
+          expanded: false,
+          subOpciones: [
+            { texto: 'Tablero de Control Sensores Ruido', ruta: '/ambiente/calidad-ambiental/sensores-ruido', icono: 'graphic_eq' },
+            { texto: 'Mapa Sensores Ruido', ruta: '/ambiente/calidad-ambiental/mapa-ruido', icono: 'map' },
+            { texto: 'Tablero de Control SIATA', ruta: '/ambiente/calidad-ambiental/tablero-siata', icono: 'analytics' },
+            { texto: 'Mapa SIATA', ruta: '/ambiente/calidad-ambiental/mapa-siata', icono: 'place' }
+          ]
+        },
+        { texto: 'Gestión del Riesgo', ruta: '/ambiente/gestion-riesgo', icono: 'warning' },
+        {
+          texto: 'Gestión de Residuos',
+          icono: 'delete',
+          expanded: false,
+          subOpciones: [
+            { texto: 'Tablero de Control Camiones EMVARIAS', ruta: '/ambiente/gestion-residuos/camiones', icono: 'local_shipping' },
+            { texto: 'Mapa Camiones EMVARIAS', ruta: '/ambiente/gestion-residuos/mapa-camiones', icono: 'map' }
+          ]
+        },
+        { texto: 'Cambio Climático', ruta: '/ambiente/cambio-climatico', icono: 'thermostat' }
+      ]
+    },
+    {
+      texto: 'Hábitat',
+      icono: 'home_work',
+      expanded: false,
+      subOpciones: [
+        { texto: 'Infraestructura', ruta: '/habitat/infraestructura', icono: 'apartment' },
+        {
+          texto: 'Movilidad Inteligente',
+          icono: 'directions_car',
+          expanded: false,
+          subOpciones: [
+            { texto: 'Tablero de Control Movilidad', ruta: '/movilidad-inteligente/tablero', icono: 'dashboard' },
+            { texto: 'Mapa Movilidad', ruta: '/movilidad-inteligente/mapa', icono: 'map' },
+            { texto: 'Tablero de Control VamosMED', ruta: '/movilidad-inteligente/vamosmed-tablero', icono: 'analytics' },
+            { texto: 'Mapa VamosMED', ruta: '/movilidad-inteligente/vamosmed-mapa', icono: 'place' }
+          ]
+        },
+        { texto: 'Servicios Públicos', ruta: '/habitat/servicios-publicos', icono: 'build' }
+      ]
+    },
+    {
+      texto: 'Desarrollo Económico',
+      icono: 'business_center',
+      expanded: false,
+      subOpciones: [
+        { texto: 'Emprendimiento e Innovación', ruta: '/desarrollo-economico/emprendimiento', icono: 'lightbulb' },
+        { texto: 'Economía del conocimiento', ruta: '/desarrollo-economico/economia-conocimiento', icono: 'school' },
+        { texto: 'Entorno Productivo y Competitivo', ruta: '/desarrollo-economico/entorno-productivo', icono: 'trending_up' },
+        { texto: 'Empleo', ruta: '/desarrollo-economico/empleo', icono: 'work' },
+        {
+          texto: 'Transformación Digital',
+          icono: 'devices',
+          expanded: false,
+          subOpciones: [
+            { texto: 'Tablero de Control Puntos WiFi', ruta: '/desarrollo-economico/transformacion-digital/tablero', icono: 'dashboard' },
+            { texto: 'Mapa Puntos WiFi', ruta: '/desarrollo-economico/transformacion-digital/mapa', icono: 'map' }
+          ]
+        },
+        { texto: 'Economía Circular', ruta: '/desarrollo-economico/economia-circular', icono: 'recycling' },
+        { texto: 'Agricultura', ruta: '/desarrollo-economico/agricultura', icono: 'agriculture' }
+      ]
+    },
+    {
+      texto: 'Ciudadanía',
+      icono: 'people',
+      expanded: false,
+      subOpciones: [
+        { texto: 'Educación', ruta: '/ciudadania/educacion', icono: 'school' },
+        { texto: 'Equidad', ruta: '/ciudadania/equidad', icono: 'diversity_3' },
+        { texto: 'Sociedad Incluyente', ruta: '/ciudadania/sociedad-incluyente', icono: 'group' },
+        { texto: 'Cultura Ciudadana', ruta: '/ciudadania/cultura-ciudadana', icono: 'emoji_people' },
+        { texto: 'Cohesión Social', ruta: '/ciudadania/cohesion-social', icono: 'handshake' }
+      ]
+    },
+    {
+      texto: 'Calidad de Vida',
+      icono: 'favorite',
+      expanded: false,
+      subOpciones: [
+        { texto: 'Bienestar', ruta: '/calidad-vida/bienestar', icono: 'spa' },
+        { texto: 'Seguridad', ruta: '/calidad-vida/seguridad', icono: 'security' },
+        { texto: 'Salud', ruta: '/calidad-vida/salud', icono: 'health_and_safety' },
+        {
+          texto: 'Ocio y Turismo',
+          icono: 'beach_access',
+          expanded: false,
+          subOpciones: [
+            { texto: 'Tablero de Control Turismo', ruta: '/calidad-vida/turismo-tablero', icono: 'dashboard' },
+            { texto: 'Mapa Turismo', ruta: '/calidad-vida/turismo-mapa', icono: 'map' }
+          ]
+        }
+      ]
+    },
+    {
+      texto: 'Gobernanza',
+      icono: 'gavel',
+      expanded: false,
+      subOpciones: [
+        {
+          texto: 'Participación Ciudadana',
+          icono: 'people',
+          expanded: false,
+          subOpciones: [
+            { texto: 'Tablero de Control ReportesMED', ruta: '/gobernanza/reportesmed-tablero', icono: 'dashboard' },
+            { texto: 'Mapa Reportes MED', ruta: '/gobernanza/reportesmed-mapa', icono: 'map' },
+            { texto: 'Tablero de Control PQRS', ruta: '/gobernanza/pqrs-tablero', icono: 'analytics' },
+            { texto: 'Mapa PQRS', ruta: '/gobernanza/pqrs-mapa', icono: 'place' }
+          ]
+        },
+        { texto: 'Colaboración entre Ciudades y Territorios', ruta: '/gobernanza/colaboracion-ciudades', icono: 'public' },
+        { texto: 'Gobierno Digital', ruta: '/gobernanza/gobierno-digital', icono: 'computer' }
+      ]
     }
+  ];
+
+  constructor(private router: Router) {}
+
+  toggleSubMenu(opcion: any) {
+    opcion.expanded = !opcion.expanded;
   }
 
-  toggleCuadrosControl() {
-    this.mostrarCuadrosControl = !this.mostrarCuadrosControl; // Alternar la visibilidad de "Cuadros de Control"
-  }
-
-  toggleMapas() {
-    this.mostrarMapas = !this.mostrarMapas; // Alternar la visibilidad de "Mapas"
+  navegar(ruta: string) {
+    this.router.navigate([ruta]);
   }
 }
