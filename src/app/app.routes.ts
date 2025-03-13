@@ -26,7 +26,7 @@ export const routes: Routes = [
   { path: 'reportes', component: ReportesMedicos },   // Reemplaza con el componente correspondiente
   { path: 'economico/digital/wifi/dashboard', component: PuntosWifi }, 
   { path: 'habitat/movilidad/vamosmed/dashboard', component: Vamosmed }, 
-  { path: 'pqrsd', component: Pqrsd }, 
+  { path: 'gobernanza/participacion/pqrs/dashboard', component: Pqrsd }, 
   { path: 'whatsapp', component: WhatsApp }, 
   { path: 'calidad/turismo/dashboard', component: Turismo }, 
   { path: 'ambiente/calidad/siata/dashboard', component: Siata }, 
