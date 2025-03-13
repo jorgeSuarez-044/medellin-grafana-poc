@@ -21,21 +21,21 @@ import { SiataMaps } from './views/siatamaps/siatamaps.component';
 export const routes: Routes = [
   { path: '', component: MenuOpcionesComponent },  // Página principal con el menú
   { path: 'inicio', component: InicioComponent },  // Componente al que se navega cuando se hace clic en "Camiones"
-  { path: 'camiones', component: CamionesComponent },   // Componente al que se navega cuando se hace clic en "Reportes"
-  { path: 'sensores-ruido', component: SensoresRuidoComponent },       // Reemplaza con el componente correspondiente
+  { path: 'ambiente/residuos/camiones/dashboard', component: CamionesComponent },   // Componente al que se navega cuando se hace clic en "Reportes"
+  { path: 'ambiente/calidad/ruido/dashboard', component: SensoresRuidoComponent },       // Reemplaza con el componente correspondiente
   { path: 'reportes', component: ReportesMedicos },   // Reemplaza con el componente correspondiente
-  { path: 'puntos-wifi', component: PuntosWifi }, 
-  { path: 'vamosmed', component: Vamosmed }, 
+  { path: 'economico/digital/wifi/dashboard', component: PuntosWifi }, 
+  { path: 'habitat/movilidad/vamosmed/dashboard', component: Vamosmed }, 
   { path: 'pqrsd', component: Pqrsd }, 
   { path: 'whatsapp', component: WhatsApp }, 
-  { path: 'turismo', component: Turismo }, 
-  { path: 'siata', component: Siata }, 
-  { path: 'mapas/camiones', component: MapasCamiones },
+  { path: 'calidad/turismo/dashboard', component: Turismo }, 
+  { path: 'ambiente/calidad/siata/dashboard', component: Siata }, 
+  { path: 'ambiente/residuos/camiones/mapa', component: MapasCamiones },
   { path: 'mapas/reportes', component: ReportesMedMap },  
-  { path: 'mapas/puntos-wifi', component: WifiMaps },  
-  { path: 'mapas/vamosmed', component: VamosMedMap }, 
-  { path: 'mapas/sensores-ruido', component: SensoresMap }, 
-  { path: 'mapas/turismo', component: TurismoMaps }, 
-  { path: 'mapas/siata', component: SiataMaps }, 
+  { path: 'economico/digital/wifi/mapa', component: WifiMaps },  
+  { path: 'habitat/movilidad/vamosmed/mapa', component: VamosMedMap }, 
+  { path: 'ambiente/calidad/ruido/mapa', component: SensoresMap }, 
+  { path: 'calidad/turismo/map', component: TurismoMaps }, 
+  { path: 'ambiente/calidad/siata/mapa', component: SiataMaps }, 
 
 ];

@@ -1,47 +1,39 @@
 <div class="menu-container">
-  <img class="menu-logo" src="https://i.ibb.co/Ksh0J2w/alcaldia-Medellin.png" alt="Logo Alcaldía de Medellín" style="background-color: rgb(250, 250, 250);">
-  <img class="menu-logon" src="  https://www.fiware.org/custom/brand-guide/img/logo/fiware/primary/png/logo-fiware-blue.png?" alt="Logo Alcaldía de Medellín" style="background-color: rgb(252, 252, 252);">
-  <a href="https://imgbb.com/"></a>
+  <img class="menu-logo" src="https://i.ibb.co/Ksh0J2w/alcaldia-Medellin.png" alt="Logo Alcaldía de Medellín">
+  <img class="menu-logon" src="https://www.fiware.org/custom/brand-guide/img/logo/fiware/primary/png/logo-fiware-blue.png?" alt="Logo FIWARE">
 
-  <!-- Menu Principal -->
   <ul class="menu-list">
-    <li *ngFor="let opcion of opciones">
-      <a (click)="navegar(opcion.ruta)" class="menu-item">
-        <mat-icon>{{ opcion.icono }}</mat-icon>
-        <span>{{ opcion.texto }}</span>
-      </a>
-    </li>
+    <ng-container *ngFor="let opcion of menu">
+      <li>
+        <a (click)="opcion.hijos ? toggle(opcion) : navegar(opcion.ruta)" class="menu-item submenu-toggle">
+          <mat-icon>{{ opcion.icono }}</mat-icon>
+          <span>{{ opcion.texto }}</span>
+          <mat-icon *ngIf="opcion.hijos">{{ isAbierto(opcion) ? 'expand_less' : 'expand_more' }}</mat-icon>
+        </a>
 
-    <!-- Botón de Cuadros de Control -->
-    <li>
-      <a (click)="toggleCuadrosControl()" class="menu-item submenu-toggle">
-        <mat-icon>dashboard</mat-icon> <!-- Icono de cuadro de control -->
-        <span>Cuadros de Control</span>
-      </a>
-      <ul *ngIf="mostrarCuadrosControl" class="submenu">
-        <li *ngFor="let subOpcion of opcionesCuadrosControl">
-          <a (click)="navegar(subOpcion.ruta)" class="menu-item">
-            <mat-icon>{{ subOpcion.icono }}</mat-icon>
-            <span>{{ subOpcion.texto }}</span>
-          </a>
-        </li>
-      </ul>
-    </li>
+        <!-- Submenú -->
+        <ul *ngIf="opcion.hijos && isAbierto(opcion)" class="submenu">
+          <ng-container *ngFor="let sub of opcion.hijos">
+            <li>
+              <a (click)="sub.hijos ? toggle(sub) : navegar(sub.ruta)" class="menu-item submenu-toggle">
+                <mat-icon>{{ sub.icono }}</mat-icon>
+                <span>{{ sub.texto }}</span>
+                <mat-icon *ngIf="sub.hijos">{{ isAbierto(sub) ? 'expand_less' : 'expand_more' }}</mat-icon>
+              </a>
 
-    <!-- Botón de Mapas -->
-    <li>
-      <a (click)="toggleMapas()" class="menu-item submenu-toggle">
-        <mat-icon>place</mat-icon> <!-- Icono de mapas -->
-        <span>Mapas</span>
-      </a>
-      <ul *ngIf="mostrarMapas" class="submenu">
-        <li *ngFor="let subOpcion of opcionesMapas">
-          <a (click)="navegar(subOpcion.ruta)" class="menu-item">
-            <mat-icon>{{ subOpcion.icono }}</mat-icon>
-            <span>{{ subOpcion.texto }}</span>
-          </a>
-        </li>
-      </ul>
-    </li>
+              <!-- SubSubMenú -->
+              <ul *ngIf="sub.hijos && isAbierto(sub)" class="submenu">
+                <li *ngFor="let subsub of sub.hijos">
+                  <a (click)="navegar(subsub.ruta)" class="menu-item">
+                    <mat-icon>{{ subsub.icono }}</mat-icon>
+                    <span>{{ subsub.texto }}</span>
+                  </a>
+                </li>
+              </ul>
+            </li>
+          </ng-container>
+        </ul>
+      </li>
+    </ng-container>
   </ul>
 </div>
