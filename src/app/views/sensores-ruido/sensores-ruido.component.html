@@ -2,22 +2,7 @@
 <div class="iframe-container">
   <div class="iframe-row">
     <iframe
-      src="http://grafana-fiware.apps.preprodalcaldia.medellin.gov.co/territoriointeligente/d/e0ed317a-4542-4e72-b196-5083485527d6/ruido-20240620?orgId=1&from=1735333224090&to=1735333524090&viewPanel=21&kiosk"
-      allowfullscreen>
-    </iframe>
-    <iframe
-      src="http://grafana-fiware.apps.preprodalcaldia.medellin.gov.co/territoriointeligente/d/e0ed317a-4542-4e72-b196-5083485527d6/ruido-20240620?orgId=1&from=1735333502533&to=1735333802533&viewPanel=22&kiosk"
-      allowfullscreen>
-    </iframe>
-  </div>
-  
-  <div class="iframe-column">
-    <iframe
-      src="http://grafana-fiware.apps.preprodalcaldia.medellin.gov.co/territoriointeligente/d/e0ed317a-4542-4e72-b196-5083485527d6/ruido-20240620?orgId=1&from=1735333572246&to=1735333872246&viewPanel=32&kiosk"
-      allowfullscreen>
-    </iframe>
-    <iframe
-      src="http://grafana-fiware.apps.preprodalcaldia.medellin.gov.co/territoriointeligente/d/e0ed317a-4542-4e72-b196-5083485527d6/ruido-20240620?orgId=1&from=1735333672150&to=1735333972150&viewPanel=14&kiosk"
+      src="http://grafana-fiware.apps.preprodalcaldia.medellin.gov.co/territoriointeligente/d/ce9a9bd3-6b1e-48bc-8fab-cc6a042f6f5b/ambience-dashboard?orgId=1&kiosk"
       allowfullscreen>
     </iframe>
   </div>
@@ -37,7 +22,6 @@
     color: #333;
     text-align: left;
     padding: 20px;
-    margin: 0;
     background-color: #fff;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     margin-left: 300px;
@@ -49,29 +33,16 @@
     flex-direction: column;
     margin-left: 300px;
     padding: 10px;
-    gap: 20px;
   }
 
   .iframe-row {
     display: flex;
-    gap: 20px;
     justify-content: space-between;
   }
 
   .iframe-row iframe {
     flex: 1;
-    height: 250px;
-    border: none;
-  }
-
-  .iframe-column {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-  }
-
-  .iframe-column iframe {
-    height: 400px;
+    height: 920px; /* Aumenté la altura */
     border: none;
   }
 </style>
