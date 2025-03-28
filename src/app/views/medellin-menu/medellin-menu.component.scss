@@ -2,8 +2,8 @@
 .menu-container {
   position: fixed;
   top: 0;
-  left: 0;
-  width: 280px;
+  left: -20px; /* Desplaza el menú más a la izquierda */
+  width: 260px; /* Reduce el ancho un poco si es necesario */
   height: 100vh;
   background: linear-gradient(145deg, rgba(255, 255, 255, 0.8), rgba(240, 240, 240, 0.6));
   backdrop-filter: blur(15px);
@@ -14,6 +14,7 @@
   z-index: 1000;
   transition: transform 0.3s ease-in-out;
 }
+
 .menu-logon {
   display: block;
   max-width: 120px; /* Reduce el tamaño de la imagen */
