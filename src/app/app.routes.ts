@@ -17,6 +17,7 @@ import { VamosMedMap } from './views/vamosmedmap/vamosmed-map.component';
 import { SensoresMap } from './views/sensoresmap/sensoresmap.component';
 import { TurismoMaps } from './views/turismomaps/turismomaps.component';
 import { SiataMaps } from './views/siatamaps/siatamaps.component';
+import { Movilidad } from './views/movilidad-inteligente/movilidad-inteligente.component';
 
 export const routes: Routes = [
   { path: '', component: MenuOpcionesComponent },  // Página principal con el menú
@@ -26,6 +27,8 @@ export const routes: Routes = [
   { path: 'reportes', component: ReportesMedicos },   // Reemplaza con el componente correspondiente
   { path: 'economico/digital/wifi/dashboard', component: PuntosWifi }, 
   { path: 'habitat/movilidad/vamosmed/dashboard', component: Vamosmed }, 
+  { path: 'habitat/movilidad/dashboard', component: Movilidad }, 
+  
   { path: 'gobernanza/participacion/pqrs/dashboard', component: Pqrsd }, 
   { path: 'whatsapp', component: WhatsApp }, 
   { path: 'calidad/turismo/dashboard', component: Turismo }, 
