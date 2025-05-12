@@ -1,22 +1,20 @@
 <h2 class="page-title">Movilidad Inteligente</h2>
 <div class="iframe-container">
-  <div class="iframe-row">
+  <div class="iframe-column">
     <iframe
-      src="http://grafana-fiware.apps.preprodalcaldia.medellin.gov.co/territoriointeligente/d/d84d5e56-4773-4d60-9d99-aa2ebe692986/trafic?orgId=1&kiosk"
-      allowfullscreen>
-    </iframe>
-    <iframe
-      src="http://grafana-fiware.apps.preprodalcaldia.medellin.gov.co/territoriointeligente/d/f406dae7-9988-495d-b27e-1965012c73a0/dist-vehicle?orgId=1&from=1743175585803&to=1743178496624&kiosk"
+      src="http://grafana-fiware.apps.preprodalcaldia.medellin.gov.co/territoriointeligente/d/movilidad-volumen-carri/movilidad-inteligente-volumen-de-trafico-por-carriles?orgId=1&var-carril=All&var-dia_semana=All&from=1734757199500&to=1738558797500&kiosk"
       allowfullscreen>
     </iframe>
 
-  </div>
-  <div class="iframe-column">
     <iframe
-      src="http://grafana-fiware.apps.preprodalcaldia.medellin.gov.co/territoriointeligente/d/ffbc3302-2461-470c-825d-f8902acbc045/vehicle-types?orgId=1&kiosk"
+      src="http://grafana-fiware.apps.preprodalcaldia.medellin.gov.co/territoriointeligente/d/movilidad-vel-graph4/grafica-velocidad-promedio4?orgId=1&kiosk"
       allowfullscreen>
     </iframe>
-  
+
+    <iframe
+      src="http://grafana-fiware.apps.preprodalcaldia.medellin.gov.co/territoriointeligente/d/c18a5148-09d5-4585-8b7d-ea4aaba9e130/mapa-de-trafico-medellin?orgId=1&kiosk"
+      allowfullscreen>
+    </iframe>
   </div>
 </div>
 
@@ -26,37 +24,8 @@
     padding: 0;
     display: flex;
     flex-direction: column;
-  }
-
-  .iframe-container {
-    display: flex;
-    flex-direction: column;
-    margin-left: 300px;
-    padding: 10px;
-    gap: 20px;
-  }
-
-  .iframe-row {
-    display: flex;
-    gap: 20px;
-    justify-content: space-between;
-  }
-
-  .iframe-row iframe {
-    flex: 1;
-    height: 500px; /* Tamaño más pequeño para los tres primeros */
-    border: none;
-  }
-
-  .iframe-column {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-  }
-
-  .iframe-column iframe {
-    height: 500px; /* Más altura para los siguientes gráficos */
-    border: none;
+    height: 100vh;
+    overflow-y: auto; /* Habilita scroll vertical si se excede el alto */
   }
 
   .page-title {
@@ -70,5 +39,28 @@
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     margin-left: 300px;
     margin-bottom: 20px;
+  }
+
+  .iframe-container {
+    display: flex;
+    flex-direction: column;
+    margin-left: 300px;
+    padding: 10px;
+    gap: 20px;
+  }
+
+  .iframe-column {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .iframe-column iframe {
+    height: 500px;
+    width: 100%;
+    border: none;
+    overflow: visible;
+    pointer-events: auto !important;
+    z-index: 10;
   }
 </style>
