@@ -31,10 +31,10 @@ MatIconModule
   styleUrls: ['./wifi-maps.component.scss']
 })
 export class WifiMaps implements OnInit, OnDestroy {
-  private map!: maplibregl.Map;
+  private map!: maplibregl.Map ;
   private data: any[] = [];
   private popup: maplibregl.Popup | null = null;
-  
+  private selectedFeature: any = null;
   isLoading = true;
   error = false;
   
@@ -65,11 +65,20 @@ export class WifiMaps implements OnInit, OnDestroy {
     this.fetchData();
   }
 
-  ngOnDestroy(): void {
-    if (this.map) {
-      this.map.remove();
-    }
+ngOnDestroy(): void {
+  // Limpiar eventos y popups
+  if (this.map) {
+    this.map.remove();
+   
   }
+  
+  if (this.popup) {
+    this.popup.remove();
+    this.popup = null;
+  }
+  
+  this.selectedFeature = null;
+}
 
   // Propiedades calculadas
   get filteredData(): any[] {
@@ -205,89 +214,171 @@ export class WifiMaps implements OnInit, OnDestroy {
     });
   }
 
-  private addDataToMap(): void {
-    const geoJsonData: any = {
-      type: 'FeatureCollection',
-      features: this.data.map(item => ({
-        type: 'Feature',
-        geometry: {
-          type: 'Point',
-          coordinates: [item.longitud, item.latitud]
-        },
-        properties: {
-          ...item,
-          populationDensity: (item.tp27_perso || 0) / (item.area || 1),
-          internetAccess: ((item.tp19_inte1 || 0) / (item.tvivienda || 1)) * 100,
-          waterAccess: ((item.tp19_acu_1 || 0) / (item.tvivienda || 1)) * 100,
-          gasAccess: ((item.tp19_gas_1 || 0) / (item.tvivienda || 1)) * 100,
-          educationPrimary: ((item.tp51primar || 0) / (item.tp27_perso || 1)) * 100,
-          educationSecondary: ((item.tp51secund || 0) / (item.tp27_perso || 1)) * 100,
-          educationHigher: ((item.tp51superi || 0) / (item.tp27_perso || 1)) * 100,
-          elderlyPercentage: ((item.tp34_7_eda + item.tp34_8_eda + item.tp34_9_eda || 0) / (item.tp27_perso || 1)) * 100
-        }
-      }))
-    };
-
-    this.map.addSource('wifi-data', {
-      type: 'geojson',
-      data: geoJsonData
-    });
-
-    this.map.addLayer({
-      id: 'wifi-points',
-      type: 'circle',
-      source: 'wifi-data',
-      paint: {
-        'circle-radius': ['interpolate', ['linear'], ['zoom'], 10, 3, 15, 8],
-        'circle-color': ['interpolate', ['linear'], ['get', 'internetAccess'], 0, '#ff0000', 50, '#ffff00', 100, '#00ff00'],
-        'circle-opacity': 0.8,
-        'circle-stroke-width': 1,
-        'circle-stroke-color': '#ffffff'
+ private addDataToMap(): void {
+  const geoJsonData: any = {
+    type: 'FeatureCollection',
+    features: this.data.map((item, index) => ({
+      type: 'Feature',
+      id: index, // Añadimos un ID único para cada feature
+      geometry: {
+        type: 'Point',
+        coordinates: [item.longitud, item.latitud]
+      },
+      properties: {
+        ...item,
+        populationDensity: (item.tp27_perso || 0) / (item.area || 1),
+        internetAccess: ((item.tp19_inte1 || 0) / (item.tvivienda || 1)) * 100,
+        waterAccess: ((item.tp19_acu_1 || 0) / (item.tvivienda || 1)) * 100,
+        gasAccess: ((item.tp19_gas_1 || 0) / (item.tvivienda || 1)) * 100,
+        educationPrimary: ((item.tp51primar || 0) / (item.tp27_perso || 1)) * 100,
+        educationSecondary: ((item.tp51secund || 0) / (item.tp27_perso || 1)) * 100,
+        educationHigher: ((item.tp51superi || 0) / (item.tp27_perso || 1)) * 100,
+        elderlyPercentage: ((item.tp34_7_eda + item.tp34_8_eda + item.tp34_9_eda || 0) / (item.tp27_perso || 1)) * 100
       }
-    });
+    }))
+  };
 
-    this.map.on('mousemove', 'wifi-points', (e) => {
-      if (e.features && e.features.length > 0) {
-        this.showPopup(e.features[0]);
-      }
-    });
+  this.map.addSource('wifi-data', {
+    type: 'geojson',
+    data: geoJsonData,
+    generateId: true // Generar IDs únicos si no los hay
+  });
 
-    this.map.on('mouseleave', 'wifi-points', () => {
-      if (this.popup) {
-        this.popup.remove();
-        this.popup = null;
-      }
-    });
-  }
-
-  private showPopup(feature: any): void {
-    if (this.popup) {
-      this.popup.remove();
+  this.map.addLayer({
+    id: 'wifi-points',
+    type: 'circle',
+    source: 'wifi-data',
+    paint: {
+      'circle-radius': [
+        'interpolate', ['linear'], ['zoom'],
+        10, 6, // Más grande en zoom inicial
+        15, 12 // Más grande en zoom cercano
+      ],
+      'circle-color': [
+        'case',
+        ['boolean', ['feature-state', 'selected'], false],
+        '#ff00ff', // Color cuando está seleccionado
+        ['interpolate', ['linear'], ['get', 'internetAccess'], 
+        0, '#ff0000', 
+        50, '#ffff00', 
+        100, '#00ff00']
+      ],
+      'circle-opacity': 0.9,
+      'circle-stroke-width': [
+        'case',
+        ['boolean', ['feature-state', 'selected'], false],
+        3, // Borde más grueso cuando está seleccionado
+        1
+      ],
+      'circle-stroke-color': '#ffffff'
     }
+  });
 
-    const properties = feature.properties;
-    const content = `
-      <div class="map-popup">
-        <h4>Manzana ${properties.cod_dane_a}</h4>
-        <p><strong>Comuna:</strong> ${properties.nmb_lc_cm}</p>
-        <p><strong>Población:</strong> ${properties.tp27_perso}</p>
-        <p><strong>Densidad:</strong> ${properties.populationDensity.toFixed(2)} pers/m²</p>
-        <p><strong>Acceso a internet:</strong> ${properties.internetAccess.toFixed(1)}%</p>
-        <p><strong>Acceso a agua:</strong> ${properties.waterAccess.toFixed(1)}%</p>
-        <p><strong>Acceso a gas:</strong> ${properties.gasAccess.toFixed(1)}%</p>
-        <p><strong>Adultos mayores (60+):</strong> ${properties.elderlyPercentage.toFixed(1)}%</p>
-        <strong>Educación:</strong><br>
-        - Primaria: ${properties.educationPrimary.toFixed(1)}%<br>
-        - Secundaria: ${properties.educationSecondary.toFixed(1)}%<br>
-        - Superior: ${properties.educationHigher.toFixed(1)}%
-      </div>
-    `;
+  // Evento para mostrar popup al hacer clic
+  this.map.on('click', 'wifi-points', (e) => {
+    if (e.features && e.features.length > 0) {
+      this.showPopup(e.features[0]);
+    }
+  });
 
-    this.popup = new maplibregl.Popup()
-      .setLngLat(feature.geometry.coordinates)
-      .setHTML(content)
-      .addTo(this.map);
+  // Cerrar popup al hacer clic en cualquier parte del mapa
+  this.map.on('click', (e) => {
+    const features = this.map.queryRenderedFeatures(e.point, {
+      layers: ['wifi-points']
+    });
+    
+    if (features.length === 0 && this.popup) {
+      this.clearSelectedFeature();
+      this.popup.remove();
+      this.popup = null;
+    }
+  });
+
+  // Cambiar el cursor al pasar sobre los puntos
+  this.map.on('mouseenter', 'wifi-points', () => {
+    this.map.getCanvas().style.cursor = 'pointer';
+  });
+
+  this.map.on('mouseleave', 'wifi-points', () => {
+    this.map.getCanvas().style.cursor = '';
+  });
+}
+private clearSelectedFeature(): void {
+  if (this.selectedFeature) {
+    // Verificar si la capa existe antes de intentar cambiar el estado
+    if (this.map.getLayer('wifi-points')) {
+      this.map.setFeatureState(
+        { source: 'wifi-data', id: this.selectedFeature.id },
+        { selected: false }
+      );
+    }
+    this.selectedFeature = null;
   }
+}
+
+private showPopup(feature: any): void {
+  // Limpiar feature seleccionado anterior
+  this.clearSelectedFeature();
+
+  // Verificar que el feature tenga geometría válida
+  if (!feature.geometry || !feature.geometry.coordinates) {
+    console.error('Feature geometry is invalid:', feature);
+    return;
+  }
+
+  // Establecer el nuevo feature como seleccionado
+  this.selectedFeature = feature;
+  this.map.setFeatureState(
+    { source: 'wifi-data', id: feature.id },
+    { selected: true }
+  );
+
+  // Cerrar popup existente
+  if (this.popup) {
+    this.popup.remove();
+  }
+
+  const properties = feature.properties || {};
+  const coordinates = feature.geometry.coordinates.slice();
+
+  // Eliminar la verificación del while que usaba 'e' ya que no es necesaria
+  // para puntos individuales (solo útil cuando se trabajan con líneas/polígonos que cruzan el antimeridiano)
+
+  // Crear contenido del popup con manejo de valores nulos
+  const content = `
+    <div class="map-popup">
+      <h4>Manzana ${properties.cod_dane_a || 'N/A'}</h4>
+      <p><strong>Comuna:</strong> ${properties.nmb_lc_cm || 'N/A'}</p>
+      <p><strong>Población:</strong> ${properties.tp27_perso || '0'}</p>
+      <p><strong>Densidad:</strong> ${(properties.populationDensity || 0).toFixed(2)} pers/m²</p>
+      <p><strong>Acceso a internet:</strong> ${(properties.internetAccess || 0).toFixed(1)}%</p>
+      <p><strong>Acceso a agua:</strong> ${(properties.waterAccess || 0).toFixed(1)}%</p>
+      <p><strong>Acceso a gas:</strong> ${(properties.gasAccess || 0).toFixed(1)}%</p>
+      <p><strong>Adultos mayores (60+):</strong> ${(properties.elderlyPercentage || 0).toFixed(1)}%</p>
+      <strong>Educación:</strong><br>
+      - Primaria: ${(properties.educationPrimary || 0).toFixed(1)}%<br>
+      - Secundaria: ${(properties.educationSecondary || 0).toFixed(1)}%<br>
+      - Superior: ${(properties.educationHigher || 0).toFixed(1)}%
+    </div>
+  `;
+
+  // Crear y mostrar el nuevo popup
+  this.popup = new maplibregl.Popup({
+    closeButton: true,
+    closeOnClick: false,
+    anchor: 'bottom',
+    offset: 25
+  })
+    .setLngLat(coordinates)
+    .setHTML(content)
+    .addTo(this.map);
+
+  // Cerrar popup cuando se hace clic en el botón de cerrar
+  this.popup.on('close', () => {
+    this.clearSelectedFeature();
+    this.popup = null;
+  });
+}
 
   private updateMapLayers(): void {
     if (!this.map.getLayer('wifi-points')) return;
