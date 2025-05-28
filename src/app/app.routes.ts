@@ -35,7 +35,11 @@ export const routes: Routes = [
   { path: 'ambiente/calidad/siata/dashboard', component: Siata }, 
   { path: 'ambiente/residuos/camiones/mapa', component: MapasCamiones },
   { path: 'mapas/reportes', component: ReportesMedMap },  
-  { path: 'economico/digital/wifi/mapa', component: WifiMaps },  
+   { 
+    path: 'economico/digital/wifi/mapa', 
+    component: WifiMaps,
+    data: { ssr: false } // Esto desactiva SSR para esta ruta específica
+  }, 
   { path: 'habitat/movilidad/vamosmed/mapa', component: VamosMedMap }, 
   { path: 'ambiente/calidad/ruido/mapa', component: SensoresMap }, 
   { path: 'calidad/turismo/map', component: TurismoMaps }, 
