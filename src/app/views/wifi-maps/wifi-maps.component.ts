@@ -1,54 +1,68 @@
-import { Component, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-
+import { HttpClientModule } from '@angular/common/http';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { MatCardModule } from '@angular/material/card';
+import { MatSelectModule } from '@angular/material/select';
+import { MatSliderModule } from '@angular/material/slider';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import * as maplibregl from 'maplibre-gl';
-import { FeatureCollection, Feature, Polygon } from 'geojson';
+import { MatIconModule } from '@angular/material/icon';
 
+
+MatIconModule
 @Component({
   selector: 'app-wifi-maps',
-  templateUrl: './wifi-maps.component.html',
-  styleUrls: ['./wifi-maps.component.scss'],
   standalone: true,
-  imports: []
+  imports: [
+    CommonModule,
+    FormsModule,
+    MatCardModule,
+    HttpClientModule,
+    MatSelectModule,
+    MatSliderModule,
+    MatIconModule,
+    MatButtonToggleModule,
+    MatProgressSpinnerModule
+  ],
+  templateUrl: './wifi-maps.component.html',
+  styleUrls: ['./wifi-maps.component.scss']
 })
-export class WifiMaps implements OnInit, AfterViewInit, OnDestroy {
-  private map: maplibregl.Map | null = null;
-  private apiUrl =  'http://flask-fiware.apps.preprodalcaldia.medellin.gov.co/api/wifi-dane';
+export class WifiMaps implements OnInit, OnDestroy {
+  private map!: maplibregl.Map;
+  private data: any[] = [];
+  private popup: maplibregl.Popup | null = null;
   
-  // Datos para filtros
-  comunas: any[] = [];
-  gruposEtarios: any[] = [
-    { id: 'jovenes', name: 'Jóvenes (0-30)' },
-    { id: 'adultos', name: 'Adultos (30-60)' },
-    { id: 'mayores', name: 'Adultos mayores (60+)' }
+  isLoading = true;
+  error = false;
+  
+  // Filtros
+  selectedComuna = '';
+  selectedAgeGroup = '';
+  selectedEducationLevel = '';
+  internetAccessFilter = 'all';
+  zoomLevel = 12;
+  
+  // Opciones de filtros
+  comunas: string[] = [];
+  ageGroups = [
+    { value: '0-14', label: '0-14 años' },
+    { value: '15-59', label: '15-59 años' },
+    { value: '60+', label: '60+ años' }
   ];
   
-  nivelesEducativos: any[] = [
-    { id: 'primaria', name: 'Primaria' },
-    { id: 'secundaria', name: 'Secundaria' },
-    { id: 'superior', name: 'Superior' }
+  educationLevels = [
+    { value: 'primary', label: 'Primaria' },
+    { value: 'secondary', label: 'Secundaria' },
+    { value: 'higher', label: 'Superior' }
   ];
-  
-  // Filtros seleccionados
-  selectedComuna: string = '';
-  selectedGrupoEtario: string = '';
-  selectedNivelEducativo: string = '';
-  showInternetAccess: boolean = true;
-  showPopulationDensity: boolean = true;
-  
-  // Datos del mapa
-  zonasWifi: any[] = [];
-  manzanasData: any[] = [];
-  correlacionData: any = {};
 
   constructor(private http: HttpClient) {}
 
   ngOnInit(): void {
-    this.loadInitialData();
-  }
-
-  ngAfterViewInit(): void {
-    this.initializeMap();
+    this.fetchData();
   }
 
   ngOnDestroy(): void {
@@ -57,196 +71,284 @@ export class WifiMaps implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
-  private loadInitialData(): void {
-    // Cargar datos de zonas WiFi
-    this.http.get(`${this.apiUrl}/zonas`).subscribe((data: any) => {
-      this.zonasWifi = data;
-      this.updateMapData();
-    });
-
-    // Cargar datos de correlación
-    this.http.get(`${this.apiUrl}/correlacion`).subscribe((data: any) => {
-      this.correlacionData = data;
-      this.updateCorrelationLayer();
-    });
+  // Propiedades calculadas
+  get filteredData(): any[] {
+    let filtered = this.data;
+    
+    if (this.selectedComuna) {
+      filtered = filtered.filter(item => item.nmb_lc_cm === this.selectedComuna);
+    }
+    
+    if (this.internetAccessFilter === 'high') {
+      filtered = filtered.filter(item => (item.tp19_inte1 / (item.tvivienda || 1)) > 0.7);
+    } else if (this.internetAccessFilter === 'low') {
+      filtered = filtered.filter(item => (item.tp19_inte1 / (item.tvivienda || 1)) <= 0.3);
+    }
+    
+    return filtered;
   }
 
-  private initializeMap(): void {
+  get totalPopulation(): number {
+    return this.filteredData.reduce((sum, item) => sum + (item.tp27_perso || 0), 0);
+  }
+
+  get totalHomes(): number {
+    return this.filteredData.reduce((sum, item) => sum + (item.tvivienda || 0), 0);
+  }
+
+  get internetAccessPercentage(): number {
+    const totalInternet = this.filteredData.reduce((sum, item) => sum + (item.tp19_inte1 || 0), 0);
+    const totalHomes = this.totalHomes || 1;
+    return (totalInternet / totalHomes) * 100;
+  }
+
+  get waterAccessPercentage(): number {
+    const totalWater = this.filteredData.reduce((sum, item) => sum + (item.tp19_acu_1 || 0), 0);
+    const totalHomes = this.totalHomes || 1;
+    return (totalWater / totalHomes) * 100;
+  }
+
+  get gasAccessPercentage(): number {
+    const totalGas = this.filteredData.reduce((sum, item) => sum + (item.tp19_gas_1 || 0), 0);
+    const totalHomes = this.totalHomes || 1;
+    return (totalGas / totalHomes) * 100;
+  }
+
+  get ageDistribution(): any {
+    const distribution = {
+      '0-14': 0,
+      '15-59': 0,
+      '60+': 0
+    };
+    
+    this.filteredData.forEach(item => {
+      distribution['0-14'] += (item.tp34_1_eda || 0) + (item.tp34_2_eda || 0) + (item.tp34_3_eda || 0);
+      distribution['15-59'] += (item.tp34_4_eda || 0) + (item.tp34_5_eda || 0) + (item.tp34_6_eda || 0);
+      distribution['60+'] += (item.tp34_7_eda || 0) + (item.tp34_8_eda || 0) + (item.tp34_9_eda || 0);
+    });
+    
+    const total = distribution['0-14'] + distribution['15-59'] + distribution['60+'] || 1;
+    
+    return {
+      '0-14': (distribution['0-14'] / total) * 100,
+      '15-59': (distribution['15-59'] / total) * 100,
+      '60+': (distribution['60+'] / total) * 100
+    };
+  }
+
+  get educationDistribution(): any {
+    const distribution = {
+      'primary': 0,
+      'secondary': 0,
+      'higher': 0,
+      'other': 0
+    };
+    
+    this.filteredData.forEach(item => {
+      distribution['primary'] += item.tp51primar || 0;
+      distribution['secondary'] += item.tp51secund || 0;
+      distribution['higher'] += item.tp51superi || 0;
+      distribution['other'] += item.tp51_99_ed || 0;
+    });
+    
+    const total = distribution['primary'] + distribution['secondary'] + distribution['higher'] + distribution['other'] || 1;
+    
+    return {
+      'primary': (distribution['primary'] / total) * 100,
+      'secondary': (distribution['secondary'] / total) * 100,
+      'higher': (distribution['higher'] / total) * 100,
+      'other': (distribution['other'] / total) * 100
+    };
+  }
+
+   fetchData(): void {
+    this.isLoading = true;
+    this.error = false;
+    
+    this.http.get<any[]>('http://flask-fiware.apps.preprodalcaldia.medellin.gov.co/api/wifi-dane/all')
+      .subscribe({
+        next: (data) => {
+          this.data = data;
+          this.processData();
+          this.initMap();
+          this.isLoading = false;
+        },
+        error: (err) => {
+          console.error('Error fetching data:', err);
+          this.error = true;
+          this.isLoading = false;
+        }
+      });
+  }
+
+  private processData(): void {
+    const comunaSet = new Set<string>();
+    this.data.forEach(item => comunaSet.add(item.nmb_lc_cm));
+    this.comunas = Array.from(comunaSet).sort();
+  }
+
+  private initMap(): void {
     this.map = new maplibregl.Map({
       container: 'map',
-      style: 'https://demotiles.maplibre.org/style.json', // Estilo base
-      center: [-75.5812, 6.2442], // Centro en Medellín
-      zoom: 12
+      style: 'https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json',
+      center: [-75.5454, 6.2512],
+      zoom: this.zoomLevel
     });
 
     this.map.on('load', () => {
-      this.addBaseLayers();
-      this.setupInteractivity();
+      this.addDataToMap();
+    });
+
+    this.map.on('zoomend', () => {
+      this.zoomLevel = this.map.getZoom();
+      this.updateMapLayers();
     });
   }
 
-  private addBaseLayers(): void {
-    if (!this.map) return;
-
-    // Capa de manzanas (se actualizará con datos reales)
-    this.map.addSource('manzanas', {
-      type: 'geojson',
-      data: {
-        type: 'FeatureCollection',
-        features: []
-      }
-    });
-
-    this.map.addLayer({
-      id: 'manzanas-layer',
-      type: 'fill',
-      source: 'manzanas',
-      paint: {
-        'fill-color': [
-          'interpolate',
-          ['linear'],
-          ['get', 'densidad'],
-          0, '#f7fbff',
-          500, '#c6dbef',
-          1000, '#6baed6',
-          2000, '#2171b5',
-          4000, '#08306b'
-        ],
-        'fill-opacity': 0.7,
-        'fill-outline-color': '#fff'
-      }
-    });
-
-    // Capa de puntos WiFi
-    this.map.addSource('wifi-points', {
-      type: 'geojson',
-      data: {
-        type: 'FeatureCollection',
-        features: []
-      }
-    });
-
-    this.map.addLayer({
-      id: 'wifi-points-layer',
-      type: 'circle',
-      source: 'wifi-points',
-      paint: {
-        'circle-radius': 5,
-        'circle-color': '#00ff00',
-        'circle-stroke-width': 1,
-        'circle-stroke-color': '#fff'
-      }
-    });
-  }
-
-  private updateMapData(): void {
-    if (!this.map || !this.zonasWifi.length) return;
-
-    // Convertir datos de WiFi a GeoJSON
-    const wifiFeatures = this.zonasWifi.map((zona: any) => ({
-      type: 'Feature',
-      geometry: {
-        type: 'Point',
-        coordinates: [zona.longitud, zona.latitud]
-      },
-      properties: {
-        name: zona.nombre,
-        tipo: zona.tipo,
-        velocidad: zona.velocidad
-      }
-    }));
-
-    const wifiSource = this.map.getSource('wifi-points') as maplibregl.GeoJSONSource;
-    wifiSource.setData({
+  private addDataToMap(): void {
+    const geoJsonData: any = {
       type: 'FeatureCollection',
-      features: wifiFeatures
+      features: this.data.map(item => ({
+        type: 'Feature',
+        geometry: {
+          type: 'Point',
+          coordinates: [item.longitud, item.latitud]
+        },
+        properties: {
+          ...item,
+          populationDensity: (item.tp27_perso || 0) / (item.area || 1),
+          internetAccess: ((item.tp19_inte1 || 0) / (item.tvivienda || 1)) * 100,
+          waterAccess: ((item.tp19_acu_1 || 0) / (item.tvivienda || 1)) * 100,
+          gasAccess: ((item.tp19_gas_1 || 0) / (item.tvivienda || 1)) * 100,
+          educationPrimary: ((item.tp51primar || 0) / (item.tp27_perso || 1)) * 100,
+          educationSecondary: ((item.tp51secund || 0) / (item.tp27_perso || 1)) * 100,
+          educationHigher: ((item.tp51superi || 0) / (item.tp27_perso || 1)) * 100,
+          elderlyPercentage: ((item.tp34_7_eda + item.tp34_8_eda + item.tp34_9_eda || 0) / (item.tp27_perso || 1)) * 100
+        }
+      }))
+    };
+
+    this.map.addSource('wifi-data', {
+      type: 'geojson',
+      data: geoJsonData
+    });
+
+    this.map.addLayer({
+      id: 'wifi-points',
+      type: 'circle',
+      source: 'wifi-data',
+      paint: {
+        'circle-radius': ['interpolate', ['linear'], ['zoom'], 10, 3, 15, 8],
+        'circle-color': ['interpolate', ['linear'], ['get', 'internetAccess'], 0, '#ff0000', 50, '#ffff00', 100, '#00ff00'],
+        'circle-opacity': 0.8,
+        'circle-stroke-width': 1,
+        'circle-stroke-color': '#ffffff'
+      }
+    });
+
+    this.map.on('mousemove', 'wifi-points', (e) => {
+      if (e.features && e.features.length > 0) {
+        this.showPopup(e.features[0]);
+      }
+    });
+
+    this.map.on('mouseleave', 'wifi-points', () => {
+      if (this.popup) {
+        this.popup.remove();
+        this.popup = null;
+      }
     });
   }
 
-  private updateCorrelationLayer(): void {
-    if (!this.map || !this.correlacionData.features) return;
+  private showPopup(feature: any): void {
+    if (this.popup) {
+      this.popup.remove();
+    }
 
-    // Procesar datos de correlación para el mapa
-    const correlationSource = this.map.getSource('manzanas') as maplibregl.GeoJSONSource;
-    correlationSource.setData(this.correlacionData);
+    const properties = feature.properties;
+    const content = `
+      <div class="map-popup">
+        <h4>Manzana ${properties.cod_dane_a}</h4>
+        <p><strong>Comuna:</strong> ${properties.nmb_lc_cm}</p>
+        <p><strong>Población:</strong> ${properties.tp27_perso}</p>
+        <p><strong>Densidad:</strong> ${properties.populationDensity.toFixed(2)} pers/m²</p>
+        <p><strong>Acceso a internet:</strong> ${properties.internetAccess.toFixed(1)}%</p>
+        <p><strong>Acceso a agua:</strong> ${properties.waterAccess.toFixed(1)}%</p>
+        <p><strong>Acceso a gas:</strong> ${properties.gasAccess.toFixed(1)}%</p>
+        <p><strong>Adultos mayores (60+):</strong> ${properties.elderlyPercentage.toFixed(1)}%</p>
+        <strong>Educación:</strong><br>
+        - Primaria: ${properties.educationPrimary.toFixed(1)}%<br>
+        - Secundaria: ${properties.educationSecondary.toFixed(1)}%<br>
+        - Superior: ${properties.educationHigher.toFixed(1)}%
+      </div>
+    `;
+
+    this.popup = new maplibregl.Popup()
+      .setLngLat(feature.geometry.coordinates)
+      .setHTML(content)
+      .addTo(this.map);
   }
 
-  private setupInteractivity(): void {
-    if (!this.map) return;
+  private updateMapLayers(): void {
+    if (!this.map.getLayer('wifi-points')) return;
 
-    // Tooltip para manzanas
-    const popup = new maplibregl.Popup({
-      closeButton: false,
-      closeOnClick: false
-    });
-
-    this.map.on('mousemove', 'manzanas-layer', (e) => {
-      if (!e.features?.length) return;
-
-      const feature = e.features[0];
-      const properties = feature.properties;
-
-      // Calcular métricas
-      const densidad = properties.tp27_perso / properties.area;
-      const accesoInternet = (properties.tp19_inte1 / properties.tvivienda) * 100;
-      const adultosMayores = (
-        (properties.tp34_7_eda + properties.tp34_8_eda + properties.tp34_9_eda) / 
-        properties.tp27_perso
-      ) * 100;
-
-      // Mostrar tooltip
-      popup
-        .setLngLat(e.lngLat)
-        .setHTML(`
-          <div class="map-tooltip">
-            <h4>Manzana ${feature.id}</h4>
-            <p><strong>Densidad poblacional:</strong> ${densidad.toFixed(2)} hab/m²</p>
-            <p><strong>Acceso a internet:</strong> ${accesoInternet.toFixed(1)}%</p>
-            <p><strong>Adultos mayores:</strong> ${adultosMayores.toFixed(1)}%</p>
-            <p><strong>Nivel educativo predominante:</strong> ${this.getPredominantEducation(properties)}</p>
-          </div>
-        `)
-        .addTo(this.map);
-    });
-
-    this.map.on('mouseleave', 'manzanas-layer', () => {
-      popup.remove();
-    });
-  }
-
-  private getPredominantEducation(properties: any): string {
-    const primaria = properties.tp51primar / properties.tp27_perso;
-    const secundaria = properties.tp51secund / properties.tp27_perso;
-    const superior = properties.tp51superi / properties.tp27_perso;
-
-    if (superior > secundaria && superior > primaria) return 'Superior';
-    if (secundaria > primaria) return 'Secundaria';
-    return 'Primaria';
-  }
-
-  // Métodos para manejar filtros
-  applyFilters(): void {
-    // Aquí implementarías la lógica para filtrar los datos según los filtros seleccionados
-    // y actualizar las capas del mapa
-    console.log('Aplicando filtros:', {
-      comuna: this.selectedComuna,
-      grupoEtario: this.selectedGrupoEtario,
-      nivelEducativo: this.selectedNivelEducativo
-    });
-
-    // En una implementación real, harías una nueva solicitud al backend con los filtros
-    // o filtrarías los datos ya cargados en el frontend
-  }
-
-  toggleLayer(layer: string, visible: boolean): void {
-    if (!this.map) return;
-
-    const visibility = visible ? 'visible' : 'none';
+    let colorExpression: any[] = ['interpolate', ['linear'], ['get', 'internetAccess'], 0, '#ff0000', 50, '#ffff00', 100, '#00ff00'];
     
-    if (layer === 'internet') {
-      this.map.setLayoutProperty('wifi-points-layer', 'visibility', visibility);
-    } else if (layer === 'population') {
-      this.map.setLayoutProperty('manzanas-layer', 'visibility', visibility);
+    if (this.selectedAgeGroup === '0-14') {
+      colorExpression = ['interpolate', ['linear'], 
+        ['/', ['+', ['get', 'tp34_1_eda'], ['get', 'tp34_2_eda'], ['get', 'tp34_3_eda']], ['get', 'tp27_perso']], 
+        0, '#ffebee', 0.5, '#ffcdd2', 1, '#ef9a9a'];
+    } else if (this.selectedAgeGroup === '15-59') {
+      colorExpression = ['interpolate', ['linear'], 
+        ['/', ['+', ['get', 'tp34_4_eda'], ['get', 'tp34_5_eda'], ['get', 'tp34_6_eda']], ['get', 'tp27_perso']], 
+        0, '#e8f5e9', 0.5, '#c8e6c9', 1, '#a5d6a7'];
+    } else if (this.selectedAgeGroup === '60+') {
+      colorExpression = ['interpolate', ['linear'], 
+        ['/', ['+', ['get', 'tp34_7_eda'], ['get', 'tp34_8_eda'], ['get', 'tp34_9_eda']], ['get', 'tp27_perso']], 
+        0, '#e3f2fd', 0.5, '#bbdefb', 1, '#90caf9'];
+    } else if (this.selectedEducationLevel === 'primary') {
+      colorExpression = ['interpolate', ['linear'], ['get', 'educationPrimary'], 0, '#fff3e0', 50, '#ffe0b2', 100, '#ffcc80'];
+    } else if (this.selectedEducationLevel === 'secondary') {
+      colorExpression = ['interpolate', ['linear'], ['get', 'educationSecondary'], 0, '#f3e5f5', 50, '#e1bee7', 100, '#ce93d8'];
+    } else if (this.selectedEducationLevel === 'higher') {
+      colorExpression = ['interpolate', ['linear'], ['get', 'educationHigher'], 0, '#e0f7fa', 50, '#b2ebf2', 100, '#80deea'];
+    }
+
+    this.map.setPaintProperty('wifi-points', 'circle-color', colorExpression);
+    
+    if (this.selectedComuna) {
+      this.map.setFilter('wifi-points', ['==', ['get', 'nmb_lc_cm'], this.selectedComuna]);
+    } else {
+      this.map.setFilter('wifi-points', null);
+    }
+    
+    this.map.setPaintProperty('wifi-points', 'circle-radius', [
+      'interpolate',
+      ['linear'],
+      ['zoom'],
+      10, 3,
+      15, 8
+    ]);
+  }
+
+  applyFilters(): void {
+    this.updateMapLayers();
+  }
+
+  resetFilters(): void {
+    this.selectedComuna = '';
+    this.selectedAgeGroup = '';
+    this.selectedEducationLevel = '';
+    this.internetAccessFilter = 'all';
+    this.applyFilters();
+  }
+
+  getAgeColor(ageGroup: string): string {
+    switch(ageGroup) {
+      case '0-14': return '#ef9a9a';
+      case '15-59': return '#a5d6a7';
+      case '60+': return '#90caf9';
+      default: return '#bdbdbd';
     }
   }
 }

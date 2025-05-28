@@ -21,6 +21,257 @@
   </iframe>
 </div>
 
+<div class="dashboard-container">
+  <div class="map-container">
+    <div *ngIf="isLoading" class="loading-overlay">
+      <mat-spinner></mat-spinner>
+      <p>Cargando datos...</p>
+    </div>
+    
+    <div *ngIf="error" class="error-overlay">
+      <mat-icon>error_outline</mat-icon>
+      <p>Error al cargar los datos. Intente nuevamente.</p>
+      <button mat-raised-button color="primary" (click)="fetchData()">Reintentar</button>
+    </div>
+    
+    <div id="map" class="map"></div>
+    
+    <div class="map-legend">
+      <h4>Leyenda</h4>
+      <div *ngIf="!selectedAgeGroup && !selectedEducationLevel">
+        <div class="legend-item">
+          <span class="legend-color" style="background-color: #ff0000;"></span>
+          <span>0-30% acceso a internet</span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-color" style="background-color: #ffff00;"></span>
+          <span>30-70% acceso a internet</span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-color" style="background-color: #00ff00;"></span>
+          <span>70-100% acceso a internet</span>
+        </div>
+      </div>
+      <div *ngIf="selectedAgeGroup === '0-14'">
+        <div class="legend-item">
+          <span class="legend-color" style="background-color: #ffebee;"></span>
+          <span>0-14 años (bajo)</span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-color" style="background-color: #ffcdd2;"></span>
+          <span>0-14 años (medio)</span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-color" style="background-color: #ef9a9a;"></span>
+          <span>0-14 años (alto)</span>
+        </div>
+      </div>
+      <div *ngIf="selectedAgeGroup === '15-59'">
+        <div class="legend-item">
+          <span class="legend-color" style="background-color: #e8f5e9;"></span>
+          <span>15-59 años (bajo)</span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-color" style="background-color: #c8e6c9;"></span>
+          <span>15-59 años (medio)</span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-color" style="background-color: #a5d6a7;"></span>
+          <span>15-59 años (alto)</span>
+        </div>
+      </div>
+      <div *ngIf="selectedAgeGroup === '60+'">
+        <div class="legend-item">
+          <span class="legend-color" style="background-color: #e3f2fd;"></span>
+          <span>60+ años (bajo)</span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-color" style="background-color: #bbdefb;"></span>
+          <span>60+ años (medio)</span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-color" style="background-color: #90caf9;"></span>
+          <span>60+ años (alto)</span>
+        </div>
+      </div>
+      <div *ngIf="selectedEducationLevel === 'primary'">
+        <div class="legend-item">
+          <span class="legend-color" style="background-color: #fff3e0;"></span>
+          <span>Educación Primaria (bajo)</span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-color" style="background-color: #ffe0b2;"></span>
+          <span>Educación Primaria (medio)</span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-color" style="background-color: #ffcc80;"></span>
+          <span>Educación Primaria (alto)</span>
+        </div>
+      </div>
+      <div *ngIf="selectedEducationLevel === 'secondary'">
+        <div class="legend-item">
+          <span class="legend-color" style="background-color: #f3e5f5;"></span>
+          <span>Educación Secundaria (bajo)</span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-color" style="background-color: #e1bee7;"></span>
+          <span>Educación Secundaria (medio)</span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-color" style="background-color: #ce93d8;"></span>
+          <span>Educación Secundaria (alto)</span>
+        </div>
+      </div>
+      <div *ngIf="selectedEducationLevel === 'higher'">
+        <div class="legend-item">
+          <span class="legend-color" style="background-color: #e0f7fa;"></span>
+          <span>Educación Superior (bajo)</span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-color" style="background-color: #b2ebf2;"></span>
+          <span>Educación Superior (medio)</span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-color" style="background-color: #80deea;"></span>
+          <span>Educación Superior (alto)</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="controls-container">
+    <mat-card class="filters-card">
+      <mat-card-header>
+        <mat-card-title>Filtros</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="filter-group">
+          <mat-form-field appearance="outline">
+            <mat-label>Comuna</mat-label>
+            <mat-select [(ngModel)]="selectedComuna" (selectionChange)="applyFilters()">
+              <mat-option value="">Todas las comunas</mat-option>
+              <mat-option *ngFor="let comuna of comunas" [value]="comuna">{{ comuna }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        
+        <div class="filter-group">
+          <h4>Grupo etario</h4>
+          <mat-button-toggle-group [(ngModel)]="selectedAgeGroup" (change)="applyFilters()">
+            <mat-button-toggle value="">Todos</mat-button-toggle>
+            <mat-button-toggle *ngFor="let age of ageGroups" [value]="age.value">{{ age.label }}</mat-button-toggle>
+          </mat-button-toggle-group>
+        </div>
+        
+        <div class="filter-group">
+          <h4>Nivel educativo</h4>
+          <mat-button-toggle-group [(ngModel)]="selectedEducationLevel" (change)="applyFilters()">
+            <mat-button-toggle value="">Todos</mat-button-toggle>
+            <mat-button-toggle *ngFor="let edu of educationLevels" [value]="edu.value">{{ edu.label }}</mat-button-toggle>
+          </mat-button-toggle-group>
+        </div>
+        
+        <div class="filter-group">
+          <h4>Acceso a internet</h4>
+          <mat-button-toggle-group [(ngModel)]="internetAccessFilter" (change)="applyFilters()">
+            <mat-button-toggle value="all">Todos</mat-button-toggle>
+            <mat-button-toggle value="high">Alto (>70%)</mat-button-toggle>
+            <mat-button-toggle value="low">Bajo (≤30%)</mat-button-toggle>
+          </mat-button-toggle-group>
+        </div>
+        
+        <div class="filter-group">
+          <button mat-raised-button color="warn" (click)="resetFilters()">Reiniciar filtros</button>
+        </div>
+      </mat-card-content>
+    </mat-card>
+    
+    <mat-card class="stats-card">
+      <mat-card-header>
+        <mat-card-title>Estadísticas</mat-card-title>
+        <mat-card-subtitle *ngIf="selectedComuna">Comuna: {{ selectedComuna }}</mat-card-subtitle>
+        <mat-card-subtitle *ngIf="!selectedComuna">Todas las comunas</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="stat-item">
+          <h4>Población total</h4>
+          <p>{{ totalPopulation | number }}</p>
+        </div>
+        
+        <div class="stat-item">
+          <h4>Viviendas totales</h4>
+          <p>{{ totalHomes | number }}</p>
+        </div>
+        
+        <div class="stat-item">
+          <h4>Acceso a internet</h4>
+          <p>{{ internetAccessPercentage | number:'1.1-1' }}%</p>
+        </div>
+        
+        <div class="stat-item">
+          <h4>Acceso a agua potable</h4>
+          <p>{{ waterAccessPercentage | number:'1.1-1' }}%</p>
+        </div>
+        
+        <div class="stat-item">
+          <h4>Acceso a gas natural</h4>
+          <p>{{ gasAccessPercentage | number:'1.1-1' }}%</p>
+        </div>
+      </mat-card-content>
+    </mat-card>
+    
+    <mat-card class="charts-card">
+      <mat-card-header>
+        <mat-card-title>Distribución</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="chart-container">
+          <h4>Distribución por edad</h4>
+          <div class="chart-legend">
+            <div *ngFor="let age of ageGroups" class="chart-legend-item">
+              <span class="chart-legend-color" [style.background-color]="getAgeColor(age.value)"></span>
+              <span>{{ age.label }}: {{ ageDistribution[age.value] | number:'1.1-1' }}%</span>
+            </div>
+          </div>
+          <div class="chart-bar">
+            <div class="chart-bar-segment" [style.width.%]="ageDistribution['0-14']" style="background-color: #ef9a9a;"></div>
+            <div class="chart-bar-segment" [style.width.%]="ageDistribution['15-59']" style="background-color: #a5d6a7;"></div>
+            <div class="chart-bar-segment" [style.width.%]="ageDistribution['60+']" style="background-color: #90caf9;"></div>
+          </div>
+        </div>
+        
+        <div class="chart-container">
+          <h4>Nivel educativo</h4>
+          <div class="chart-legend">
+            <div class="chart-legend-item">
+              <span class="chart-legend-color" style="background-color: #ffcc80;"></span>
+              <span>Primaria: {{ educationDistribution.primary | number:'1.1-1' }}%</span>
+            </div>
+            <div class="chart-legend-item">
+              <span class="chart-legend-color" style="background-color: #ce93d8;"></span>
+              <span>Secundaria: {{ educationDistribution.secondary | number:'1.1-1' }}%</span>
+            </div>
+            <div class="chart-legend-item">
+              <span class="chart-legend-color" style="background-color: #80deea;"></span>
+              <span>Superior: {{ educationDistribution.higher | number:'1.1-1' }}%</span>
+            </div>
+            <div class="chart-legend-item">
+              <span class="chart-legend-color" style="background-color: #bdbdbd;"></span>
+              <span>Otros: {{ educationDistribution.other | number:'1.1-1' }}%</span>
+            </div>
+          </div>
+          <div class="chart-bar">
+            <div class="chart-bar-segment" [style.width.%]="educationDistribution.primary" style="background-color: #ffcc80;"></div>
+            <div class="chart-bar-segment" [style.width.%]="educationDistribution.secondary" style="background-color: #ce93d8;"></div>
+            <div class="chart-bar-segment" [style.width.%]="educationDistribution.higher" style="background-color: #80deea;"></div>
+            <div class="chart-bar-segment" [style.width.%]="educationDistribution.other" style="background-color: #bdbdbd;"></div>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>
+
 <style>
   body {
     margin: 0;
