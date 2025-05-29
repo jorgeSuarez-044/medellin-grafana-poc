@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SensoresMap } from './sensoresmap.component';
+import { NoiseSensorMapComponent } from './sensoresmap.component';
 
 describe('CamionesComponent', () => {
-  let component: SensoresMap;
-  let fixture: ComponentFixture<SensoresMap>;
+  let component: NoiseSensorMapComponent;
+  let fixture: ComponentFixture<NoiseSensorMapComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [SensoresMap]
+      imports: [NoiseSensorMapComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(SensoresMap);
+    fixture = TestBed.createComponent(NoiseSensorMapComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

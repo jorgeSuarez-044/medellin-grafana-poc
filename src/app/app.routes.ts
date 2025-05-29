@@ -14,7 +14,7 @@ import { MapasCamiones } from './views/mapas-camiones/mapas-camiones.component';
 import { ReportesMedMap } from './views/reportes-medmap/reportesmed-map.component';
 import { WifiMaps } from './views/wifi-maps/wifi-maps.component';
 import { VamosMedMap } from './views/vamosmedmap/vamosmed-map.component';
-import { SensoresMap } from './views/sensoresmap/sensoresmap.component';
+import { NoiseSensorMapComponent } from './views/sensoresmap/sensoresmap.component';
 import { TurismoMaps } from './views/turismomaps/turismomaps.component';
 import { SiataMaps } from './views/siatamaps/siatamaps.component';
 import { Movilidad } from './views/movilidad-inteligente/movilidad-inteligente.component';
@@ -41,7 +41,7 @@ export const routes: Routes = [
     data: { ssr: false } // Esto desactiva SSR para esta ruta específica
   }, 
   { path: 'habitat/movilidad/vamosmed/mapa', component: VamosMedMap }, 
-  { path: 'ambiente/calidad/ruido/mapa', component: SensoresMap }, 
+  { path: 'ambiente/calidad/ruido/mapa', component: NoiseSensorMapComponent }, 
   { path: 'calidad/turismo/map', component: TurismoMaps }, 
   { path: 'ambiente/calidad/siata/mapa', component: SiataMaps }, 
 

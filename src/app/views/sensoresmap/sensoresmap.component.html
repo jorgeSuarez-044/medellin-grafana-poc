@@ -5,50 +5,69 @@
     src="http://grafana-fiware.apps.preprodalcaldia.medellin.gov.co/territoriointeligente/d/sr_ma/ruido-map?orgId=1&from=1739789553128&to=1740394353128&viewPanel=1&kiosk"
     allowfullscreen>
   </iframe>
+  <h2>Mapa de Sensores</h2>
 </div>
 
-<style>
-  body {
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-  }
+  <div class="map-container" >
+    <div *ngIf="loading" class="loading-overlay">
+      <mat-spinner></mat-spinner>
+      <p>Cargando datos de sensores...</p>
+    </div>
 
-  .iframe-container {
-    display: flex;
-    flex-direction: column;
-    margin-left: 300px;
-    padding: 10px;
-    gap: 20px;
-  }
+    <div *ngIf="error" class="error-overlay">
+      <mat-icon>error_outline</mat-icon>
+      <p>Error al cargar los datos de los sensores</p>
+      <button mat-raised-button color="primary" (click)="loadSensorData()">Reintentar</button>
+    </div>
 
-  .iframe-row {
-    display: flex;
-    gap: 20px;
-  }
+    <div class="map-layout">
+      <div #map id="noise-sensor-map"></div>
 
-  .iframe-row iframe {
-    flex: 1;
-    height: 250px; /* Reducción de altura para los tres primeros gráficos */
-    border: none;
-  }
+      <div class="details-panel" *ngIf="selectedSensor">
+        <div class="panel-header">
+          <h3>Detalles del Sensor</h3>
+          <button mat-icon-button (click)="closeDetails()">
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
 
-  .iframe-container iframe:not(.iframe-row iframe) {
-    height: 500px; /* Aumento de altura para los demás gráficos */
-    border: none;
-  }
+        <div id="sensor-details" class="sensor-details">
+          <div class="detail-row">
+            <span class="detail-label">ID:</span>
+            <span class="detail-value">{{ selectedSensor.id.split(':').pop() }}</span>
+          </div>
 
-  .page-title {
-    font-size: 36px;
-    font-weight: bold;
-    color: #333;
-    text-align: left;
-    padding: 20px;
-    margin: 0;
-    background-color: #fff;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    margin-left: 300px;
-    margin-bottom: 20px;
-  }
-</style>
+          <div class="detail-row">
+            <span class="detail-label">Nivel de Ruido:</span>
+            <span class="detail-value">{{ selectedSensor.laeq }} dB ({{ selectedSensor.levelName }})</span>
+          </div>
+
+          <div class="detail-row">
+            <span class="detail-label">Última actualización:</span>
+            <span class="detail-value">{{ selectedSensor.lastUpdate }}</span>
+          </div>
+
+          <!-- Espacio para gráficas si las añades luego -->
+          <div class="charts-placeholder">
+            <p></p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="map-legend">
+      <h4>Leyenda</h4>
+      <div class="legend-item">
+        <span class="legend-color low"></span>
+        <span>Bajo (<55 dB)</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-color moderate"></span>
+        <span>Moderado (55-70 dB)</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-color high"></span>
+        <span>Alto (>70 dB)</span>
+      </div>
+    </div>
+  </div>

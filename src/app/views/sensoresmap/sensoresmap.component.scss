@@ -1,0 +1,190 @@
+  body {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .iframe-container {
+    display: flex;
+    flex-direction: column;
+    margin-left: 300px;
+    padding: 10px;
+    gap: 20px;
+  }
+
+  .iframe-row {
+    display: flex;
+    gap: 20px;
+  }
+
+  .iframe-row iframe {
+    flex: 1;
+    height: 250px; /* Reducción de altura para los tres primeros gráficos */
+    border: none;
+  }
+
+  .iframe-container iframe:not(.iframe-row iframe) {
+    height: 500px; /* Aumento de altura para los demás gráficos */
+    border: none;
+  }
+
+  .page-title {
+    font-size: 36px;
+    font-weight: bold;
+    color: #333;
+    text-align: left;
+    padding: 20px;
+    margin: 0;
+    background-color: #fff;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-left: 300px;
+    margin-bottom: 20px;
+  }
+  .map-container {
+  position: relative;
+  width: 50%;
+  height: 50vh;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-left: 23%;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+
+  .loading-overlay, .error-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.8);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+
+    mat-icon {
+      font-size: 48px;
+      width: 48px;
+      height: 48px;
+      color: #f44336;
+      margin-bottom: 16px;
+    }
+  }
+
+  .map-layout {
+    display: flex;
+    width: 100%;
+    height: 100%;
+
+    #noise-sensor-map {
+      width: 100%;
+      height: 100%;
+      transition: width 0.3s ease;
+
+      &.with-details {
+        width: 70%;
+      }
+    }
+
+  .details-panel {
+  width: 30%;
+  background: white;
+  border-left: 1px solid #eee;
+  overflow-y: auto;
+  padding: 16px;
+  position: fixed;
+  right: 0;
+  top: 0;
+  height: 100vh;
+  box-shadow: -2px 0 5px rgba(0,0,0,0.1);
+  z-index: 1000;
+  transform: translateX(0);
+  transition: transform 0.3s ease;
+}
+
+/* Cuando el panel esté oculto */
+.details-panel.hidden {
+  transform: translateX(100%);
+}
+
+/* Ajustar el mapa cuando el panel está visible */
+#noise-sensor-map.with-details {
+  width: 70%;
+  margin-right: 30%;
+}
+
+/* Estilos para el contenido dentro del panel */
+.sensor-details {
+  padding: 20px;
+  
+  .detail-row {
+    display: flex;
+    margin-bottom: 15px;
+    align-items: center;
+    
+    .detail-label {
+      font-weight: bold;
+      width: 40%;
+      min-width: 120px;
+    }
+    
+    .detail-value {
+      width: 60%;
+      color: #555;
+      word-break: break-word;
+    }
+  }
+}
+
+/* Asegurar que el título sea visible */
+.panel-header {
+  position: sticky;
+  top: 0;
+  background: white;
+  padding: 15px 0;
+  z-index: 10;
+  border-bottom: 1px solid #eee;
+}
+  }
+
+  .map-legend {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    background: white;
+    padding: 12px;
+    border-radius: 4px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    z-index: 100;
+
+    h4 {
+      margin: 0 0 8px 0;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 4px;
+
+      .legend-color {
+        display: inline-block;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        margin-right: 8px;
+        border: 2px solid white;
+
+        &.low {
+          background-color: #4CAF50;
+        }
+        &.moderate {
+          background-color: #FFC107;
+        }
+        &.high {
+          background-color: #F44336;
+        }
+      }
+    }
+  }
+}
