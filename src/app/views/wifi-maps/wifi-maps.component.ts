@@ -66,19 +66,15 @@ export class WifiMaps implements OnInit, OnDestroy {
   }
 
 ngOnDestroy(): void {
-  // Limpiar eventos y popups
   if (this.map) {
     this.map.remove();
-   
   }
-  
   if (this.popup) {
     this.popup.remove();
-    this.popup = null;
   }
-  
   this.selectedFeature = null;
 }
+
 
   // Propiedades calculadas
   get filteredData(): any[] {
