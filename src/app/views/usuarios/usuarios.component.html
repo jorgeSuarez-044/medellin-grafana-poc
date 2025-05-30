@@ -1,0 +1,117 @@
+<div class="container">
+  <h1>Gestión de Usuarios</h1>
+
+  <div class="tabs">
+    <button [class.active]="activeTab === 'usuarios'" (click)="changeTab('usuarios')">Usuarios</button>
+    <button [class.active]="activeTab === 'roles'" (click)="changeTab('roles')">Roles</button>
+    <button [class.active]="activeTab === 'auditoria'" (click)="changeTab('auditoria')">Auditoría</button>
+  </div>
+
+  <div class="tab-content" *ngIf="activeTab === 'usuarios'">
+    <div class="user-form">
+      <h2>{{ selectedUser ? 'Editar Usuario' : 'Crear Usuario' }}</h2>
+      <form [formGroup]="userForm" (ngSubmit)="selectedUser ? updateUser() : createUser()">
+        <div class="form-group">
+          <label>Nombre de usuario</label>
+          <input type="text" formControlName="username" placeholder="Ingrese nombre de usuario">
+        </div>
+        <div class="form-group">
+          <label>Correo electrónico</label>
+          <input type="email" formControlName="email" placeholder="Ingrese correo electrónico">
+        </div>
+        <div class="form-group">
+          <label>Nombre</label>
+          <input type="text" formControlName="firstName" placeholder="Ingrese nombre">
+        </div>
+        <div class="form-group">
+          <label>Apellido</label>
+          <input type="text" formControlName="lastName" placeholder="Ingrese apellido">
+        </div>
+        <div class="form-group">
+          <label>Habilitado</label>
+          <input type="checkbox" formControlName="enabled">
+        </div>
+        <div class="form-group">
+          <label>Rol</label>
+          <select formControlName="role">
+            <option value="">Seleccione un rol</option>
+            <option *ngFor="let role of roles" [value]="role.id">{{ role.name }}</option>
+          </select>
+        </div>
+        <button type="submit" [disabled]="!userForm.valid">{{ selectedUser ? 'Actualizar' : 'Crear' }}</button>
+        <button type="button" *ngIf="selectedUser" (click)="selectedUser = null; userForm.reset()">Cancelar</button>
+      </form>
+    </div>
+
+    <div class="user-list">
+      <h2>Lista de Usuarios</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Correo</th>
+            <th>Usuario</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let user of users">
+            <td>{{ user.firstName }} {{ user.lastName }}</td>
+            <td>{{ user.email }}</td>
+            <td>{{ user.username }}</td>
+            <td>{{ user.enabled ? 'Activo' : 'Inactivo' }}</td>
+            <td>
+              <button (click)="editUser(user)">Editar</button>
+              <button (click)="deleteUser(user.id)">Eliminar</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="tab-content" *ngIf="activeTab === 'roles'">
+    <h2>Gestión de Roles</h2>
+    <div class="roles-list">
+      <table>
+        <thead>
+          <tr>
+            <th>Nombre del Rol</th>
+            <th>Descripción</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let role of roles">
+            <td>{{ role.name }}</td>
+            <td>{{ role.path }}</td>
+            <td>
+              <button>Asignar a usuario</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="tab-content" *ngIf="activeTab === 'auditoria'">
+    <h2>Registros de Auditoría</h2>
+    <div class="audit-logs">
+      <table>
+        <thead>
+          <tr>
+            <th>Acción</th>
+            <th>Fecha</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let log of auditLogs">
+            <td>{{ log.operationType }} - {{ log.resourceType }}</td>
+            <td>{{ log.time | date:'dd/MM/yyyy HH:mm' }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { RouterModule } from '@angular/router';  // Importa RouterModule
+import { Router, RouterModule } from '@angular/router';  // Importa RouterModule
 import { CommonModule } from '@angular/common'; // Si usas CommonModule también
 import { MenuOpcionesComponent } from './views/medellin-menu/medellin-menu.component';
 import { InicioComponent } from './views/inicio/inicio.component';
@@ -15,4 +15,10 @@ import { MatIconModule } from '@angular/material/icon';
 })
 export class AppComponent {
   title = 'mi-aplicacion';
+  constructor(private router: Router) {}  // Inyección del Router
+
+  irAPerfil(): void {
+    alert('asdasdas')
+    this.router.navigate(['perfil/usuarios']);  // Navegación programática
+  }
 }
