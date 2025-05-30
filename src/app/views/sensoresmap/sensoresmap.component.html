@@ -5,75 +5,131 @@
     src="http://grafana-fiware.apps.preprodalcaldia.medellin.gov.co/territoriointeligente/d/sr_ma/ruido-map?orgId=1&from=1739789553128&to=1740394353128&viewPanel=1&kiosk"
     allowfullscreen>
   </iframe>
+  
   <iframe
     src="http://grafana-fiware.apps.preprodalcaldia.medellin.gov.co/territoriointeligente/d/f36b2714-61d2-45cd-91ac-58b622840b4e/sensores-ruido-2025?orgId=1&kiosk=tv"
     allowfullscreen>
   </iframe>
-  <h2>Mapa de Sensores</h2>
+
+  <h3>Consultar histórico para: {{ getShortId(selectedSensor) }}</h3>
+  
+  <div class="date-controls">
+    <div class="sensor-container">
+      <h2>Selecciona un sensor de ruido</h2>
+      
+      <div *ngIf="isLoading" class="loading">
+        Cargando sensores...
+      </div>
+      
+      <div *ngIf="errorMessage" class="error">
+        {{ errorMessage }}
+        <button (click)="loadSensors()">Reintentar</button>
+      </div>
+      
+      <div *ngIf="!isLoading && !errorMessage">
+        <select [(ngModel)]="selectedSensor" (change)="onSensorSelect()" class="sensor-select">
+          <option value="" disabled selected>Selecciona un sensor</option>
+          <option *ngFor="let sensor of sensors" [value]="sensor.entity_id">
+            {{ getShortId(sensor.entity_id) }} - {{ sensor.laeq_slow }} dB
+          </option>
+        </select>
+        
+        <div *ngIf="selectedSensor" class="selected-info">
+          Sensor seleccionado: {{ getShortId(selectedSensor) }}
+        </div>
+      </div>
+    </div>
+    
+    <div>
+      <label for="desde">Desde:</label>
+      <input type="date" id="desde" [(ngModel)]="desdeFecha">
+    </div>
+    
+    <div>
+      <label for="hasta">Hasta:</label>
+      <input type="date" id="hasta" [(ngModel)]="hastaFecha">
+    </div>
+     <div>
+    <button (click)="getHistoricData()" [disabled]="!selectedSensor || loadingHistoric">
+      {{ loadingHistoric ? 'Cargando...' : 'Consultar' }}
+    </button>
+    </div>
+  </div>
+  
+  <div *ngIf="errorHistoric" class="error">
+    {{ errorHistoric }}
+  </div>
+
+  <div *ngIf="historicData.length > 0" class="historic-results">
+    <h3>Resultados históricos (promedio: {{ historicAvg | number:'1.1-1' }} dB)</h3>
+    <div class="chart-container">
+      <!-- Aquí podrías agregar un gráfico con los datos históricos -->
+    </div>
+  </div>
+
+  <h2>Sensores de Ruido</h2>
 </div>
 
-  <div class="map-container" >
-    <div *ngIf="loading" class="loading-overlay">
-      <mat-spinner></mat-spinner>
-      <p>Cargando datos de sensores...</p>
-    </div>
+<div class="map-container">
+  <div *ngIf="loading" class="loading-overlay">
+    <mat-spinner></mat-spinner>
+    <p>Cargando datos de sensores...</p>
+  </div>
 
-    <div *ngIf="error" class="error-overlay">
-      <mat-icon>error_outline</mat-icon>
-      <p>Error al cargar los datos de los sensores</p>
-      <button mat-raised-button color="primary" (click)="loadSensorData()">Reintentar</button>
-    </div>
+  <div *ngIf="error" class="error-overlay">
+    <mat-icon>error_outline</mat-icon>
+    <p>Error al cargar los datos de los sensores</p>
+    <button mat-raised-button color="primary" (click)="loadSensorData()">Reintentar</button>
+  </div>
 
-    <div class="map-layout">
-      <div #map id="noise-sensor-map"></div>
+  <div class="map-layout">
+    <div #map id="noise-sensor-map"></div>
 
-      <div class="details-panel" *ngIf="selectedSensor">
-        <div class="panel-header">
-          <h3>Detalles del Sensor</h3>
-          <button mat-icon-button (click)="closeDetails()">
-            <mat-icon>close</mat-icon>
-          </button>
+    <div class="details-panel" *ngIf="selectedSensorDetails">
+      <div class="panel-header">
+        <h3>Detalles del Sensor</h3>
+        <button mat-icon-button (click)="closeDetails()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+
+      <div id="sensor-details" class="sensor-details">
+        <div class="detail-row">
+          <span class="detail-label">ID:</span>
+          <span class="detail-value">{{ getShortId(selectedSensorDetails.id) }}</span>
         </div>
 
-        <div id="sensor-details" class="sensor-details">
-          <div class="detail-row">
-            <span class="detail-label">ID:</span>
-            <span class="detail-value">{{ selectedSensor.id.split(':').pop() }}</span>
-          </div>
-
-          <div class="detail-row">
-            <span class="detail-label">Nivel de Ruido:</span>
-            <span class="detail-value">{{ selectedSensor.laeq }} dB ({{ selectedSensor.levelName }})</span>
-          </div>
-
-          <div class="detail-row">
-            <span class="detail-label">Última actualización:</span>
-            <span class="detail-value">{{ selectedSensor.lastUpdate }}</span>
-          </div>
-
-          <!-- Espacio para gráficas si las añades luego -->
-          <div class="charts-placeholder">
-            <p></p>
-          </div>
+        <div class="detail-row">
+          <span class="detail-label">Nivel de Ruido:</span>
+          <span class="detail-value">{{ selectedSensorDetails.laeq }} dB ({{ selectedSensorDetails.levelName }})</span>
         </div>
-      </div>
-    </div>
 
-    <div class="map-legend">
-      <h4>Leyenda</h4>
-      <div class="legend-item">
-        <span class="legend-color low"></span>
-        <span>Bajo (<55 dB)</span>
-      </div>
-      <div class="legend-item">
-        <span class="legend-color moderate"></span>
-        <span>Moderado (55-70 dB)</span>
-      </div>
-      <div class="legend-item">
-        <span class="legend-color high"></span>
-        <span>Alto (>70 dB)</span>
+        <div class="detail-row">
+          <span class="detail-label">Última actualización:</span>
+          <span class="detail-value">{{ selectedSensorDetails.lastUpdate | date:'medium' }}</span>
+        </div>
+
+        <div *ngIf="historicAvg" class="detail-row">
+          <span class="detail-label">Promedio histórico:</span>
+          <span class="detail-value">{{ historicAvg | number:'1.1-1' }} dB</span>
+        </div>
       </div>
     </div>
   </div>
 
-  
+  <div class="map-legend">
+    <h4>Leyenda</h4>
+    <div class="legend-item">
+      <span class="legend-color low"></span>
+      <span>Bajo (&lt;55 dB)</span>
+    </div>
+    <div class="legend-item">
+      <span class="legend-color moderate"></span>
+      <span>Moderado (55-70 dB)</span>
+    </div>
+    <div class="legend-item">
+      <span class="legend-color high"></span>
+      <span>Alto (&gt;70 dB)</span>
+    </div>
+  </div>
+</div>
