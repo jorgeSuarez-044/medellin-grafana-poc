@@ -28,13 +28,16 @@
           <input type="text" formControlName="lastName" placeholder="Ingrese apellido">
         </div>
         <div class="form-group">
+          <label>Contraseña</label>
+          <input type="password" formControlName="password" [placeholder]="selectedUser ? 'Nueva contraseña (dejar en blanco para no cambiar)' : 'Ingrese contraseña'">
+        </div>
+        <div class="form-group">
           <label>Habilitado</label>
           <input type="checkbox" formControlName="enabled">
         </div>
-        <div class="form-group">
-          <label>Rol</label>
-          <select formControlName="role">
-            <option value="">Seleccione un rol</option>
+        <div class="form-group" *ngIf="roles.length > 0">
+          <label>Roles</label>
+          <select formControlName="roles" multiple>
             <option *ngFor="let role of roles" [value]="role.id">{{ role.name }}</option>
           </select>
         </div>
@@ -52,6 +55,7 @@
             <th>Correo</th>
             <th>Usuario</th>
             <th>Estado</th>
+            <th>Roles</th>
             <th>Acciones</th>
           </tr>
         </thead>
@@ -61,6 +65,10 @@
             <td>{{ user.email }}</td>
             <td>{{ user.username }}</td>
             <td>{{ user.enabled ? 'Activo' : 'Inactivo' }}</td>
+            <td>
+              <span *ngFor="let role of user.roles" class="role-badge">{{ role.name }}</span>
+              <span *ngIf="!user.roles || user.roles.length === 0">Sin roles</span>
+            </td>
             <td>
               <button (click)="editUser(user)">Editar</button>
               <button (click)="deleteUser(user.id)">Eliminar</button>
@@ -85,7 +93,7 @@
         <tbody>
           <tr *ngFor="let role of roles">
             <td>{{ role.name }}</td>
-            <td>{{ role.path }}</td>
+            <td>{{ role.description || 'Sin descripción' }}</td>
             <td>
               <button>Asignar a usuario</button>
             </td>
@@ -101,13 +109,17 @@
       <table>
         <thead>
           <tr>
+            <th>Usuario</th>
             <th>Acción</th>
+            <th>Recurso</th>
             <th>Fecha</th>
           </tr>
         </thead>
         <tbody>
           <tr *ngFor="let log of auditLogs">
-            <td>{{ log.operationType }} - {{ log.resourceType }}</td>
+            <td>{{ log.userId || 'Sistema' }}</td>
+            <td>{{ log.operationType }}</td>
+            <td>{{ log.resourceType }}</td>
             <td>{{ log.time | date:'dd/MM/yyyy HH:mm' }}</td>
           </tr>
         </tbody>
