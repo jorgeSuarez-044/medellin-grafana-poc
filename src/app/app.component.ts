@@ -18,7 +18,7 @@ export class AppComponent {
   constructor(private router: Router) {}  // Inyección del Router
 
   irAPerfil(): void {
-    alert('asdasdas')
+
     this.router.navigate(['perfil/usuarios']);  // Navegación programática
   }
 }

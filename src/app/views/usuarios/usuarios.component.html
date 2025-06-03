@@ -12,24 +12,25 @@
       <h2>{{ selectedUser ? 'Editar Usuario' : 'Crear Usuario' }}</h2>
       <form [formGroup]="userForm" (ngSubmit)="selectedUser ? updateUser() : createUser()">
         <div class="form-group">
-          <label>Nombre de usuario</label>
-          <input type="text" formControlName="username" placeholder="Ingrese nombre de usuario">
+          <label>Nombre de usuario *</label>
+          <input type="text" formControlName="username" placeholder="Ingrese nombre de usuario" [disabled]="!!selectedUser">
         </div>
         <div class="form-group">
-          <label>Correo electrónico</label>
+          <label>Correo electrónico *</label>
           <input type="email" formControlName="email" placeholder="Ingrese correo electrónico">
         </div>
         <div class="form-group">
-          <label>Nombre</label>
+          <label>Nombre *</label>
           <input type="text" formControlName="firstName" placeholder="Ingrese nombre">
         </div>
         <div class="form-group">
-          <label>Apellido</label>
+          <label>Apellido *</label>
           <input type="text" formControlName="lastName" placeholder="Ingrese apellido">
         </div>
         <div class="form-group">
-          <label>Contraseña</label>
+          <label>Contraseña {{selectedUser ? '(opcional)' : '*'}}</label>
           <input type="password" formControlName="password" [placeholder]="selectedUser ? 'Nueva contraseña (dejar en blanco para no cambiar)' : 'Ingrese contraseña'">
+          <small *ngIf="selectedUser">Dejar en blanco para mantener la contraseña actual</small>
         </div>
         <div class="form-group">
           <label>Habilitado</label>
@@ -37,17 +38,30 @@
         </div>
         <div class="form-group" *ngIf="roles.length > 0">
           <label>Roles</label>
-          <select formControlName="roles" multiple>
-            <option *ngFor="let role of roles" [value]="role.id">{{ role.name }}</option>
-          </select>
+          <div class="roles-container">
+            <div *ngFor="let role of roles" class="role-checkbox">
+              <input 
+                type="checkbox" 
+                [id]="'role-' + role.id" 
+                [value]="role.id" 
+                (change)="onRoleChange($event, role.id)"
+                [checked]="isRoleSelected(role.id)">
+              <label [for]="'role-' + role.id">{{ role.name }}</label>
+            </div>
+          </div>
         </div>
-        <button type="submit" [disabled]="!userForm.valid">{{ selectedUser ? 'Actualizar' : 'Crear' }}</button>
-        <button type="button" *ngIf="selectedUser" (click)="selectedUser = null; userForm.reset()">Cancelar</button>
+        <div class="form-actions">
+          <button type="submit" [disabled]="!userForm.valid">{{ selectedUser ? 'Actualizar' : 'Crear' }}</button>
+          <button type="button" *ngIf="selectedUser" (click)="cancelEdit()">Cancelar</button>
+        </div>
       </form>
     </div>
 
     <div class="user-list">
       <h2>Lista de Usuarios</h2>
+      <div class="search-bar">
+        <input type="text" placeholder="Buscar usuarios..." [(ngModel)]="searchTerm" (input)="filterUsers()">
+      </div>
       <table>
         <thead>
           <tr>
@@ -60,22 +74,29 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let user of users">
+          <tr *ngFor="let user of filteredUsers">
             <td>{{ user.firstName }} {{ user.lastName }}</td>
             <td>{{ user.email }}</td>
             <td>{{ user.username }}</td>
-            <td>{{ user.enabled ? 'Activo' : 'Inactivo' }}</td>
             <td>
-              <span *ngFor="let role of user.roles" class="role-badge">{{ role.name }}</span>
-              <span *ngIf="!user.roles || user.roles.length === 0">Sin roles</span>
+              <span [class.active]="user.enabled" [class.inactive]="!user.enabled">
+                {{ user.enabled ? 'Activo' : 'Inactivo' }}
+              </span>
             </td>
             <td>
-              <button (click)="editUser(user)">Editar</button>
-              <button (click)="deleteUser(user.id)">Eliminar</button>
+              <span *ngFor="let role of user.roles" class="role-badge">{{ role.name }}</span>
+              <span *ngIf="!user.roles || user.roles.length === 0" class="no-roles">Sin roles</span>
+            </td>
+            <td class="actions">
+              <button (click)="editUser(user)" class="edit-btn">Editar</button>
+              <button (click)="confirmDelete(user.id)" class="delete-btn">Eliminar</button>
             </td>
           </tr>
         </tbody>
       </table>
+      <div *ngIf="filteredUsers.length === 0" class="no-results">
+        No se encontraron usuarios
+      </div>
     </div>
   </div>
 
@@ -87,7 +108,7 @@
           <tr>
             <th>Nombre del Rol</th>
             <th>Descripción</th>
-            <th>Acciones</th>
+            <th>Usuarios Asignados</th>
           </tr>
         </thead>
         <tbody>
@@ -95,7 +116,10 @@
             <td>{{ role.name }}</td>
             <td>{{ role.description || 'Sin descripción' }}</td>
             <td>
-              <button>Asignar a usuario</button>
+              <span *ngFor="let user of getUsersWithRole(role.id)" class="user-badge">
+                {{ user.username }}
+              </span>
+              <span *ngIf="getUsersWithRole(role.id).length === 0">Ningún usuario</span>
             </td>
           </tr>
         </tbody>
@@ -105,6 +129,25 @@
 
   <div class="tab-content" *ngIf="activeTab === 'auditoria'">
     <h2>Registros de Auditoría</h2>
+    <div class="filters">
+      <div class="filter-group">
+        <label>Filtrar por tipo:</label>
+        <select [(ngModel)]="auditFilter.type" (change)="filterAuditLogs()">
+          <option value="">Todos</option>
+          <option value="USER">Usuarios</option>
+          <option value="ROLE">Roles</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label>Filtrar por acción:</label>
+        <select [(ngModel)]="auditFilter.action" (change)="filterAuditLogs()">
+          <option value="">Todas</option>
+          <option value="CREATE">Creación</option>
+          <option value="UPDATE">Actualización</option>
+          <option value="DELETE">Eliminación</option>
+        </select>
+      </div>
+    </div>
     <div class="audit-logs">
       <table>
         <thead>
@@ -112,18 +155,23 @@
             <th>Usuario</th>
             <th>Acción</th>
             <th>Recurso</th>
+            <th>Detalles</th>
             <th>Fecha</th>
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let log of auditLogs">
+          <tr *ngFor="let log of filteredAuditLogs">
             <td>{{ log.userId || 'Sistema' }}</td>
-            <td>{{ log.operationType }}</td>
-            <td>{{ log.resourceType }}</td>
+            <td>{{ getActionName(log.operationType) }}</td>
+            <td>{{ getResourceType(log.resourceType) }}</td>
+            <td>{{ log.details || 'N/A' }}</td>
             <td>{{ log.time | date:'dd/MM/yyyy HH:mm' }}</td>
           </tr>
         </tbody>
       </table>
+      <div *ngIf="filteredAuditLogs.length === 0" class="no-results">
+        No se encontraron registros de auditoría
+      </div>
     </div>
   </div>
 </div>
