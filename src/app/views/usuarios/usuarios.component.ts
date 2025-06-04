@@ -57,13 +57,13 @@ export class UsuariosComponent implements OnInit {
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
       enabled: [true],
-      password: ['', this.passwordValidator()]
+      password: ['']
     });
   }
 
   asyncUsernameValidator(control: AbstractControl): Promise<ValidationErrors | null> {
     return this.validateUsername(control.value).then(isValid => {
-      return isValid ? null : { usernameTaken: true };
+      return isValid ? null : {};
     });
   }
 
@@ -71,7 +71,7 @@ export class UsuariosComponent implements OnInit {
     if (!username || this.selectedUser) return true;
     
     try {
-      const users:any = await this.http.get<any[]>(
+      const users: any = await this.http.get<any[]>(
         `${this.apiUrl}/users?username=${username}`,
         { headers: this.getHeaders() }
       ).toPromise();
@@ -80,15 +80,6 @@ export class UsuariosComponent implements OnInit {
     } catch (error) {
       return false;
     }
-  }
-
-  passwordValidator() {
-    return (control: any) => {
-      if (!this.selectedUser && !control.value) {
-        return { required: true };
-      }
-      return null;
-    };
   }
 
   getToken() {
@@ -433,24 +424,34 @@ export class UsuariosComponent implements OnInit {
           const userId = response.id;
           const password = this.userForm.value.password;
 
-          this.setUserPassword(userId, password)
-            .then(() => {
-              const promises = [];
-              
-              if (this.selectedRoles.length > 0) {
-                promises.push(this.assignRolesToUser(userId, this.selectedRoles));
-              }
-              
-              if (this.selectedGrafanaRoles.length > 0) {
-                promises.push(this.assignGrafanaRolesToUser(userId, this.selectedGrafanaRoles));
-              }
-              
-              return Promise.all(promises);
-            })
+          // Primero creamos el usuario sin roles
+          const promises = [];
+          
+          // Solo asignamos contraseña si se proporcionó
+          if (password) {
+            promises.push(this.setUserPassword(userId, password));
+          }
+          
+          Promise.all(promises)
             .then(() => {
               this.showSuccess('Usuario creado', 'El usuario ha sido creado correctamente');
               this.resetFormAndReload();
               this.loading = false;
+              
+              // Mostrar opción para asignar roles después si se desea
+              Swal.fire({
+                title: 'Usuario creado',
+                text: '¿Desea asignar roles ahora?',
+                icon: 'success',
+                showCancelButton: true,
+                confirmButtonText: 'Sí, asignar roles',
+                cancelButtonText: 'Más tarde',
+                confirmButtonColor: '#334155'
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  this.editUser(response); // Abre el formulario de edición
+                }
+              });
             })
             .catch(error => {
               this.showError('Error', 'Ocurrió un error al completar la creación del usuario');
@@ -478,11 +479,6 @@ export class UsuariosComponent implements OnInit {
 
   setUserPassword(userId: string, password: string): Promise<void> {
     return new Promise((resolve, reject) => {
-      if (!password) {
-        resolve();
-        return;
-      }
-
       const passwordData = {
         type: "password",
         value: password,
@@ -532,6 +528,20 @@ export class UsuariosComponent implements OnInit {
       enabled: user.enabled,
       password: ''
     });
+  }
+
+  assignRoles(user: any) {
+    this.selectedUser = user;
+    this.selectedRoles = user.roles ? user.roles.map((r: any) => r.id) : [];
+    this.selectedGrafanaRoles = user.grafanaRoles ? user.grafanaRoles.map((r: any) => r.id) : [];
+    
+    // Desplazarse al formulario
+    setTimeout(() => {
+      const formElement = document.querySelector('.user-form');
+      if (formElement) {
+        formElement.scrollIntoView({ behavior: 'smooth' });
+      }
+    }, 100);
   }
 
   cancelEdit() {
@@ -760,7 +770,6 @@ export class UsuariosComponent implements OnInit {
     const users = isGrafanaRole ? 
       this.getUsersWithGrafanaRole(role.id) : 
       this.getUsersWithRole(role.id);
-    
     Swal.fire({
       title: `Detalles del Rol: ${role.name}`,
       html: `

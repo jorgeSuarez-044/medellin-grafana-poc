@@ -9,6 +9,7 @@
   <div class="tabs">
     <button [class.active]="activeTab === 'usuarios'" (click)="changeTab('usuarios')">Usuarios</button>
     <button [class.active]="activeTab === 'roles'" (click)="changeTab('roles')">Roles</button>
+    <button [class.active]="activeTab === 'grafana-roles'" (click)="changeTab('grafana-roles')">Roles Grafana</button>
     <button [class.active]="activeTab === 'auditoria'" (click)="changeTab('auditoria')">Auditoría</button>
   </div>
 
@@ -19,7 +20,10 @@
         <div class="form-group">
           <label>Nombre de usuario *</label>
           <input type="text" formControlName="username" placeholder="Ingrese nombre de usuario" [disabled]="!!selectedUser">
-         
+          <div class="error-message" *ngIf="userForm.get('username')?.invalid && userForm.get('username')?.touched">
+            <span *ngIf="userForm.get('username')?.errors?.['required']">Este campo es requerido</span>
+
+          </div>
         </div>
         <div class="form-group">
           <label>Correo electrónico *</label>
@@ -43,20 +47,18 @@
           </div>
         </div>
         <div class="form-group">
-          <label>Contraseña {{selectedUser ? '(opcional)' : '*'}}</label>
+          <label>Contraseña (opcional)</label>
           <input type="password" formControlName="password" 
-                 [placeholder]="selectedUser ? 'Nueva contraseña (dejar en blanco para no cambiar)' : 'Ingrese contraseña'">
-          <small *ngIf="selectedUser">Dejar en blanco para mantener la contraseña actual</small>
-          <div class="error-message" *ngIf="userForm.get('password')?.invalid && userForm.get('password')?.touched">
-            Este campo es requerido para nuevos usuarios
-          </div>
+                 [placeholder]="selectedUser ? 'Nueva contraseña (dejar en blanco para no cambiar)' : 'Ingrese contraseña (opcional)'">
+          <small>Puede asignar una contraseña ahora o más tarde</small>
         </div>
         <div class="form-group">
           <label>Habilitado</label>
           <input type="checkbox" formControlName="enabled">
         </div>
         <div class="form-group" *ngIf="roles.length > 0">
-          <label>Roles</label>
+          <label>Roles del Sistema (opcional)</label>
+          <small>Puede asignar roles ahora o más tarde</small>
           <div class="roles-container">
             <div *ngFor="let role of roles" class="role-checkbox">
               <input 
@@ -67,6 +69,23 @@
                 [checked]="isRoleSelected(role.id)"
                 [disabled]="roleAssignmentInProgress">
               <label [for]="'role-' + role.id">{{ role.name }}</label>
+              <small *ngIf="role.description" class="role-description">{{ role.description }}</small>
+            </div>
+          </div>
+        </div>
+        <div class="form-group" *ngIf="grafanaRoles.length > 0">
+          <label>Roles de Grafana (opcional)</label>
+          <small>Puede asignar roles ahora o más tarde</small>
+          <div class="roles-container">
+            <div *ngFor="let role of grafanaRoles" class="role-checkbox">
+              <input 
+                type="checkbox" 
+                [id]="'grafana-role-' + role.id" 
+                [value]="role.id" 
+                (change)="onRoleChange($event, role.id, true)"
+                [checked]="isRoleSelected(role.id, true)"
+                [disabled]="roleAssignmentInProgress">
+              <label [for]="'grafana-role-' + role.id">{{ role.name }}</label>
               <small *ngIf="role.description" class="role-description">{{ role.description }}</small>
             </div>
           </div>
@@ -93,7 +112,8 @@
             <th>Correo</th>
             <th>Usuario</th>
             <th>Estado</th>
-            <th>Roles</th>
+            <th>Roles Sistema</th>
+            <th>Roles Grafana</th>
             <th>Acciones</th>
           </tr>
         </thead>
@@ -111,8 +131,13 @@
               <span *ngFor="let role of user.roles" class="role-badge">{{ role.name }}</span>
               <span *ngIf="!user.roles || user.roles.length === 0" class="no-roles">Sin roles</span>
             </td>
+            <td>
+              <span *ngFor="let role of user.grafanaRoles" class="role-badge grafana-role">{{ role.name }}</span>
+              <span *ngIf="!user.grafanaRoles || user.grafanaRoles.length === 0" class="no-roles">Sin roles</span>
+            </td>
             <td class="actions">
               <button (click)="editUser(user)" class="edit-btn">Editar</button>
+              <button (click)="assignRoles(user)" class="role-btn">Asignar Roles</button>
               <button (click)="confirmDelete(user.id)" class="delete-btn">Eliminar</button>
             </td>
           </tr>
@@ -125,14 +150,15 @@
   </div>
 
   <div class="tab-content" *ngIf="activeTab === 'roles'">
-    <h2>Gestión de Roles</h2>
-    <div class="roles-list">
+    <div class="user-list">
+      <h2>Roles del Sistema</h2>
+      
       <table>
         <thead>
           <tr>
             <th>Nombre</th>
             <th>Descripción</th>
-            <th>Usuarios</th>
+            <th>Usuarios Asignados</th>
             <th>Acciones</th>
           </tr>
         </thead>
@@ -153,7 +179,42 @@
         </tbody>
       </table>
       <div *ngIf="roles.length === 0" class="no-results">
-        No se encontraron roles
+        No se encontraron roles del sistema
+      </div>
+    </div>
+  </div>
+
+  <div class="tab-content" *ngIf="activeTab === 'grafana-roles'">
+    <div class="user-list">
+      <h2>Roles de Grafana</h2>
+     
+      <table>
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Descripción</th>
+            <th>Usuarios Asignados</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let role of grafanaRoles">
+            <td>{{ role.name }}</td>
+            <td>{{ role.description || 'Sin descripción' }}</td>
+            <td>
+              <span *ngFor="let user of getUsersWithGrafanaRole(role.id)" class="user-badge">
+                {{ user.username }}
+              </span>
+              <span *ngIf="getUsersWithGrafanaRole(role.id).length === 0">Ningún usuario</span>
+            </td>
+            <td>
+              <button (click)="viewRoleDetails(role, true)">Detalles</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div *ngIf="grafanaRoles.length === 0" class="no-results">
+        No se encontraron roles de Grafana
       </div>
     </div>
   </div>
@@ -167,6 +228,7 @@
           <option value="">Todos</option>
           <option value="USER">Usuarios</option>
           <option value="ROLE">Roles</option>
+          <option value="GRAFANA_ROLE">Roles Grafana</option>
         </select>
       </div>
       <div class="filter-group">
