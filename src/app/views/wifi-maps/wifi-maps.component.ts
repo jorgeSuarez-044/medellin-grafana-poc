@@ -43,7 +43,7 @@ export class WifiMaps implements OnInit, OnDestroy {
   selectedAgeGroup = '';
   selectedEducationLevel = '';
   internetAccessFilter = 'all';
-  zoomLevel = 12;
+  zoomLevel = 9;
   
   // Opciones de filtros
   comunas: string[] = [];
