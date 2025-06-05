@@ -232,7 +232,7 @@ export class UsuariosComponent implements OnInit {
 
   assignSingleRole(userId: string, roleId: string): Promise<any> {
     return this.http.put(
-      `${this.apiUrl}/user_roles/user_id/${userId}/role_id/${roleId}`, 
+      `${this.apiUrl}/roles/user_id/${userId}/role_id/${roleId}`, 
       {}, 
       { headers: this.getHeaders() }
     ).toPromise();
