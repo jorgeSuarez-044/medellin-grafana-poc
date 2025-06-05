@@ -278,11 +278,10 @@ body {
   color: #333;
 }
 
-/* Enhanced map legend */
 .map-legend {
   position: absolute;
   bottom: 30px;
-  right: 30px;
+  left: 30px; /* Cambiado de right a left */
   background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(8px);
   padding: 15px;
@@ -294,6 +293,7 @@ body {
   animation: float 6s ease-in-out infinite;
 }
 
+/* Mantenemos la animación flotante */
 @keyframes float {
   0% { transform: translateY(0px) translateZ(20px); }
   50% { transform: translateY(-10px) translateZ(20px); }
@@ -565,9 +565,9 @@ body {
 
 /* Container improvements */
 .container {
-  margin-left: 50px;
+  margin-left: 0px;
   padding: 2rem;
-  width: calc(100% - 50px);
+  width: 100%;
   box-sizing: border-box;
   animation: fadeIn 0.8s ease;
 }
@@ -613,4 +613,143 @@ body {
 
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(0,0,0,0.3);
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .page-title,
+  .iframe-container {
+    margin-left: 0;
+  }
+
+  .map-layout {
+    flex-direction: column;
+    height: auto;
+  }
+
+  .half-layout {
+    width: 100%;
+    height: 400px;
+  }
+
+  .iframe-row {
+    flex-direction: column;
+  }
+
+  .iframe-row iframe {
+    height: 250px;
+  }
+
+  .iframe-container iframe:not(.iframe-row iframe) {
+    height: 400px;
+  }
+}
+
+@media (max-width: 768px) {
+  .page-title {
+    font-size: 2rem;
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+
+  .sensor-container {
+    margin: 1rem;
+    padding: 1rem;
+  }
+
+  .sensor-container h2 {
+    font-size: 1.2rem;
+  }
+
+  .sensor-select {
+    font-size: 0.95rem;
+    padding: 0.7rem;
+  }
+
+  .details-panel {
+    width: 90%;
+    padding: 15px;
+  }
+
+  .panel-header h3 {
+    font-size: 1.1rem;
+  }
+
+  .map-legend {
+    bottom: 20px;
+    left: 20px;
+    padding: 10px;
+  }
+
+  .map-legend h4 {
+    font-size: 1rem;
+  }
+
+  .legend-color {
+    width: 14px;
+    height: 14px;
+  }
+
+  .detail-row {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .page-title {
+    font-size: 1.6rem;
+    padding: 15px;
+  }
+
+  .iframe-container {
+    padding: 15px;
+    gap: 15px;
+  }
+
+  .iframe-row iframe,
+  .iframe-container iframe:not(.iframe-row iframe) {
+    height: 200px;
+  }
+
+  .map-layout {
+    padding: 15px;
+    gap: 15px;
+  }
+
+  .sensor-container {
+    margin: 1rem 0.5rem;
+    padding: 1rem;
+  }
+
+  .details-panel {
+    padding: 10px;
+  }
+
+  .panel-header h3 {
+    font-size: 1rem;
+  }
+
+  .sensor-select {
+    font-size: 0.9rem;
+    padding: 0.6rem;
+  }
+
+  .detail-row {
+    padding: 6px 8px;
+  }
+
+  .map-legend {
+    left: 10px;
+    bottom: 15px;
+    padding: 8px;
+  }
+
+  .legend-item {
+    font-size: 0.85rem;
+  }
+
+  .legend-color {
+    width: 12px;
+    height: 12px;
+  }
 }
