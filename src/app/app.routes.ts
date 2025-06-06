@@ -19,9 +19,11 @@ import { TurismoMaps } from './views/turismomaps/turismomaps.component';
 import { SiataMaps } from './views/siatamaps/siatamaps.component';
 import { Movilidad } from './views/movilidad-inteligente/movilidad-inteligente.component';
 import { UsuariosComponent } from './views/usuarios/usuarios.component';
+import { LoginComponent } from './views/login/login.component';
 
 export const routes: Routes = [
-  { path: '', component: MenuOpcionesComponent },  // Página principal con el menú
+
+  { path: 'login', component: LoginComponent },  // Página principal con el menú
   { path: 'inicio', component: InicioComponent },  // Componente al que se navega cuando se hace clic en "Camiones"
   { path: 'ambiente/residuos/camiones/dashboard', component: CamionesComponent },   // Componente al que se navega cuando se hace clic en "Reportes"
   { path: 'ambiente/calidad/ruido/dashboard', component: SensoresRuidoComponent },       // Reemplaza con el componente correspondiente

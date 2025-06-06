@@ -1,24 +1,34 @@
 import { Component } from '@angular/core';
-import { Router, RouterModule } from '@angular/router';  // Importa RouterModule
-import { CommonModule } from '@angular/common'; // Si usas CommonModule también
+import { Router, RouterModule, NavigationEnd } from '@angular/router';
+import { CommonModule } from '@angular/common';
 import { MenuOpcionesComponent } from './views/medellin-menu/medellin-menu.component';
-import { InicioComponent } from './views/inicio/inicio.component';
 import { MatIconModule } from '@angular/material/icon';
-
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
-  standalone: true,  // Marca el componente como independiente
-  imports: [CommonModule, RouterModule, MenuOpcionesComponent, MatIconModule]  // Asegúrate de incluir RouterModule
+  standalone: true,
+  imports: [CommonModule, RouterModule, MenuOpcionesComponent, MatIconModule]
 })
 export class AppComponent {
   title = 'mi-aplicacion';
-  constructor(private router: Router) {}  // Inyección del Router
+  currentUrl: string = '';
+
+  constructor(private router: Router) {
+    this.router.events.subscribe(event => {
+      if (event instanceof NavigationEnd) {
+        this.currentUrl = event.urlAfterRedirects;
+      }
+    });
+  }
 
   irAPerfil(): void {
+    this.router.navigate(['perfil/usuarios']);
+  }
 
-    this.router.navigate(['perfil/usuarios']);  // Navegación programática
+  mostrarLayout(): boolean {
+    // Oculta menú y header en la ruta /login
+    return this.currentUrl !== '/login';
   }
 }
