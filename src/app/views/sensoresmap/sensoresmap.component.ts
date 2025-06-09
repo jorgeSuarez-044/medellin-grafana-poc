@@ -40,10 +40,10 @@ export class NoiseSensorMapComponent implements OnInit, AfterViewInit {
   
   // Datos y estado
   sensors: any[] = [];
-  filteredSensors: any[] = [];
   selectedSensor: string = '';
   selectedSensorDetails: any = null;
   historicData: HistoricData[] = [];
+  historicAvg: number = 0;
   
   // Fechas
   desdeFecha: string = '';
@@ -62,8 +62,8 @@ export class NoiseSensorMapComponent implements OnInit, AfterViewInit {
   constructor(private http: HttpClient) {}
 
   ngOnInit(): void {
-    this.setDefaultDates();
     this.loadSensors();
+    this.setDefaultDates();
   }
 
   ngAfterViewInit(): void {
@@ -93,14 +93,35 @@ export class NoiseSensorMapComponent implements OnInit, AfterViewInit {
           noiseLevel: this.getNoiseLevel(sensor.laeq_slow),
           levelName: this.translateLevel(this.getNoiseLevel(sensor.laeq_slow))
         }));
-        this.filteredSensors = [...this.sensors];
         this.isLoading = false;
-        this.addSensorsToMap();
+        this.loadSensorData();
       },
       error: (err) => {
         this.errorMessage = 'Error al cargar los sensores. Por favor intenta nuevamente.';
         this.isLoading = false;
         console.error('Error fetching sensors:', err);
+      }
+    });
+  }
+
+  loadSensorData(): void {
+    this.loading = true;
+    this.error = false;
+    
+    this.http.get<any[]>(this.apiUrl).subscribe({
+      next: (data) => {
+        this.sensors = data.map(sensor => ({
+          ...sensor,
+          noiseLevel: this.getNoiseLevel(sensor.laeq_slow),
+          levelName: this.translateLevel(this.getNoiseLevel(sensor.laeq_slow))
+        }));
+        this.addSensorsToMap();
+        this.loading = false;
+      },
+      error: (err) => {
+        console.error('Error loading sensor data:', err);
+        this.error = true;
+        this.loading = false;
       }
     });
   }
@@ -121,7 +142,7 @@ export class NoiseSensorMapComponent implements OnInit, AfterViewInit {
   onSensorSelect(): void {
     if (!this.selectedSensor) return;
     
-    const sensor = this.filteredSensors.find(s => s.entity_id === this.selectedSensor);
+    const sensor = this.sensors.find(s => s.entity_id === this.selectedSensor);
     if (!sensor) return;
     
     this.selectedSensorDetails = {
@@ -137,6 +158,9 @@ export class NoiseSensorMapComponent implements OnInit, AfterViewInit {
         zoom: 16
       });
     }
+    
+    this.historicData = [];
+    this.historicAvg = 0;
   }
 
   getHistoricData(): void {
@@ -154,6 +178,8 @@ export class NoiseSensorMapComponent implements OnInit, AfterViewInit {
     this.getHistoricoNoise(this.selectedSensor, desde, hasta).subscribe({
       next: (data) => {
         this.historicData = data;
+        this.calculateHistoricAvg();
+        this.updateMapWithHistoricalData();
         this.loadingHistoric = false;
       },
       error: (err) => {
@@ -164,21 +190,41 @@ export class NoiseSensorMapComponent implements OnInit, AfterViewInit {
     });
   }
 
-  filterSensorsByDate(): void {
-    if (!this.desdeFecha || !this.hastaFecha) {
-      this.filteredSensors = [...this.sensors];
+  private calculateHistoricAvg(): void {
+    if (this.historicData.length === 0) {
+      this.historicAvg = 0;
       return;
     }
+    
+    const sum = this.historicData.reduce((acc, item) => acc + item.laeq_slow, 0);
+    this.historicAvg = parseFloat((sum / this.historicData.length).toFixed(1)); // Aquí está la modificación para 1 decimal
+  }
 
-    const desdeDate = new Date(this.desdeFecha);
-    const hastaDate = new Date(this.hastaFecha);
-
-    this.filteredSensors = this.sensors.filter(sensor => {
-      const sensorDate = new Date(sensor.fecha_ultimo_registro);
-      return sensorDate >= desdeDate && sensorDate <= hastaDate;
-    });
-
+  private updateMapWithHistoricalData(): void {
+    if (!this.map || !this.map.isStyleLoaded()) return;
+    
+    const sensorIndex = this.sensors.findIndex(s => s.entity_id === this.selectedSensor);
+    if (sensorIndex === -1) return;
+    
+    // Actualizar el sensor con el promedio histórico
+    this.sensors[sensorIndex] = {
+      ...this.sensors[sensorIndex],
+      laeq_slow: this.historicAvg,
+      noiseLevel: this.getNoiseLevel(this.historicAvg),
+      levelName: this.translateLevel(this.getNoiseLevel(this.historicAvg))
+    };
+    
+    // Actualizar el mapa
     this.addSensorsToMap();
+    
+    // Actualizar los detalles del panel
+    if (this.selectedSensorDetails) {
+      this.selectedSensorDetails = {
+        ...this.selectedSensorDetails,
+        laeq: this.historicAvg,
+        levelName: this.translateLevel(this.getNoiseLevel(this.historicAvg))
+      };
+    }
   }
 
   getHistoricoNoise(sensorId: string, desde: string, hasta: string): Observable<HistoricData[]> {
@@ -203,7 +249,7 @@ export class NoiseSensorMapComponent implements OnInit, AfterViewInit {
       type: 'geojson',
       data: {
         type: 'FeatureCollection',
-        features: this.filteredSensors.map(sensor => ({
+        features: this.sensors.map(sensor => ({
           type: 'Feature',
           geometry: {
             type: 'Point',
