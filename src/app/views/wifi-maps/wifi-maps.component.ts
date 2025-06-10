@@ -43,7 +43,7 @@ export class WifiMaps implements OnInit, OnDestroy {
   selectedAgeGroup = '';
   selectedEducationLevel = '';
   internetAccessFilter = 'all';
-  zoomLevel = 9;
+  zoomLevel = 12;
   
   // Opciones de filtros
   comunas: string[] = [];
@@ -343,11 +343,10 @@ private showPopup(feature: any): void {
   // Crear contenido del popup con manejo de valores nulos
 const content = `
   <style>
-    .map-popup {
-      position: relative;
+ .map-popup {
+ 
       background: #fff;
       max-width: 300px;
-      width: 100%;
       padding: 16px;
       border-radius: 16px;
       box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
@@ -355,25 +354,18 @@ const content = `
       font-size: 14px;
       color: #333;
       animation: popupScaleIn 0.3s ease-out;
-      transform-style: preserve-3d;
+      text-align: center;
+      margin: 0 auto;
     }
 
     .map-popup h4 {
-      margin: 0 0 10px 0;
       color: #1976d2;
       font-size: 18px;
       font-weight: 600;
-      text-align: center;
     }
 
     .map-popup p {
       margin: 6px 0;
-      text-align: center;
-    }
-
-    .map-popup strong {
-      display: inline-block;
-      margin-top: 4px;
     }
 
     .map-popup .close-btn {
@@ -385,11 +377,6 @@ const content = `
       font-size: 20px;
       cursor: pointer;
       color: #666;
-      transition: color 0.2s;
-    }
-
-    .map-popup .close-btn:hover {
-      color: #000;
     }
 
     @keyframes popupScaleIn {
@@ -425,9 +412,9 @@ const content = `
 
   // Crear y mostrar el nuevo popup
   this.popup = new maplibregl.Popup({
-    closeButton: true,
+    closeButton: false,
     closeOnClick: false,
-    anchor: 'top',
+    anchor: 'center',
     offset: 25
   })
     .setLngLat(coordinates)

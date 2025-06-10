@@ -12,6 +12,6 @@ export default `<!DOCTYPE html><html lang="en" data-beasties-container><head><li
 
 <body>
   <app-root ng-version="19.0.3" ng-server-context="ssg"><router-outlet></router-outlet><app-login _nghost-ng-c2330214885><div _ngcontent-ng-c2330214885 class="login-wrapper"><div _ngcontent-ng-c2330214885 class="login-card"><h1 _ngcontent-ng-c2330214885 class="logo">Medellín <span _ngcontent-ng-c2330214885>Inteligente</span></h1><div _ngcontent-ng-c2330214885 class="logo"><img _ngcontent-ng-c2330214885 src="https://www.fiware.org/custom/brand-guide/img/logo/fiware/primary/jpg/logo-fiware.jpg?" alt="Logo Alcaldía de Medellín" class="login-logo"></div><form _ngcontent-ng-c2330214885 novalidate class="ng-untouched ng-pristine ng-invalid"><input _ngcontent-ng-c2330214885 type="text" formcontrolname="username" placeholder="Usuario" value class="ng-untouched ng-pristine ng-invalid"><input _ngcontent-ng-c2330214885 type="password" formcontrolname="password" placeholder="Contraseña" value class="ng-untouched ng-pristine ng-invalid"><button _ngcontent-ng-c2330214885 type="submit">Iniciar Sesión</button></form><!----></div></div></app-login><!----></app-root>
-<link rel="modulepreload" href="chunk-3MUZ3QJ6.js"><script src="polyfills-FFHMD2TL.js" type="module"></script><script src="main-NTZQ5SNV.js" type="module"></script>
+<link rel="modulepreload" href="chunk-3MUZ3QJ6.js"><script src="polyfills-FFHMD2TL.js" type="module"></script><script src="main-ZQ4YM2TK.js" type="module"></script>
 
 </body></html>`;
