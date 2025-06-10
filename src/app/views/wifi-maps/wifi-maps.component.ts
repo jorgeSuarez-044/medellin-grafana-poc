@@ -10,6 +10,11 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import * as maplibregl from 'maplibre-gl';
 import { MatIconModule } from '@angular/material/icon';
+import { isPlatformBrowser } from '@angular/common';
+import { Inject, PLATFORM_ID } from '@angular/core';
+import { of } from 'rxjs';
+import { timeout, catchError } from 'rxjs/operators';
+
 
 
 MatIconModule
@@ -59,7 +64,7 @@ export class WifiMaps implements OnInit, OnDestroy {
     { value: 'higher', label: 'Superior' }
   ];
 
-  constructor(private http: HttpClient) {}
+  constructor(@Inject(PLATFORM_ID) private platformId: Object, private http: HttpClient) {}
 
   ngOnInit(): void {
     this.fetchData();
@@ -166,25 +171,34 @@ ngOnDestroy(): void {
     };
   }
 
-   fetchData(): void {
-    this.isLoading = true;
-    this.error = false;
-    
-    this.http.get<any[]>('http://flask-fiware.apps.preprodalcaldia.medellin.gov.co/api/wifi-dane/all')
-      .subscribe({
-        next: (data) => {
-          this.data = data;
+fetchData(): void {
+  this.isLoading = true;
+  this.error = false;
+
+  this.http.get<any[]>('http://flask-fiware.apps.preprodalcaldia.medellin.gov.co/api/wifi-dane/all')
+    .pipe(
+      timeout(60000), // ⏱️ espera hasta 60 segundos
+      catchError(err => {
+        console.error('Error fetching data (timeout o fallo de red):', err);
+        this.error = true;
+        this.isLoading = false;
+        return of([]); // Devuelve un array vacío para que el observable no se rompa
+      })
+    )
+    .subscribe({
+      next: (data) => {
+        this.data = data;
+
+        // Solo procesar mapa y datos si está en el navegador
+        if (isPlatformBrowser(this.platformId)) {
           this.processData();
           this.initMap();
-          this.isLoading = false;
-        },
-        error: (err) => {
-          console.error('Error fetching data:', err);
-          this.error = true;
-          this.isLoading = false;
         }
-      });
-  }
+
+        this.isLoading = false;
+      }
+    });
+}
 
   private processData(): void {
     const comunaSet = new Set<string>();
