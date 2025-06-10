@@ -341,28 +341,93 @@ private showPopup(feature: any): void {
   // para puntos individuales (solo útil cuando se trabajan con líneas/polígonos que cruzan el antimeridiano)
 
   // Crear contenido del popup con manejo de valores nulos
-  const content = `
-    <div class="map-popup">
-      <h4>Manzana ${properties.cod_dane_a || 'N/A'}</h4>
-      <p><strong>Comuna:</strong> ${properties.nmb_lc_cm || 'N/A'}</p>
-      <p><strong>Población:</strong> ${properties.tp27_perso || '0'}</p>
-      <p><strong>Densidad:</strong> ${(properties.populationDensity || 0).toFixed(2)} pers/m²</p>
-      <p><strong>Acceso a internet:</strong> ${(properties.internetAccess || 0).toFixed(1)}%</p>
-      <p><strong>Acceso a agua:</strong> ${(properties.waterAccess || 0).toFixed(1)}%</p>
-      <p><strong>Acceso a gas:</strong> ${(properties.gasAccess || 0).toFixed(1)}%</p>
-      <p><strong>Adultos mayores (60+):</strong> ${(properties.elderlyPercentage || 0).toFixed(1)}%</p>
-      <strong>Educación:</strong><br>
-      - Primaria: ${(properties.educationPrimary || 0).toFixed(1)}%<br>
-      - Secundaria: ${(properties.educationSecondary || 0).toFixed(1)}%<br>
-      - Superior: ${(properties.educationHigher || 0).toFixed(1)}%
-    </div>
-  `;
+const content = `
+  <style>
+    .map-popup {
+      position: relative;
+      background: #fff;
+      max-width: 300px;
+      width: 100%;
+      padding: 16px;
+      border-radius: 16px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+      font-family: 'Segoe UI', sans-serif;
+      font-size: 14px;
+      color: #333;
+      animation: popupScaleIn 0.3s ease-out;
+      transform-style: preserve-3d;
+    }
+
+    .map-popup h4 {
+      margin: 0 0 10px 0;
+      color: #1976d2;
+      font-size: 18px;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    .map-popup p {
+      margin: 6px 0;
+      text-align: center;
+    }
+
+    .map-popup strong {
+      display: inline-block;
+      margin-top: 4px;
+    }
+
+    .map-popup .close-btn {
+      position: absolute;
+      top: 8px;
+      right: 12px;
+      background: transparent;
+      border: none;
+      font-size: 20px;
+      cursor: pointer;
+      color: #666;
+      transition: color 0.2s;
+    }
+
+    .map-popup .close-btn:hover {
+      color: #000;
+    }
+
+    @keyframes popupScaleIn {
+      0% {
+        transform: scale(0.9) rotateX(-10deg);
+        opacity: 0;
+      }
+      100% {
+        transform: scale(1) rotateX(0deg);
+        opacity: 1;
+      }
+    }
+  </style>
+
+  <div class="map-popup">
+    <button class="close-btn" onclick="this.closest('.maplibregl-popup').remove()">❎</button>
+    <h4>Manzana ${properties.cod_dane_a || 'N/A'}</h4>
+    <p><strong>Comuna:</strong> ${properties.nmb_lc_cm || 'N/A'}</p>
+    <p><strong>Población:</strong> ${properties.tp27_perso || '0'}</p>
+    <p><strong>Densidad:</strong> ${(properties.populationDensity || 0).toFixed(2)} pers/m²</p>
+    <p><strong>Acceso a internet:</strong> ${(properties.internetAccess || 0).toFixed(1)}%</p>
+    <p><strong>Acceso a agua:</strong> ${(properties.waterAccess || 0).toFixed(1)}%</p>
+    <p><strong>Acceso a gas:</strong> ${(properties.gasAccess || 0).toFixed(1)}%</p>
+    <p><strong>Adultos mayores (60+):</strong> ${(properties.elderlyPercentage || 0).toFixed(1)}%</p>
+    <strong>Educación:</strong><br>
+    - Primaria: ${(properties.educationPrimary || 0).toFixed(1)}%<br>
+    - Secundaria: ${(properties.educationSecondary || 0).toFixed(1)}%<br>
+    - Superior: ${(properties.educationHigher || 0).toFixed(1)}%
+  </div>
+`;
+
+
 
   // Crear y mostrar el nuevo popup
   this.popup = new maplibregl.Popup({
     closeButton: true,
     closeOnClick: false,
-    anchor: 'bottom',
+    anchor: 'top',
     offset: 25
   })
     .setLngLat(coordinates)
