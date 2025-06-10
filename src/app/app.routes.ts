@@ -1,6 +1,14 @@
 import { Routes } from '@angular/router';
+
+// Login sin layout
+import { LoginComponent } from './views/login/login.component';
+
+// Layout principal con header y menú
+import { LayoutComponent } from './layout.component';
+
+// Vistas
+import { InicioComponent } from './views/inicio/inicio.component';
 import { MenuOpcionesComponent } from './views/medellin-menu/medellin-menu.component';
-import { InicioComponent } from './views/inicio/inicio.component';  // Asegúrate de que el componente esté correctamente importado
 import { CamionesComponent } from './views/camiones/camiones.component';
 import { SensoresRuidoComponent } from './views/sensores-ruido/sensores-ruido.component';
 import { ReportesMedicos } from './views/reportes-medicos/reportesmed.component';
@@ -19,33 +27,40 @@ import { TurismoMaps } from './views/turismomaps/turismomaps.component';
 import { SiataMaps } from './views/siatamaps/siatamaps.component';
 import { Movilidad } from './views/movilidad-inteligente/movilidad-inteligente.component';
 import { UsuariosComponent } from './views/usuarios/usuarios.component';
-import { LoginComponent } from './views/login/login.component';
 
 export const routes: Routes = [
+  // 🔐 Rutas sin layout (login)
+  { path: '', component: LoginComponent },
+  { path: 'login', component: LoginComponent },
 
-  { path: 'login', component: LoginComponent },  // Página principal con el menú
-  { path: 'inicio', component: InicioComponent },  // Componente al que se navega cuando se hace clic en "Camiones"
-  { path: 'ambiente/residuos/camiones/dashboard', component: CamionesComponent },   // Componente al que se navega cuando se hace clic en "Reportes"
-  { path: 'ambiente/calidad/ruido/dashboard', component: SensoresRuidoComponent },       // Reemplaza con el componente correspondiente
-  { path: 'reportes', component: ReportesMedicos },   // Reemplaza con el componente correspondiente
-  { path: 'economico/digital/wifi/dashboard', component: PuntosWifi }, 
-  { path: 'habitat/movilidad/vamosmed/dashboard', component: Vamosmed }, 
-  { path: 'habitat/movilidad/dashboard', component: Movilidad }, 
-  { path: 'perfil/usuarios', component: UsuariosComponent }, 
-  { path: 'gobernanza/participacion/pqrs/dashboard', component: Pqrsd }, 
-  { path: 'whatsapp', component: WhatsApp }, 
-  { path: 'calidad/turismo/dashboard', component: Turismo }, 
-  { path: 'ambiente/calidad/siata/dashboard', component: Siata }, 
-  { path: 'ambiente/residuos/camiones/mapa', component: MapasCamiones },
-  { path: 'mapas/reportes', component: ReportesMedMap },  
-   { 
-    path: 'economico/digital/wifi/mapa', 
-    component: WifiMaps,
-    data: { ssr: false } // Esto desactiva SSR para esta ruta específica
-  }, 
-  { path: 'habitat/movilidad/vamosmed/mapa', component: VamosMedMap }, 
-  { path: 'ambiente/calidad/ruido/mapa', component: NoiseSensorMapComponent }, 
-  { path: 'calidad/turismo/map', component: TurismoMaps }, 
-  { path: 'ambiente/calidad/siata/mapa', component: SiataMaps }, 
+  // 🌐 Rutas que usan layout con header y menú
+  {
+    path: '',
+    component: LayoutComponent,
+    children: [
+      { path: 'inicio', component: InicioComponent },
+      { path: 'menu', component: MenuOpcionesComponent },
+      { path: 'ambiente/residuos/camiones/dashboard', component: CamionesComponent },
+      { path: 'ambiente/calidad/ruido/dashboard', component: SensoresRuidoComponent },
+      { path: 'reportes', component: ReportesMedicos },
+      { path: 'economico/digital/wifi/dashboard', component: PuntosWifi },
+      { path: 'habitat/movilidad/vamosmed/dashboard', component: Vamosmed },
+      { path: 'habitat/movilidad/dashboard', component: Movilidad },
+      { path: 'perfil/usuarios', component: UsuariosComponent },
+      { path: 'gobernanza/participacion/pqrs/dashboard', component: Pqrsd },
+      { path: 'whatsapp', component: WhatsApp },
+      { path: 'calidad/turismo/dashboard', component: Turismo },
+      { path: 'ambiente/calidad/siata/dashboard', component: Siata },
+      { path: 'ambiente/residuos/camiones/mapa', component: MapasCamiones },
+      { path: 'mapas/reportes', component: ReportesMedMap },
+      { path: 'economico/digital/wifi/mapa', component: WifiMaps, data: { ssr: false } },
+      { path: 'habitat/movilidad/vamosmed/mapa', component: VamosMedMap },
+      { path: 'ambiente/calidad/ruido/mapa', component: NoiseSensorMapComponent },
+      { path: 'calidad/turismo/map', component: TurismoMaps },
+      { path: 'ambiente/calidad/siata/mapa', component: SiataMaps }
+    ]
+  },
 
+  // 🔁 Ruta desconocida redirige al login
+  { path: '**', redirectTo: 'login' }
 ];
