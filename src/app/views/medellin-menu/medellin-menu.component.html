@@ -2,9 +2,13 @@
   <img class="menu-logo" src="https://i.ibb.co/Ksh0J2w/alcaldia-Medellin.png" alt="Logo Alcaldía de Medellín">
   <img class="menu-logon" src="https://www.fiware.org/custom/brand-guide/img/logo/fiware/primary/png/logo-fiware-blue.png?" alt="Logo FIWARE">
 
-  <ul class="menu-list">
+  <div *ngIf="cargando" class="cargando">
+    Cargando menú...
+  </div>
+
+  <ul *ngIf="!cargando" class="menu-list">
     <ng-container *ngFor="let opcion of menu">
-      <li>
+      <li *ngIf="isVisible(opcion)">
         <a (click)="opcion.hijos ? toggle(opcion) : navegar(opcion.ruta)" class="menu-item submenu-toggle">
           <mat-icon>{{ opcion.icono }}</mat-icon>
           <span>{{ opcion.texto }}</span>
@@ -14,7 +18,7 @@
         <!-- Submenú -->
         <ul *ngIf="opcion.hijos && isAbierto(opcion)" class="submenu">
           <ng-container *ngFor="let sub of opcion.hijos">
-            <li>
+            <li *ngIf="isVisible(sub)">
               <a (click)="sub.hijos ? toggle(sub) : navegar(sub.ruta)" class="menu-item submenu-toggle">
                 <mat-icon>{{ sub.icono }}</mat-icon>
                 <span>{{ sub.texto }}</span>
@@ -24,7 +28,7 @@
               <!-- SubSubMenú -->
               <ul *ngIf="sub.hijos && isAbierto(sub)" class="submenu">
                 <li *ngFor="let subsub of sub.hijos">
-                  <a (click)="navegar(subsub.ruta)" class="menu-item">
+                  <a *ngIf="isVisible(subsub)" (click)="navegar(subsub.ruta)" class="menu-item">
                     <mat-icon>{{ subsub.icono }}</mat-icon>
                     <span>{{ subsub.texto }}</span>
                   </a>
