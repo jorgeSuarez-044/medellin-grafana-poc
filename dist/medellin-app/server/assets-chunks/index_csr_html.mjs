@@ -14,6 +14,6 @@ export default `
 
 <body ngcm="">
   <app-root></app-root>
-<link rel="modulepreload" href="chunk-HIRD76C5.js"><script src="polyfills-FFHMD2TL.js" type="module"></script><script src="main-FITREOHR.js" type="module"></script></body>
+<link rel="modulepreload" href="chunk-HIRD76C5.js"><script src="polyfills-FFHMD2TL.js" type="module"></script><script src="main-AMLSB3GV.js" type="module"></script></body>
 
 </html>`;

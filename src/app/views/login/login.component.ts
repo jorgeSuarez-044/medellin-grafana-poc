@@ -23,9 +23,7 @@ export class LoginComponent {
       password: ['', Validators.required]
     });
   }
-  ngOnInit(): void {
-  this.logout();
-  }
+
  logout(): void {
 
   
