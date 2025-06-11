@@ -177,12 +177,12 @@ fetchData(): void {
 
   this.http.get<any[]>('http://flask-fiware.apps.preprodalcaldia.medellin.gov.co/api/wifi-dane/all')
     .pipe(
-      timeout(60000), // ⏱️ espera hasta 60 segundos
+      timeout(60000), 
       catchError(err => {
         console.error('Error fetching data (timeout o fallo de red):', err);
         this.error = true;
         this.isLoading = false;
-        return of([]); // Devuelve un array vacío para que el observable no se rompa
+        return of([]); 
       })
     )
     .subscribe({

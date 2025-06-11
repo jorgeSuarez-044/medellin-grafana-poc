@@ -281,10 +281,11 @@ export class MenuOpcionesComponent implements OnInit {
     this.cargando = false;
   }
 
-  async obtenerPermisosUsuario() {
-    const token = localStorage.getItem('access_token');
+async obtenerPermisosUsuario() {
+    const token = localStorage.getItem('access_tokenadmin');
     if (!token) {
-      console.error('No se encontró el token de acceso');
+      console.warn('No se encontró el token de acceso - Mostrando menú completo');
+      this.permisosUsuario = []; // Aseguramos que sea un array vacío
       return;
     }
 
@@ -297,15 +298,40 @@ export class MenuOpcionesComponent implements OnInit {
           }
         })
       );
-      this.permisosUsuario = response;
+      // Aseguramos que la respuesta sea un array
+      this.permisosUsuario = Array.isArray(response) ? response : [];
     } catch (error) {
       console.error('Error al obtener permisos del usuario:', error);
+      this.permisosUsuario = []; // Aseguramos que sea un array vacío
     }
   }
 
   aplicarPermisos() {
+    // Aseguramos que permisosUsuario es un array
+    if (!Array.isArray(this.permisosUsuario)) {
+      this.permisosUsuario = [];
+    }
+
+    // Si no hay permisos (no hay token o error al obtenerlos), mostramos todo el menú
+    if (this.permisosUsuario.length === 0) {
+      this.menu.forEach(dimension => {
+        dimension.visible = true;
+        if (dimension.hijos) {
+          dimension.hijos.forEach(hijo => {
+            hijo.visible = true;
+            if (hijo.hijos) {
+              hijo.hijos.forEach(subhijo => {
+                subhijo.visible = true;
+              });
+            }
+          });
+        }
+      });
+      return;
+    }
+
+    // Si hay permisos, aplicamos el filtrado normal
     this.menu.forEach(dimension => {
-      // Verificar si la dimensión tiene permisos
       const permisosDimension = this.permisosUsuario.filter(p => p.dimension === dimension.dimension);
       
       if (permisosDimension.length === 0) {
@@ -313,10 +339,8 @@ export class MenuOpcionesComponent implements OnInit {
         return;
       }
 
-      // Marcar la dimensión como visible si tiene al menos un permiso activo
       dimension.visible = permisosDimension.some(p => p.activa);
 
-      // Procesar hijos de la dimensión
       if (dimension.hijos) {
         dimension.hijos.forEach(hijo => {
           const permiso = this.permisosUsuario.find(p => 
@@ -326,7 +350,6 @@ export class MenuOpcionesComponent implements OnInit {
           
           hijo.visible = permiso ? permiso.activa : false;
           
-          // Procesar submenús recursivamente
           if (hijo.hijos) {
             hijo.hijos.forEach(subhijo => {
               subhijo.visible = hijo.visible;
@@ -336,6 +359,8 @@ export class MenuOpcionesComponent implements OnInit {
       }
     });
   }
+
+ 
 
   navegar(ruta: string | undefined) {
     if (ruta) {

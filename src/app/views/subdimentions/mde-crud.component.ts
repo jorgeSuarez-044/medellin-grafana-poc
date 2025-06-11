@@ -239,7 +239,7 @@ export class MdeCrudComponent implements OnInit {
       }
       
     } catch (error: unknown) {
-      this.handleApiError('Error al actualizar configuración', error);
+      this.handleApiError('Error al actualizar configuración used no cuenta con los permisos para hacer esta accion', error);
       throw error;
     } finally {
       this.isLoading = false;
