@@ -11,7 +11,9 @@
     <button [class.active]="activeTab === 'roles'" (click)="changeTab('roles')">Roles</button>
     <button [class.active]="activeTab === 'grafana-roles'" (click)="changeTab('grafana-roles')">Roles Grafana</button>
     <button [class.active]="activeTab === 'auditoria'" (click)="changeTab('auditoria')">Auditoría</button>
+        <button [class.active]="activeTab === 'subdimensiones'" (click)="changeTab('subdimensiones')">Subdimensiones</button>
   </div>
+    <div class="tab-content" *ngIf="activeTab === 'subdimensiones'"><app-mde-crud></app-mde-crud></div>
 
   <div class="tab-content" *ngIf="activeTab === 'usuarios'">
     <div class="user-form">

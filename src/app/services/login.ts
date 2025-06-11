@@ -12,18 +12,18 @@ export class AuthService {
   login(credentials: { username: string; password: string }) {
     return this.http.post<any>(this.apiUrl, credentials).pipe(
       tap(response => {
-        localStorage.setItem('access_token', response.access_token);
+        localStorage.setItem('access_tokenadmin', response.access_token);
         this.router.navigate(['/inicio']);
       })
     );
   }
 
   logout(): void {
-    localStorage.removeItem('access_token');
+    localStorage.removeItem('access_tokenadmin');
     this.router.navigate(['/login']);
   }
 
   isLoggedIn(): boolean {
-    return !!localStorage.getItem('access_token');
+    return !!localStorage.getItem('access_tokenadmin');
   }
 }

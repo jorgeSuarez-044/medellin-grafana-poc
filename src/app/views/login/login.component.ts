@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
 import { AuthService } from './../../services/login';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-login',
@@ -22,7 +23,30 @@ export class LoginComponent {
       password: ['', Validators.required]
     });
   }
+  ngOnInit(): void {
+  this.logout();
+  }
+ logout(): void {
 
+  
+
+  // Verificar que se eliminó
+  if (!localStorage.getItem('access_token')) {
+    Swal.fire({
+      icon: 'success',
+      title: 'Token eliminado',
+      text: 'El token de acceso ha sido removido del almacenamiento local.',
+      confirmButtonText: 'OK'
+    });
+  } else {
+    Swal.fire({
+      icon: 'error',
+      title: 'Error',
+      text: 'No se pudo eliminar el token',
+      confirmButtonText: 'OK'
+    });
+  }
+}
   onSubmit(): void {
     if (this.loginForm.valid) {
       this.auth.login(this.loginForm.value).subscribe({

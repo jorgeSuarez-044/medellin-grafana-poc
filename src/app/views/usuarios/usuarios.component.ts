@@ -6,12 +6,13 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import Swal from 'sweetalert2';
+import { MdeCrudComponent } from '../subdimentions/mde-crud.component';
 
 @Component({
   selector: 'app-user-management',
   templateUrl: './usuarios.component.html',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, HttpClientModule, FormsModule],
+  imports: [CommonModule, ReactiveFormsModule, HttpClientModule, FormsModule,MdeCrudComponent],
   styleUrls: ['./usuarios.component.scss']
 })
 export class UsuariosComponent implements OnInit {

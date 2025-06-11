@@ -1,0 +1,108 @@
+<div class="container-fluid">
+  <!-- Loading spinner -->
+  
+
+  <!-- Main content -->
+  <div class="card shadow mb-4">
+    <div class="card-header py-3 d-flex justify-content-between align-items-center">
+      <h6 class="m-0 font-weight-bold text-primary">Configuración de Dimensiones</h6>
+    </div>
+    <div class="card-body">
+      <!-- Filters section -->
+      <div class="row mb-4">
+        <div class="col-md-3">
+          <label for="dimensionFilter" class="form-label">Filtrar por Dimensión:</label>
+          <select id="dimensionFilter" class="form-select" [(ngModel)]="selectedDimension" (change)="applyFilters()">
+            <option value="">Todas las dimensiones</option>
+            <option *ngFor="let dimension of dimensions" [value]="dimension">{{ dimension }}</option>
+          </select>
+        </div>
+        
+        <div class="col-md-3">
+          <label for="tipoAcceso" class="form-label">Tipo de Acceso:</label>
+          <select id="tipoAcceso" class="form-select" [(ngModel)]="selectedTipoAcceso">
+            <option value="" disabled selected>Seleccione un tipo</option>
+            <option value="editor">Editor</option>
+            <option value="visualizador">Visualizador</option>
+          </select>
+        </div>
+        
+        <div class="col-md-6">
+          <label for="searchInput" class="form-label">Buscar:</label>
+          <div class="input-group">
+            <input type="text" id="searchInput" class="form-control" placeholder="Buscar por dimensión o subdimensión..." 
+                   [(ngModel)]="searchTerm" (input)="applyFilters()">
+            <!-- <button class="btn btn-outline-secondary" type="button" (click)="searchTerm = ''; applyFilters()">
+              <i class="fas fa-times"></i>
+            </button> -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Configuration table -->
+      <div class="table-responsive">
+        <table class="table table-bordered table-hover">
+          <thead class="table-light">
+            <tr>
+              <th>Dimensión</th>
+              <th>Subdimensión</th>
+              <th>Estado</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let config of configuracionesFiltradas | paginate: { itemsPerPage: itemsPerPage, currentPage: p }">
+              <td>{{ config.dimension }}</td>
+              <td>{{ config.subdimension }}</td>
+              <td>
+                <span class="badge" [ngClass]="config.activa ? 'bg-success' : 'bg-secondary'">
+                  {{ config.activa ? 'Activo' : 'Inactivo' }}
+                </span>
+              </td>
+              <td>
+                <div class="form-check form-switch">
+                  <input class="form-check-input" type="checkbox" role="switch" 
+                         [id]="'toggle_' + config.dimension + '_' + config.subdimension"
+                         [checked]="config.activa"
+                         (change)="toggleActivation(config)"
+                         [disabled]="!selectedTipoAcceso">
+                  <label class="form-check-label" [for]="'toggle_' + config.dimension + '_' + config.subdimension">
+                    {{ config.activa ? 'Desactivar' : 'Activar' }}
+                  </label>
+                </div>
+              </td>
+            </tr>
+            <tr *ngIf="configuracionesFiltradas.length === 0">
+              <td colspan="4" class="text-center">No se encontraron configuraciones</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Pagination -->
+      <div class="row mt-3">
+        <div class="col-md-6">
+          <div class="d-flex align-items-center">
+            <span class="me-2">Mostrando {{ currentPageRange }} de {{ totalItems }} registros</span>
+            <select class="form-select form-select-sm w-auto" [(ngModel)]="itemsPerPage">
+              <option value="5">5 por página</option>
+              <option value="10">10 por página</option>
+              <option value="20">20 por página</option>
+              <option value="50">50 por página</option>
+            </select>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <pagination-controls 
+            class="pagination justify-content-end" 
+            (pageChange)="p = $event"
+            previousLabel="Anterior"
+            nextLabel="Siguiente"
+            [maxSize]="5"
+            [responsive]="true">
+          </pagination-controls>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
