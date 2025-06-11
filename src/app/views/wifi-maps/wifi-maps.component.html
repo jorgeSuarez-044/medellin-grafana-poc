@@ -27,15 +27,15 @@
       <mat-spinner></mat-spinner>
       <p>Cargando datos...</p>
     </div>
-    
+
     <div *ngIf="error" class="error-overlay">
       <mat-icon>error_outline</mat-icon>
       <p>Error al cargar los datos. Intente nuevamente.</p>
       <button mat-raised-button color="primary" (click)="fetchData()">Reintentar</button>
     </div>
-    
+
     <div id="map" class="map"></div>
-    
+
     <div class="map-legend">
       <h4>Leyenda</h4>
       <div *ngIf="!selectedAgeGroup && !selectedEducationLevel">
@@ -138,7 +138,7 @@
       </div>
     </div>
   </div>
-  
+
   <div class="controls-container">
     <mat-card class="filters-card">
       <mat-card-header>
@@ -154,7 +154,7 @@
             </mat-select>
           </mat-form-field>
         </div>
-        
+
         <div class="filter-group">
           <h4>Grupo etario</h4>
           <mat-button-toggle-group [(ngModel)]="selectedAgeGroup" (change)="applyFilters()">
@@ -162,15 +162,16 @@
             <mat-button-toggle *ngFor="let age of ageGroups" [value]="age.value">{{ age.label }}</mat-button-toggle>
           </mat-button-toggle-group>
         </div>
-        
+
         <div class="filter-group">
           <h4>Nivel educativo</h4>
           <mat-button-toggle-group [(ngModel)]="selectedEducationLevel" (change)="applyFilters()">
             <mat-button-toggle value="">Todos</mat-button-toggle>
-            <mat-button-toggle *ngFor="let edu of educationLevels" [value]="edu.value">{{ edu.label }}</mat-button-toggle>
+            <mat-button-toggle *ngFor="let edu of educationLevels" [value]="edu.value">{{ edu.label
+              }}</mat-button-toggle>
           </mat-button-toggle-group>
         </div>
-        
+
         <div class="filter-group">
           <h4>Acceso a internet</h4>
           <mat-button-toggle-group [(ngModel)]="internetAccessFilter" (change)="applyFilters()">
@@ -179,13 +180,13 @@
             <mat-button-toggle value="low">Bajo (≤30%)</mat-button-toggle>
           </mat-button-toggle-group>
         </div>
-        
+
         <div class="filter-group">
           <button mat-raised-button color="warn" (click)="resetFilters()">Reiniciar filtros</button>
         </div>
       </mat-card-content>
     </mat-card>
-    
+
     <mat-card class="stats-card">
       <mat-card-header>
         <mat-card-title>Estadísticas</mat-card-title>
@@ -197,29 +198,29 @@
           <h4>Población total</h4>
           <p>{{ totalPopulation | number }}</p>
         </div>
-        
+
         <div class="stat-item">
           <h4>Viviendas totales</h4>
           <p>{{ totalHomes | number }}</p>
         </div>
-        
+
         <div class="stat-item">
           <h4>Acceso a internet</h4>
           <p>{{ internetAccessPercentage | number:'1.1-1' }}%</p>
         </div>
-        
+
         <div class="stat-item">
           <h4>Acceso a agua potable</h4>
           <p>{{ waterAccessPercentage | number:'1.1-1' }}%</p>
         </div>
-        
+
         <div class="stat-item">
           <h4>Acceso a gas natural</h4>
           <p>{{ gasAccessPercentage | number:'1.1-1' }}%</p>
         </div>
       </mat-card-content>
     </mat-card>
-    
+
     <mat-card class="charts-card">
       <mat-card-header>
         <mat-card-title>Distribución</mat-card-title>
@@ -234,12 +235,15 @@
             </div>
           </div>
           <div class="chart-bar">
-            <div class="chart-bar-segment" [style.width.%]="ageDistribution['0-14']" style="background-color: #ef9a9a;"></div>
-            <div class="chart-bar-segment" [style.width.%]="ageDistribution['15-59']" style="background-color: #a5d6a7;"></div>
-            <div class="chart-bar-segment" [style.width.%]="ageDistribution['60+']" style="background-color: #90caf9;"></div>
+            <div class="chart-bar-segment" [style.width.%]="ageDistribution['0-14']" style="background-color: #ef9a9a;">
+            </div>
+            <div class="chart-bar-segment" [style.width.%]="ageDistribution['15-59']"
+              style="background-color: #a5d6a7;"></div>
+            <div class="chart-bar-segment" [style.width.%]="ageDistribution['60+']" style="background-color: #90caf9;">
+            </div>
           </div>
         </div>
-        
+
         <div class="chart-container">
           <h4>Nivel educativo</h4>
           <div class="chart-legend">
@@ -261,23 +265,45 @@
             </div>
           </div>
           <div class="chart-bar">
-            <div class="chart-bar-segment" [style.width.%]="educationDistribution.primary" style="background-color: #ffcc80;"></div>
-            <div class="chart-bar-segment" [style.width.%]="educationDistribution.secondary" style="background-color: #ce93d8;"></div>
-            <div class="chart-bar-segment" [style.width.%]="educationDistribution.higher" style="background-color: #80deea;"></div>
-            <div class="chart-bar-segment" [style.width.%]="educationDistribution.other" style="background-color: #bdbdbd;"></div>
+            <div class="chart-bar-segment" [style.width.%]="educationDistribution.primary"
+              style="background-color: #ffcc80;"></div>
+            <div class="chart-bar-segment" [style.width.%]="educationDistribution.secondary"
+              style="background-color: #ce93d8;"></div>
+            <div class="chart-bar-segment" [style.width.%]="educationDistribution.higher"
+              style="background-color: #80deea;"></div>
+            <div class="chart-bar-segment" [style.width.%]="educationDistribution.other"
+              style="background-color: #bdbdbd;"></div>
           </div>
         </div>
       </mat-card-content>
     </mat-card>
   </div>
+  <div class="modal-overlay" *ngIf="selectedFeature">
+    <div class="modal-content">
+      <button class="close-btn" (click)="closeModal()">×</button>
+      <h4>Manzana {{selectedFeature.properties?.cod_dane_a || 'N/A'}}</h4>
+      <p><strong>Comuna:</strong> {{selectedFeature.properties?.nmb_lc_cm || 'N/A'}}</p>
+      <p><strong>Población:</strong> {{selectedFeature.properties?.tp27_perso || '0'}}</p>
+      <p><strong>Densidad:</strong> {{(selectedFeature.properties?.populationDensity || 0).toFixed(2)}} pers/m²</p>
+      <p><strong>Acceso a internet:</strong> {{(selectedFeature.properties?.internetAccess || 0).toFixed(1)}}%</p>
+      <p><strong>Acceso a agua:</strong> {{(selectedFeature.properties?.waterAccess || 0).toFixed(1)}}%</p>
+      <p><strong>Acceso a gas:</strong> {{(selectedFeature.properties?.gasAccess || 0).toFixed(1)}}%</p>
+      <p><strong>Adultos mayores (60+):</strong> {{(selectedFeature.properties?.elderlyPercentage || 0).toFixed(1)}}%
+      </p>
+      <strong>Educación:</strong><br>
+      - Primaria: {{(selectedFeature.properties?.educationPrimary || 0).toFixed(1)}}%<br>
+      - Secundaria: {{(selectedFeature.properties?.educationSecondary || 0).toFixed(1)}}%<br>
+      - Superior: {{(selectedFeature.properties?.educationHigher || 0).toFixed(1)}}%
+    </div>
+  </div>
 </div>
 <div class="iframe-container">
   <iframe
     src="http://grafana-fiware.apps.preprodalcaldia.medellin.gov.co/territoriointeligente/d/cd625ad1-09dd-4109-be18-34cffbf9ab79/medellin-dane-geomanzanas?orgId=1&kiosk"
-    class="large-iframe"
-    allowfullscreen>
+    class="large-iframe" allowfullscreen>
   </iframe>
 </div>
+
 <style>
   body {
     margin: 0;
@@ -314,12 +340,14 @@
 
   .small-iframe {
     flex: 1;
-    height: 250px; /* Altura reducida para los dos primeros iframes */
+    height: 250px;
+    /* Altura reducida para los dos primeros iframes */
     border: none;
   }
 
   .large-iframe {
-    height: 700px; /* Mayor altura para el mapa */
+    height: 700px;
+    /* Mayor altura para el mapa */
     border: none;
   }
 </style>

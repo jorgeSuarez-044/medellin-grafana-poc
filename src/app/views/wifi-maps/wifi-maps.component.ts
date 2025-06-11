@@ -39,7 +39,7 @@ export class WifiMaps implements OnInit, OnDestroy {
   private map!: maplibregl.Map ;
   private data: any[] = [];
   private popup: maplibregl.Popup | null = null;
-  private selectedFeature: any = null;
+   selectedFeature: any = null;
   isLoading = true;
   error = false;
   
@@ -177,12 +177,12 @@ fetchData(): void {
 
   this.http.get<any[]>('http://flask-fiware.apps.preprodalcaldia.medellin.gov.co/api/wifi-dane/all')
     .pipe(
-      timeout(60000), 
+      timeout(60000), // ⏱️ espera hasta 60 segundos
       catchError(err => {
         console.error('Error fetching data (timeout o fallo de red):', err);
         this.error = true;
         this.isLoading = false;
-        return of([]); 
+        return of([]); // Devuelve un array vacío para que el observable no se rompa
       })
     )
     .subscribe({
@@ -342,104 +342,11 @@ private showPopup(feature: any): void {
     { source: 'wifi-data', id: feature.id },
     { selected: true }
   );
+}
 
-  // Cerrar popup existente
-  if (this.popup) {
-    this.popup.remove();
-  }
-
-  const properties = feature.properties || {};
-  const coordinates = feature.geometry.coordinates.slice();
-
-  // Eliminar la verificación del while que usaba 'e' ya que no es necesaria
-  // para puntos individuales (solo útil cuando se trabajan con líneas/polígonos que cruzan el antimeridiano)
-
-  // Crear contenido del popup con manejo de valores nulos
-const content = `
-  <style>
- .map-popup {
- 
-      background: #fff;
-      max-width: 300px;
-      padding: 16px;
-      border-radius: 16px;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
-      font-family: 'Segoe UI', sans-serif;
-      font-size: 14px;
-      color: #333;
-      animation: popupScaleIn 0.3s ease-out;
-      text-align: center;
-      margin: 0 auto;
-    }
-
-    .map-popup h4 {
-      color: #1976d2;
-      font-size: 18px;
-      font-weight: 600;
-    }
-
-    .map-popup p {
-      margin: 6px 0;
-    }
-
-    .map-popup .close-btn {
-      position: absolute;
-      top: 8px;
-      right: 12px;
-      background: transparent;
-      border: none;
-      font-size: 20px;
-      cursor: pointer;
-      color: #666;
-    }
-
-    @keyframes popupScaleIn {
-      0% {
-        transform: scale(0.9) rotateX(-10deg);
-        opacity: 0;
-      }
-      100% {
-        transform: scale(1) rotateX(0deg);
-        opacity: 1;
-      }
-    }
-  </style>
-
-  <div class="map-popup">
-    <button class="close-btn" onclick="this.closest('.maplibregl-popup').remove()">❎</button>
-    <h4>Manzana ${properties.cod_dane_a || 'N/A'}</h4>
-    <p><strong>Comuna:</strong> ${properties.nmb_lc_cm || 'N/A'}</p>
-    <p><strong>Población:</strong> ${properties.tp27_perso || '0'}</p>
-    <p><strong>Densidad:</strong> ${(properties.populationDensity || 0).toFixed(2)} pers/m²</p>
-    <p><strong>Acceso a internet:</strong> ${(properties.internetAccess || 0).toFixed(1)}%</p>
-    <p><strong>Acceso a agua:</strong> ${(properties.waterAccess || 0).toFixed(1)}%</p>
-    <p><strong>Acceso a gas:</strong> ${(properties.gasAccess || 0).toFixed(1)}%</p>
-    <p><strong>Adultos mayores (60+):</strong> ${(properties.elderlyPercentage || 0).toFixed(1)}%</p>
-    <strong>Educación:</strong><br>
-    - Primaria: ${(properties.educationPrimary || 0).toFixed(1)}%<br>
-    - Secundaria: ${(properties.educationSecondary || 0).toFixed(1)}%<br>
-    - Superior: ${(properties.educationHigher || 0).toFixed(1)}%
-  </div>
-`;
-
-
-
-  // Crear y mostrar el nuevo popup
-  this.popup = new maplibregl.Popup({
-    closeButton: false,
-    closeOnClick: false,
-    anchor: 'center',
-    offset: 25
-  })
-    .setLngLat(coordinates)
-    .setHTML(content)
-    .addTo(this.map);
-
-  // Cerrar popup cuando se hace clic en el botón de cerrar
-  this.popup.on('close', () => {
-    this.clearSelectedFeature();
-    this.popup = null;
-  });
+closeModal(): void {
+  this.clearSelectedFeature();
+  this.selectedFeature = null;
 }
 
   private updateMapLayers(): void {
