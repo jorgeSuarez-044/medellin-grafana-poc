@@ -820,4 +820,117 @@ h1 {
   font-style: italic;
   color: #64748b;
 }
+.tab-content {
+  padding: 1.5rem;
+  background-color: #f8fafc;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  color: #1e293b;
+  font-family: 'Segoe UI', sans-serif;
+
+  h2 {
+    font-size: 1.5rem;
+    color: #334155;
+    margin-bottom: 1rem;
+  }
+
+  .filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+
+    .filter-group {
+      display: flex;
+      flex-direction: column;
+
+      label {
+        font-weight: 600;
+        margin-bottom: 0.25rem;
+        color: #475569;
+      }
+
+      select {
+        padding: 0.5rem;
+        border-radius: 8px;
+        border: 1px solid #cbd5e1;
+        background-color: #fff;
+        color: #1e293b;
+        font-size: 0.9rem;
+
+        &:focus {
+          outline: none;
+          border-color: #334155;
+          box-shadow: 0 0 0 2px rgba(51, 65, 85, 0.2);
+        }
+      }
+    }
+
+    button {
+      align-self: end;
+      padding: 0.5rem 1rem;
+      background-color: #334155;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background-color 0.3s ease;
+
+      &:hover {
+        background-color: #1e293b;
+      }
+    }
+  }
+
+  .audit-logs {
+    overflow-x: auto;
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background-color: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+
+      thead {
+        background-color: #e2e8f0;
+
+        th {
+          padding: 0.75rem 1rem;
+          text-align: left;
+          font-size: 0.9rem;
+          color: #334155;
+          font-weight: 700;
+        }
+      }
+
+      tbody {
+        tr {
+          &:nth-child(even) {
+            background-color: #f1f5f9;
+          }
+
+          &:hover {
+            background-color: #e0f2fe;
+          }
+
+          td {
+            padding: 0.75rem 1rem;
+            font-size: 0.9rem;
+            color: #475569;
+          }
+        }
+      }
+    }
+
+    .no-results {
+      text-align: center;
+      margin-top: 1rem;
+      font-style: italic;
+      color: #94a3b8;
+    }
+  }
+}
 
