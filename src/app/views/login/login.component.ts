@@ -24,36 +24,48 @@ export class LoginComponent {
     });
   }
 
- logout(): void {
-
-  
-
-  // Verificar que se eliminó
-  if (!localStorage.getItem('access_token')) {
-    Swal.fire({
-      icon: 'success',
-      title: 'Token eliminado',
-      text: 'El token de acceso ha sido removido del almacenamiento local.',
-      confirmButtonText: 'OK'
-    });
-  } else {
-    Swal.fire({
-      icon: 'error',
-      title: 'Error',
-      text: 'No se pudo eliminar el token',
-      confirmButtonText: 'OK'
-    });
-  }
-}
-  onSubmit(): void {
-    if (this.loginForm.valid) {
-      this.auth.login(this.loginForm.value).subscribe({
-        next: () => {},
-        error: (err) => {
-          console.error(err);
-          this.errorMsg = 'Usuario o contraseña incorrectos';
-        }
+  logout(): void {
+    if (!localStorage.getItem('access_token')) {
+      Swal.fire({
+        icon: 'success',
+        title: 'Token eliminado',
+        text: 'El token de acceso ha sido removido del almacenamiento local.',
+        confirmButtonText: 'OK'
+      });
+    } else {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'No se pudo eliminar el token',
+        confirmButtonText: 'OK'
       });
     }
+  }
+
+  onSubmit(): void {
+    if (this.loginForm.invalid) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Formulario incompleto',
+        text: 'Por favor diligencie el formulario de inicio de sesión',
+        confirmButtonColor: '#334155'
+      });
+      return;
+    }
+
+    this.auth.login(this.loginForm.value).subscribe({
+      next: () => {},
+      error: (err) => {
+        console.error(err);
+        this.errorMsg = 'Usuario o contraseña incorrectos';
+
+        Swal.fire({
+          icon: 'error',
+          title: 'Error de autenticación',
+          text: this.errorMsg,
+          confirmButtonColor: '#334155'
+        });
+      }
+    });
   }
 }
