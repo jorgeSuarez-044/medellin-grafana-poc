@@ -11,9 +11,12 @@
     <button [class.active]="activeTab === 'roles'" (click)="changeTab('roles')">Roles</button>
     <button [class.active]="activeTab === 'grafana-roles'" (click)="changeTab('grafana-roles')">Roles Grafana</button>
     <button [class.active]="activeTab === 'auditoria'" (click)="changeTab('auditoria')">Auditoría</button>
-        <button [class.active]="activeTab === 'subdimensiones'" (click)="changeTab('subdimensiones')">Subdimensiones</button>
+    <button [class.active]="activeTab === 'subdimensiones'" (click)="changeTab('subdimensiones')">Subdimensiones</button>
   </div>
-    <div class="tab-content" *ngIf="activeTab === 'subdimensiones'"><app-mde-crud></app-mde-crud></div>
+  
+  <div class="tab-content" *ngIf="activeTab === 'subdimensiones'">
+    <app-mde-crud></app-mde-crud>
+  </div>
 
   <div class="tab-content" *ngIf="activeTab === 'usuarios'">
     <div class="user-form">
@@ -24,7 +27,6 @@
           <input type="text" formControlName="username" placeholder="Ingrese nombre de usuario" [disabled]="!!selectedUser">
           <div class="error-message" *ngIf="userForm.get('username')?.invalid && userForm.get('username')?.touched">
             <span *ngIf="userForm.get('username')?.errors?.['required']">Este campo es requerido</span>
-
           </div>
         </div>
         <div class="form-group">
@@ -49,55 +51,23 @@
           </div>
         </div>
         <div class="form-group">
-          <label>Contraseña (opcional)</label>
-          <input type="password" formControlName="password" 
-                 [placeholder]="selectedUser ? 'Nueva contraseña (dejar en blanco para no cambiar)' : 'Ingrese contraseña (opcional)'">
-          <small>Puede asignar una contraseña ahora o más tarde</small>
-        </div>
-        <div class="form-group">
           <label>Habilitado</label>
           <input type="checkbox" formControlName="enabled">
         </div>
-        <div class="form-group" *ngIf="roles.length > 0">
-          <label>Roles del Sistema (opcional)</label>
-          <small>Puede asignar roles ahora o más tarde</small>
-          <div class="roles-container">
-            <div *ngFor="let role of roles" class="role-checkbox">
-              <input 
-                type="checkbox" 
-                [id]="'role-' + role.id" 
-                [value]="role.id" 
-                (change)="onRoleChange($event, role.id)"
-                [checked]="isRoleSelected(role.id)"
-                [disabled]="roleAssignmentInProgress">
-              <label [for]="'role-' + role.id">{{ role.name }}</label>
-              <small *ngIf="role.description" class="role-description">{{ role.description }}</small>
-            </div>
-          </div>
-        </div>
-        <div class="form-group" *ngIf="grafanaRoles.length > 0">
-          <label>Roles de Grafana (opcional)</label>
-          <small>Puede asignar roles ahora o más tarde</small>
-          <div class="roles-container">
-            <div *ngFor="let role of grafanaRoles" class="role-checkbox">
-              <input 
-                type="checkbox" 
-                [id]="'grafana-role-' + role.id" 
-                [value]="role.id" 
-                (change)="onRoleChange($event, role.id, true)"
-                [checked]="isRoleSelected(role.id, true)"
-                [disabled]="roleAssignmentInProgress">
-              <label [for]="'grafana-role-' + role.id">{{ role.name }}</label>
-              <small *ngIf="role.description" class="role-description">{{ role.description }}</small>
-            </div>
-          </div>
-          <div *ngIf="roleError" class="error-message">{{ roleError }}</div>
-        </div>
         <div class="form-actions">
-          <button type="submit" [disabled]="!userForm.valid || roleAssignmentInProgress">
+          <button type="submit" [disabled]="!userForm.valid">
             {{ selectedUser ? 'Actualizar' : 'Crear' }}
           </button>
           <button type="button" *ngIf="selectedUser" (click)="cancelEdit()">Cancelar</button>
+          <button type="button" *ngIf="selectedUser" (click)="openPasswordModal()" class="password-btn">
+            Asignar Contraseña
+          </button>
+          <button type="button" *ngIf="selectedUser" (click)="openRolesModal()" class="roles-btn">
+            Asignar Roles
+          </button>
+          <button type="button" *ngIf="selectedUser" (click)="openGrafanaRolesModal()" class="grafana-roles-btn">
+            Asignar Roles Grafana
+          </button>
         </div>
       </form>
     </div>
@@ -134,12 +104,11 @@
               <span *ngIf="!user.roles || user.roles.length === 0" class="no-roles">Sin roles</span>
             </td>
             <td>
-              <span *ngFor="let role of user.grafanaRoles" class="role-badge grafana-role">{{ role.name }}</span>
+              <span *ngFor="let role of user.grafanaRoles" class="role-badge grafana-role"> {{ role.name }} ({{ role.id }})</span>
               <span *ngIf="!user.grafanaRoles || user.grafanaRoles.length === 0" class="no-roles">Sin roles</span>
             </td>
             <td class="actions">
               <button (click)="editUser(user)" class="edit-btn">Editar</button>
-              <button (click)="assignRoles(user)" class="role-btn">Asignar Roles</button>
               <button (click)="confirmDelete(user.id)" class="delete-btn">Eliminar</button>
             </td>
           </tr>
@@ -268,6 +237,92 @@
       <div *ngIf="filteredAuditLogs.length === 0" class="no-results">
         No se encontraron registros de auditoría
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- Password Modal -->
+<div class="modal-overlay" *ngIf="showPasswordModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Cambiar Contraseña</h3>
+      <button (click)="closePasswordModal()" class="close-btn">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>Nueva Contraseña</label>
+        <input type="password" [(ngModel)]="tempPassword" placeholder="Ingrese la nueva contraseña">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button (click)="closePasswordModal()" class="cancel-btn">Cancelar</button>
+      <button (click)="savePassword()" [disabled]="!tempPassword || loading" class="save-btn">
+        {{ loading ? 'Guardando...' : 'Guardar' }}
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Roles Modal -->
+<div class="modal-overlay" *ngIf="showRolesModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Asignar Roles del Sistema</h3>
+      <button (click)="closeRolesModal()" class="close-btn">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="roles-container">
+        <div *ngFor="let role of roles" class="role-checkbox">
+          <input 
+            type="checkbox" 
+            [id]="'modal-role-' + role.id" 
+            [value]="role.id" 
+            (change)="onRoleChange($event, role.id)"
+            [checked]="isRoleSelected(role.id)"
+            [disabled]="roleAssignmentInProgress">
+          <label [for]="'modal-role-' + role.id">{{ role.name }}</label>
+          <small *ngIf="role.description" class="role-description">{{ role.description }}</small>
+        </div>
+      </div>
+      <div *ngIf="roleError" class="error-message">{{ roleError }}</div>
+    </div>
+    <div class="modal-footer">
+      <button (click)="closeRolesModal()" class="cancel-btn">Cancelar</button>
+      <button (click)="saveRoles()" [disabled]="roleAssignmentInProgress" class="save-btn">
+        {{ roleAssignmentInProgress ? 'Guardando...' : 'Guardar' }}
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Grafana Roles Modal -->
+<div class="modal-overlay" *ngIf="showGrafanaRolesModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Asignar Roles de Grafana</h3>
+      <button (click)="closeGrafanaRolesModal()" class="close-btn">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="roles-container">
+        <div *ngFor="let role of grafanaRoles" class="role-checkbox">
+          <input 
+            type="checkbox" 
+            [id]="'modal-grafana-role-' + role.id" 
+            [value]="role.id" 
+            (change)="onRoleChange($event, role.id, true)"
+            [checked]="isRoleSelected(role.id, true)"
+            [disabled]="roleAssignmentInProgress">
+          <label [for]="'modal-grafana-role-' + role.id">{{ role.name }}</label>
+          <small *ngIf="role.description" class="role-description">{{ role.description }}</small>
+        </div>
+      </div>
+      <div *ngIf="roleError" class="error-message">{{ roleError }}</div>
+    </div>
+    <div class="modal-footer">
+      <button (click)="closeGrafanaRolesModal()" class="cancel-btn">Cancelar</button>
+      <button (click)="saveGrafanaRoles()" [disabled]="roleAssignmentInProgress" class="save-btn">
+        {{ roleAssignmentInProgress ? 'Guardando...' : 'Guardar' }}
+      </button>
     </div>
   </div>
 </div>

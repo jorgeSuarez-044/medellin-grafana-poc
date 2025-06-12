@@ -363,3 +363,461 @@ h1 {
   color: #64748b;
   font-style: italic;
 }
+/* Estilos para los botones de auditoría y elementos faltantes */
+.filter-group button {
+  padding: 8px 16px;
+  background-color: #334155;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.filter-group button:hover {
+  background-color: #1e293b;
+}
+
+/* Estilos para los botones de acción en los modales */
+.password-btn {
+  background-color: #dbeafe !important;
+  color: #1d4ed8 !important;
+}
+
+.password-btn:hover {
+  background-color: #bfdbfe !important;
+}
+
+.roles-btn {
+  background-color: #e0f2fe !important;
+  color: #0369a1 !important;
+}
+
+.roles-btn:hover {
+  background-color: #bae6fd !important;
+}
+
+.grafana-roles-btn {
+  background-color: #ecfccb !important;
+  color: #4d7c0f !important;
+}
+
+.grafana-roles-btn:hover {
+  background-color: #d9f99d !important;
+}
+
+/* Estilos para los mensajes de error */
+.error-message {
+  color: #dc2626;
+  font-size: 12px;
+  margin-top: 5px;
+}
+
+/* Estilos para el loading overlay */
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.8);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.loading-overlay p {
+  margin-top: 15px;
+  color: #334155;
+  font-weight: 500;
+}
+
+.spinner {
+  border: 4px solid #e2e8f0;
+  border-top: 4px solid #334155;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Estilos para los select en los filtros de auditoría */
+.filter-group select {
+  padding: 8px 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 4px;
+  background-color: white;
+  color: #334155;
+  font-size: 14px;
+  transition: border-color 0.3s ease;
+}
+
+.filter-group select:focus {
+  outline: none;
+  border-color: #94a3b8;
+}
+
+/* Estilos para la información del usuario en los modales */
+.user-info {
+  background-color: #f8fafc;
+  padding: 10px;
+  border-radius: 4px;
+  margin-bottom: 15px;
+  border-left: 3px solid #334155;
+}
+
+.user-info p {
+  margin: 0;
+  color: #334155;
+}
+
+/* Estilos para los botones de detalles en las tablas de roles */
+.roles-list button,
+.user-list button:not(.edit-btn):not(.delete-btn) {
+  padding: 5px 10px;
+  background-color: #e2e8f0;
+  color: #334155;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.roles-list button:hover,
+.user-list button:not(.edit-btn):not(.delete-btn):hover {
+  background-color: #cbd5e1;
+}
+
+/* Ajustes para los checkboxes en los modales */
+.role-checkbox input[type="checkbox"] {
+  margin-right: 8px;
+  accent-color: #334155;
+}
+
+/* Estilos para los badges de usuarios en las tablas de roles */
+.user-badge {
+  display: inline-block;
+  background-color: #e2e8f0;
+  color: #334155;
+  padding: 3px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  margin-right: 5px;
+  margin-bottom: 5px;
+}
+
+/* Estilos para la tabla de auditoría */
+.audit-logs table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.audit-logs th,
+.audit-logs td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.audit-logs th {
+  background-color: #f1f5f9;
+  color: #334155;
+  font-weight: 600;
+}
+
+.audit-logs tr:hover {
+  background-color: #f8fafc;
+}
+
+/* Estilos responsivos */
+@media (max-width: 768px) {
+  .container {
+    margin-left: 0;
+    padding: 10px;
+  }
+  
+  .tabs {
+    flex-wrap: wrap;
+  }
+  
+  .tabs button {
+    flex: 1 0 auto;
+    padding: 8px 10px;
+    font-size: 14px;
+  }
+  
+  .filters {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .modal {
+    width: 95%;
+  }
+  
+  .roles-container {
+    grid-template-columns: 1fr;
+  }
+}
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); // fondo oscuro semi-transparente
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal {
+  background-color: #ffffff;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 500px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+  animation: fadeIn 0.3s ease-in-out;
+  color: #1e293b;
+}
+
+.modal-header {
+  background-color: #334155;
+  color: #ffffff;
+  padding: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  h3 {
+    margin: 0;
+    font-size: 1.25rem;
+  }
+
+  .close-btn {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: #ffffff;
+    cursor: pointer;
+    transition: color 0.2s ease;
+
+    &:hover {
+      color: #f87171;
+    }
+  }
+}
+
+.modal-body {
+  padding: 1rem;
+  max-height: 400px;
+  overflow-y: auto;
+
+  .roles-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .role-checkbox {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+
+    input[type="checkbox"] {
+      margin-right: 0.5rem;
+    }
+
+    label {
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      cursor: pointer;
+    }
+
+    .role-description {
+      font-size: 0.875rem;
+      color: #64748b;
+      padding-left: 1.5rem;
+    }
+  }
+
+  .user-info {
+    background-color: #f1f5f9;
+    border-radius: 8px;
+    padding: 0.5rem 1rem;
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+
+    strong {
+      color: #0f172a;
+    }
+  }
+
+  .error-message {
+    color: #dc2626;
+    margin-top: 1rem;
+    font-weight: 500;
+  }
+}
+
+.modal-footer {
+  padding: 1rem;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  background-color: #f8fafc;
+  border-top: 1px solid #e2e8f0;
+
+  .cancel-btn,
+  .save-btn {
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.2s ease;
+  }
+
+  .cancel-btn {
+    background-color: #e2e8f0;
+    color: #1e293b;
+
+    &:hover {
+      background-color: #cbd5e1;
+    }
+  }
+
+  .save-btn {
+    background-color: #334155;
+    color: #ffffff;
+
+    &:hover {
+      background-color: #1e293b;
+    }
+
+    &:disabled {
+      background-color: #94a3b8;
+      cursor: not-allowed;
+    }
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.audit-tab-wrapper {
+  padding: 1.5rem;
+  background-color: #f8fafc;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  color: #1e293b;
+}
+
+.audit-title {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  color: #334155;
+}
+
+.audit-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  align-items: flex-end;
+
+  .audit-filter-group {
+    display: flex;
+    flex-direction: column;
+
+    label {
+      font-size: 0.875rem;
+      margin-bottom: 0.25rem;
+      color: #475569;
+    }
+
+    select {
+      padding: 0.5rem;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      background-color: #fff;
+      font-size: 0.95rem;
+      color: #0f172a;
+    }
+  }
+
+  .audit-clear-btn {
+    background-color: #e11d48;
+    color: white;
+    padding: 0.55rem 1rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.2s;
+
+    &:hover {
+      background-color: #be123c;
+    }
+  }
+}
+
+.audit-table-container {
+  overflow-x: auto;
+}
+
+.audit-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+
+  th, td {
+    padding: 0.75rem 1rem;
+    text-align: left;
+    border-bottom: 1px solid #e2e8f0;
+  }
+
+  th {
+    background-color: #334155;
+    color: #f1f5f9;
+    font-weight: 600;
+  }
+
+  td {
+    color: #1e293b;
+    font-size: 0.95rem;
+  }
+
+  tr:hover {
+    background-color: #f1f5f9;
+  }
+}
+
+.audit-no-results {
+  text-align: center;
+  padding: 1rem;
+  font-style: italic;
+  color: #64748b;
+}
+

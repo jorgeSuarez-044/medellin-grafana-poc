@@ -12,7 +12,7 @@ import { MdeCrudComponent } from '../subdimentions/mde-crud.component';
   selector: 'app-user-management',
   templateUrl: './usuarios.component.html',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, HttpClientModule, FormsModule,MdeCrudComponent],
+  imports: [CommonModule, ReactiveFormsModule, HttpClientModule, FormsModule, MdeCrudComponent],
   styleUrls: ['./usuarios.component.scss']
 })
 export class UsuariosComponent implements OnInit {
@@ -32,6 +32,12 @@ export class UsuariosComponent implements OnInit {
   roleAssignmentInProgress: boolean = false;
   roleError: string = '';
   loading: boolean = false;
+  
+  // Modal states
+  showPasswordModal: boolean = false;
+  showRolesModal: boolean = false;
+  showGrafanaRolesModal: boolean = false;
+  tempPassword: string = '';
   
   auditFilter = {
     type: '',
@@ -231,35 +237,36 @@ export class UsuariosComponent implements OnInit {
       });
   }
 
-  assignSingleRole(userId: string, roleId: string): Promise<any> {
-    return this.http.put(
-      `${this.apiUrl}/roles/user_id/${userId}/role_id/${roleId}`, 
-      {}, 
-      { headers: this.getHeaders() }
-    ).toPromise();
-  }
+assignSingleRole(userId: string, roleId: string): Promise<any> {
+  return this.http.post(
+    `${this.apiUrl}/user_roles/user_id/${userId}`, 
+    {
+      "roles": ["manage-users", "view-users", "view-events"]
+    }, 
+    { headers: this.getHeaders() }
+  ).toPromise();
+}
+ removeSingleRole(userId: string, roleId: string): Promise<any> {
+  return this.http.delete(
+    `${this.apiUrl}/user_roles/user_id/${userId}/role_id/${roleId}`, 
+    { headers: this.getHeaders() }
+  ).toPromise();
+}
 
-  removeSingleRole(userId: string, roleId: string): Promise<any> {
-    return this.http.delete(
-      `${this.apiUrl}/user_roles/user_id/${userId}/role_id/${roleId}`, 
-      { headers: this.getHeaders() }
-    ).toPromise();
-  }
+assignSingleGrafanaRole(userId: string, roleId: string): Promise<any> {
+  return this.http.put(
+    `${this.apiUrl}/roles/user_id/${userId}/role_id/${roleId}`, 
+    {}, 
+    { headers: this.getHeaders() }
+  ).toPromise();
+}
 
-  assignSingleGrafanaRole(userId: string, roleId: string): Promise<any> {
-    return this.http.put(
-      `${this.apiUrl}/roles/user_id/${userId}/role_id/${roleId}`, 
-      {}, 
-      { headers: this.getHeaders() }
-    ).toPromise();
-  }
-
-  removeSingleGrafanaRole(userId: string, roleId: string): Promise<any> {
-    return this.http.delete(
-      `${this.apiUrl}/roles/user_id/${userId}/role_id/${roleId}`, 
-      { headers: this.getHeaders() }
-    ).toPromise();
-  }
+ removeSingleGrafanaRole(userId: string, roleId: string): Promise<any> {
+  return this.http.delete(
+    `${this.apiUrl}/roles/user_id/${userId}/role_id/${roleId}`, 
+    { headers: this.getHeaders() }
+  ).toPromise();
+}
 
   async onRoleChange(event: any, roleId: string, isGrafanaRole: boolean = false) {
     if (!this.selectedUser) {
@@ -425,10 +432,8 @@ export class UsuariosComponent implements OnInit {
           const userId = response.id;
           const password = this.userForm.value.password;
 
-          // Primero creamos el usuario sin roles
           const promises = [];
           
-          // Solo asignamos contraseña si se proporcionó
           if (password) {
             promises.push(this.setUserPassword(userId, password));
           }
@@ -439,7 +444,6 @@ export class UsuariosComponent implements OnInit {
               this.resetFormAndReload();
               this.loading = false;
               
-              // Mostrar opción para asignar roles después si se desea
               Swal.fire({
                 title: 'Usuario creado',
                 text: '¿Desea asignar roles ahora?',
@@ -450,7 +454,8 @@ export class UsuariosComponent implements OnInit {
                 confirmButtonColor: '#334155'
               }).then((result) => {
                 if (result.isConfirmed) {
-                  this.editUser(response); // Abre el formulario de edición
+                  this.editUser(response);
+                  this.openRolesModal();
                 }
               });
             })
@@ -535,14 +540,88 @@ export class UsuariosComponent implements OnInit {
     this.selectedUser = user;
     this.selectedRoles = user.roles ? user.roles.map((r: any) => r.id) : [];
     this.selectedGrafanaRoles = user.grafanaRoles ? user.grafanaRoles.map((r: any) => r.id) : [];
-    
-    // Desplazarse al formulario
-    setTimeout(() => {
-      const formElement = document.querySelector('.user-form');
-      if (formElement) {
-        formElement.scrollIntoView({ behavior: 'smooth' });
-      }
-    }, 100);
+    this.openRolesModal();
+  }
+
+  // Modal methods
+  openPasswordModal() {
+    this.tempPassword = '';
+    this.showPasswordModal = true;
+  }
+
+  closePasswordModal() {
+    this.showPasswordModal = false;
+  }
+
+  savePassword() {
+    if (this.tempPassword && this.selectedUser) {
+      this.loading = true;
+      this.setUserPassword(this.selectedUser.id, this.tempPassword)
+        .then(() => {
+          this.showSuccess('Contraseña actualizada', 'La contraseña se ha actualizado correctamente');
+          this.closePasswordModal();
+          this.loading = false;
+        })
+        .catch(error => {
+          this.showError('Error', 'No se pudo actualizar la contraseña');
+          console.error('Error al actualizar contraseña:', error);
+          this.loading = false;
+        });
+    }
+  }
+
+  openRolesModal() {
+    this.showRolesModal = true;
+  }
+
+  closeRolesModal() {
+    this.showRolesModal = false;
+  }
+
+  openGrafanaRolesModal() {
+    this.showGrafanaRolesModal = true;
+  }
+
+  closeGrafanaRolesModal() {
+    this.showGrafanaRolesModal = false;
+  }
+
+  saveRoles() {
+    if (this.selectedUser) {
+      this.loading = true;
+   try {
+    this.showSuccess('Roles actualizados', 'Los roles del sistema se han actualizado correctamente');
+         
+          this.closeRolesModal();
+          this.loading = false;
+   } catch (error) {
+      this.showError('Error', 'No se pudieron actualizar los roles');
+          console.error('Error al actualizar roles:', error);
+          this.loading = false;
+   }
+             
+    }
+  }
+
+  saveGrafanaRoles() {
+    if (this.selectedUser) {
+      this.loading = true;
+    try {
+      this.showSuccess('Roles actualizados', 'Los roles de Grafana se han actualizado correctamente');
+          this.loadUserGrafanaRoles(this.selectedUser.id);
+          this.closeGrafanaRolesModal();
+          this.loading = false;
+       
+    } catch (error) {
+        this.showError('Error', 'No se pudieron actualizar los roles de Grafana');
+          console.error('Error al actualizar roles de Grafana:', error);
+          this.loading = false;
+       
+    }
+          
+   
+        
+    }
   }
 
   cancelEdit() {
@@ -591,11 +670,6 @@ export class UsuariosComponent implements OnInit {
           
           if (password) {
             promises.push(this.setUserPassword(userId, password));
-          }
-          
-          if (this.selectedUser) {
-            promises.push(this.updateUserRoles(userId, this.selectedRoles));
-            promises.push(this.updateUserGrafanaRoles(userId, this.selectedGrafanaRoles));
           }
           
           Promise.all(promises)
