@@ -36,7 +36,7 @@ interface HistoricData {
 export class NoiseSensorMapComponent implements OnInit, AfterViewInit {
   @ViewChild('map') mapContainer!: ElementRef;
   private map: maplibregl.Map | null = null;
-  private apiUrl = 'http://flask-fiware.apps.preprodalcaldia.medellin.gov.co/api/sensores-ruido';
+  private apiUrl = 'http://flask-fiware.apps.servicios.medellin.gov.co/api/sensores-ruido';
   
   // Datos y estado
   sensors: any[] = [];

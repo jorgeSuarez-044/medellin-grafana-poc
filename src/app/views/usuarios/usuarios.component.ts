@@ -44,7 +44,7 @@ export class UsuariosComponent implements OnInit {
     action: ''
   };
 
-  apiUrl = 'http://flask-fiware.apps.preprodalcaldia.medellin.gov.co/api/keycloak';
+  apiUrl = 'http://flask-fiware.apps.servicios.medellin.gov.co/api/keycloak';
 
   constructor(private http: HttpClient, private fb: FormBuilder) {
     this.initUserForm();
