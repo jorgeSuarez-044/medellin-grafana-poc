@@ -27,7 +27,7 @@ interface ApiPayload {
   styleUrls: ['./mde-crud.component.scss'],
 })
 export class MdeCrudComponent implements OnInit {
-  readonly baseUrl = 'http://flask-fiware.apps.servicios.medellin.gov.co/api/keycloak';
+  readonly baseUrl = 'https://flask-fiware.apps.servicios.medellin.gov.co/api/keycloak';
   readonly loginCredentials = {
     username: 'grafana3@sysman.com.co',
     password: '1234'
