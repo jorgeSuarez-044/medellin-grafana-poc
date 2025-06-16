@@ -290,7 +290,7 @@ async obtenerPermisosUsuario() {
     }
 
     try {
-      const url = 'https://flask-fiware.apps.servicios.medellin.gov.co/api/keycloak/userinfo';
+      const url = 'https://www.medellin.gov.co/flask-fiware/api/keycloak/userinfo';
       const response = await lastValueFrom(
         this.http.get<PermisoUsuario[]>(url, {
           headers: {

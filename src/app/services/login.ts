@@ -5,7 +5,7 @@ import { tap } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private apiUrl = 'https://flask-fiware.apps.servicios.medellin.gov.co/api/keycloak/login';
+  private apiUrl = 'https://www.medellin.gov.co/flask-fiware/api/keycloak/login';
 
   constructor(private http: HttpClient, private router: Router) {}
 
