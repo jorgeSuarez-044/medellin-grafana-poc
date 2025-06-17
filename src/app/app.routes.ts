@@ -27,6 +27,7 @@ import { TurismoMaps } from './views/turismomaps/turismomaps.component';
 import { SiataMaps } from './views/siatamaps/siatamaps.component';
 import { Movilidad } from './views/movilidad-inteligente/movilidad-inteligente.component';
 import { UsuariosComponent } from './views/usuarios/usuarios.component';
+import { EnConstruccionComponent } from './views/en-construccion/en-construccion.component';
 
 export const routes: Routes = [
   // 🔐 Rutas sin layout (login)
@@ -57,10 +58,12 @@ export const routes: Routes = [
       { path: 'habitat/movilidad/vamosmed/mapa', component: VamosMedMap },
       { path: 'ambiente/calidad/ruido/mapa', component: NoiseSensorMapComponent },
       { path: 'calidad/turismo/map', component: TurismoMaps },
-      { path: 'ambiente/calidad/siata/mapa', component: SiataMaps }
+      { path: 'ambiente/calidad/siata/mapa', component: SiataMaps },
+     
     ]
   },
 
-  // 🔁 Ruta desconocida redirige al login
-  { path: '**', redirectTo: 'login' }
+  { path: 'en-construccion', component: EnConstruccionComponent },
+  // 🔁 Ruta desconocida redirige a la página de construcción
+  { path: '**', redirectTo: 'en-construccion' }
 ];
