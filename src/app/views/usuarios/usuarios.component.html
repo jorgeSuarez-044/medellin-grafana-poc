@@ -86,8 +86,7 @@
             <th>Correo</th>
             <th>Usuario</th>
             <th>Estado</th>
-            <th>Roles Sistema</th>
-            <th>Roles Grafana</th>
+           
             <th>Acciones</th>
           </tr>
         </thead>
@@ -101,18 +100,11 @@
                 {{ user.enabled ? 'Activo' : 'Inactivo' }}
               </span>
             </td>
-            <td>
-              <span *ngFor="let role of user.roles" class="role-badge">{{ role.name }}</span>
-              <span *ngIf="!user.roles || user.roles.length === 0" class="no-roles">Sin roles</span>
-            </td>
-            <td>
-              <span *ngFor="let role of user.grafanaRoles" class="role-badge grafana-role"> {{ role.name }} ({{ role.id
-                }})</span>
-              <span *ngIf="!user.grafanaRoles || user.grafanaRoles.length === 0" class="no-roles">Sin roles</span>
-            </td>
+      
             <td class="actions">
               <button (click)="editUser(user)" class="edit-btn">Editar</button>
               <button (click)="confirmDelete(user.id)" class="delete-btn">Eliminar</button>
+              <!-- <button (click)="openRolesViewModal(user.id)" class="view-roles-btn">Ver Roles</button> -->
             </td>
           </tr>
         </tbody>
@@ -290,6 +282,47 @@
       <button (click)="saveRoles()" [disabled]="roleAssignmentInProgress" class="save-btn">
         {{ roleAssignmentInProgress ? 'Guardando...' : 'Guardar' }}
       </button>
+    </div>
+  </div>
+</div>
+<div class="modal-overlay" *ngIf="showRolesViewModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Roles del Usuario: {{userRolesDetails?.username}}</h3>
+      <button (click)="closeRolesViewModal()" class="close-btn">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div *ngIf="userRolesDetails">
+        <div class="user-detail">
+          <strong>Nombre:</strong> {{userRolesDetails.firstName}} {{userRolesDetails.lastName}}
+        </div>
+        <div class="user-detail">
+          <strong>Email:</strong> {{userRolesDetails.email}}
+        </div>
+        
+        <h4>Roles del Sistema</h4>
+        <div *ngIf="userRolesDetails.user_roles?.length > 0; else noSystemRoles">
+          <ul>
+            <li *ngFor="let role of userRolesDetails.user_roles">{{role}}</li>
+          </ul>
+        </div>
+        <ng-template #noSystemRoles>
+          <p>No tiene roles del sistema asignados</p>
+        </ng-template>
+        
+        <h4>Roles de Grafana</h4>
+        <div *ngIf="userRolesDetails.grafana_roles?.length > 0; else noGrafanaRoles">
+          <ul>
+            <li *ngFor="let role of userRolesDetails.grafana_roles">{{role}}</li>
+          </ul>
+        </div>
+        <ng-template #noGrafanaRoles>
+          <p>No tiene roles de Grafana asignados</p>
+        </ng-template>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button (click)="closeRolesViewModal()" class="save-btn">Cerrar</button>
     </div>
   </div>
 </div>

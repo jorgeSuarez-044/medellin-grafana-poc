@@ -499,6 +499,38 @@ assignSingleGrafanaRole(userId: string, roleId: string): Promise<any> {
     });
   }
 
+  // Agrega esta propiedad a la clase
+showRolesViewModal: boolean = false;
+userRolesDetails: any = null;
+
+// Agrega este método para obtener los detalles del usuario
+async viewUserRoles(userId: string) {
+  this.loading = true;
+  try {
+    const response = await this.http.get<any>(
+      `http://flask-fiware.apps.preprodalcaldia.medellin.gov.co/api/keycloak/userall/${userId}`,
+      { headers: this.getHeaders() }
+    ).toPromise();
+    
+    this.userRolesDetails = response;
+    this.showRolesViewModal = true;
+  } catch (error) {
+    console.error('Error al obtener roles del usuario:', error);
+    this.showError('Error', 'No se pudieron cargar los roles del usuario');
+  } finally {
+    this.loading = false;
+  }
+}
+
+// Métodos para manejar el modal
+openRolesViewModal(userId: string) {
+  this.viewUserRoles(userId);
+}
+
+closeRolesViewModal() {
+  this.showRolesViewModal = false;
+  this.userRolesDetails = null;
+}
   assignRolesToUser(userId: string, roles: string[]): Promise<void> {
     return new Promise((resolve, reject) => {
       const rolesData = { roles: roles };
