@@ -51,9 +51,141 @@ export class UsuariosComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.getToken();
+    this.getToken();   
   }
 
+// Método para eliminar roles del sistema (usando el endpoint que envía roles en el body)
+async removeSystemRoles(userId: string, rolesToRemove: string[]): Promise<void> {
+  const url = `${this.apiUrl}/user_roles/user_id/${localStorage.getItem('userid')}`;
+  const body = { roles: rolesToRemove };
+  
+  try {
+    // Usamos HTTP DELETE con body
+    await this.http.request('DELETE', url, {
+      body: body,
+      headers: this.getHeaders()
+    }).toPromise();
+
+    // Mostrar mensaje de éxito
+    await Swal.fire({
+      icon: 'success',
+      title: 'Roles eliminados',
+      text: 'Los roles se han eliminado correctamente',
+      timer: 2000,
+      showConfirmButton: true
+    });
+      const userId = localStorage.getItem('userid');
+if (userId !== null) {
+  this.viewUserRoles(userId);
+}
+  } catch (error) {
+    console.error('Error removing system roles:', error);
+    
+    // Mostrar mensaje de error
+    await Swal.fire({
+      icon: 'error',
+      title: 'Error',
+      text: 'Ocurrió un error al eliminar los roles',
+      timer: 2000,
+      showConfirmButton: true
+    });
+    
+    throw error;
+  }
+}
+
+
+// Método para eliminar roles de Grafana (usando el endpoint con user_id y role_id en el path)
+async removeGrafanaRole(userId: string, roleName: string): Promise<void> {
+  // Buscar el ID del rol por su nombre
+  const role = this.grafanaRoles.find(r => r.name === roleName);
+  
+  if (!role) {
+    throw new Error(`No se encontró el rol de Grafana: ${roleName}`);
+  }
+
+  const url = `${this.apiUrl}/roles/user_id/${localStorage.getItem('userid')}/role_id/${role.id}`;
+  
+  return this.http.delete(url, { headers: this.getHeaders() })
+    .toPromise()
+    .then(() => {})
+    .catch(error => {
+      console.error('Error removing Grafana role:', error);
+      throw error;
+    });
+}
+
+// Método actualizado para eliminar roles
+// Método actualizado para eliminar roles
+async removeRoleFromUser(roleName: string, isGrafanaRole: boolean) {
+  if (!this.userRolesDetails) return;
+
+  this.loading = true;
+  try {
+    const userId = this.userRolesDetails.id;
+    
+    if (isGrafanaRole) {
+      // Para Grafana: usamos el nombre del rol para encontrar el ID
+      await this.removeGrafanaRole(userId, roleName);
+      
+      // Actualizar la lista local
+      this.userRolesDetails.grafana_roles = this.userRolesDetails.grafana_roles.filter((r: string) => r !== roleName);
+    } else {
+      // Para roles del sistema: enviamos el nombre del rol en el body
+      await this.removeSystemRoles(userId, [roleName]);
+      
+      // Actualizar la lista local
+      this.userRolesDetails.user_roles = this.userRolesDetails.user_roles.filter((r: string) => r !== roleName);
+    }
+
+    Swal.fire({
+      title: 'Rol eliminado',
+      text: `El rol ${roleName} ha sido eliminado correctamente`,
+      icon: 'success',
+      confirmButtonColor: '#334155'
+    });
+  } catch (error) {
+    console.error('Error al eliminar rol:', error);
+    Swal.fire({
+      title: 'Error',
+      text: 'No se pudo eliminar el rol',
+      icon: 'error',
+      confirmButtonColor: '#334155'
+    });
+  } finally {
+    this.loading = false;
+  }
+}
+// Método para obtener el ID de un rol por su nombre
+async getRoleIdByName(roleName: string, isGrafanaRole: boolean): Promise<string> {
+  try {
+    const roles = isGrafanaRole ? this.grafanaRoles : this.roles;
+    
+    // Si ya tenemos los roles cargados, buscamos localmente
+    if (roles && roles.length > 0) {
+      const role = roles.find(r => r.name === roleName);
+      if (role) return role.id;
+    }
+    
+    // Si no lo encontramos localmente, hacemos una petición para obtenerlo
+    const endpoint = isGrafanaRole ? 'roles' : 'user_roles';
+    const allRoles: any = await this.http.get<any[]>(
+      `${this.apiUrl}/${endpoint}`,
+      { headers: this.getHeaders() }
+    ).toPromise();
+    
+    const foundRole = allRoles.find((r:any) => r.name === roleName);
+    if (!foundRole) {
+      throw new Error(`Rol ${roleName} no encontrado`);
+    }
+    
+    return foundRole.id;
+  } catch (error) {
+    console.error('Error obteniendo ID del rol:', error);
+    throw error;
+  }
+}
+  
   initUserForm() {
     this.userForm = this.fb.group({
       username: ['', 
@@ -513,6 +645,7 @@ async viewUserRoles(userId: string) {
     ).toPromise();
     
     this.userRolesDetails = response;
+    console.log(response) // Aquí se asigna toda la info del usuario
     this.showRolesViewModal = true;
   } catch (error) {
     console.error('Error al obtener roles del usuario:', error);
@@ -525,6 +658,7 @@ async viewUserRoles(userId: string) {
 // Métodos para manejar el modal
 openRolesViewModal(userId: string) {
   this.viewUserRoles(userId);
+ localStorage.setItem('userid', userId)
 }
 
 closeRolesViewModal() {
@@ -777,9 +911,11 @@ closeRolesViewModal() {
   }
 
   removeRolesFromUser(userId: string, roles: string[]): Promise<void> {
+   
+  
     return new Promise((resolve, reject) => {
       const rolesData = { roles: roles };
-      this.http.request('DELETE', `${this.apiUrl}/user_roles/user_id/${userId}`, {
+      this.http.request('DELETE', `${this.apiUrl}/user_roles/user_id/${localStorage.getItem('userid')}`, {
         headers: this.getHeaders(),
         body: rolesData
       }).subscribe({
@@ -792,7 +928,7 @@ closeRolesViewModal() {
   removeGrafanaRolesFromUser(userId: string, roles: string[]): Promise<void> {
     return new Promise((resolve, reject) => {
       const rolesData = { roles: roles };
-      this.http.request('DELETE', `${this.apiUrl}/roles/user_id/${userId}`, {
+      this.http.request('DELETE', `${this.apiUrl}/roles/user_id/${localStorage.getItem('userid')}`, {
         headers: this.getHeaders(),
         body: rolesData
       }).subscribe({

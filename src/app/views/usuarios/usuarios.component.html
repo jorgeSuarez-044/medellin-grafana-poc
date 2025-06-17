@@ -285,6 +285,7 @@
     </div>
   </div>
 </div>
+
 <div class="modal-overlay" *ngIf="showRolesViewModal">
   <div class="modal">
     <div class="modal-header">
@@ -300,25 +301,31 @@
           <strong>Email:</strong> {{userRolesDetails.email}}
         </div>
         
-        <h4>Roles del Sistema</h4>
-        <div *ngIf="userRolesDetails.user_roles?.length > 0; else noSystemRoles">
-          <ul>
-            <li *ngFor="let role of userRolesDetails.user_roles">{{role}}</li>
-          </ul>
-        </div>
-        <ng-template #noSystemRoles>
-          <p>No tiene roles del sistema asignados</p>
-        </ng-template>
-        
-        <h4>Roles de Grafana</h4>
-        <div *ngIf="userRolesDetails.grafana_roles?.length > 0; else noGrafanaRoles">
-          <ul>
-            <li *ngFor="let role of userRolesDetails.grafana_roles">{{role}}</li>
-          </ul>
-        </div>
-        <ng-template #noGrafanaRoles>
-          <p>No tiene roles de Grafana asignados</p>
-        </ng-template>
+  <!-- Dentro del modal showRolesViewModal -->
+<h4>Roles del Sistema</h4>
+<div *ngIf="userRolesDetails.user_roles?.length > 0; else noSystemRoles">
+  <ul class="roles-list">
+    <li *ngFor="let role of userRolesDetails.user_roles">
+      <span class="role-name">{{role}}</span>
+      <button class="remove-btn" (click)="removeSystemRoles(userRolesDetails.id, [role])">Eliminar</button>
+    </li>
+  </ul>
+</div>
+<ng-template #noSystemRoles>
+  <p>No tiene roles del sistema asignados</p>
+</ng-template>
+<h4>Roles de Grafana</h4>
+<div *ngIf="userRolesDetails.grafana_roles?.length > 0; else noGrafanaRoles">
+  <ul class="roles-list">
+    <li *ngFor="let role of userRolesDetails.grafana_roles">
+      <span class="role-name">{{role}}</span>
+      <button class="remove-btn" (click)="removeRoleFromUser(role, true)">Eliminar</button>
+    </li>
+  </ul>
+</div>
+<ng-template #noGrafanaRoles>
+  <p>No tiene roles de Grafana asignados</p>
+</ng-template>
       </div>
     </div>
     <div class="modal-footer">
@@ -326,7 +333,6 @@
     </div>
   </div>
 </div>
-
 <!-- Grafana Roles Modal -->
 <div class="modal-overlay" *ngIf="showGrafanaRolesModal">
   <div class="modal">
