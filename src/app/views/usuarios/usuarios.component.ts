@@ -525,7 +525,9 @@ assignSingleGrafanaRole(userId: string, roleId: string): Promise<any> {
     this.selectedUser = user;
     this.selectedRoles = user.roles ? user.roles.map((r: any) => r.id) : [];
     this.selectedGrafanaRoles = user.grafanaRoles ? user.grafanaRoles.map((r: any) => r.id) : [];
-    
+     if (this.selectedUser) {
+    this.userForm.get('username')?.disable(); // 👈 Bloqueo definitivo
+  }
     this.userForm.patchValue({
       username: user.username,
       email: user.email,

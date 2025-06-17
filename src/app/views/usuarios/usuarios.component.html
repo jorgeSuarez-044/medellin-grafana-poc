@@ -11,9 +11,10 @@
     <button [class.active]="activeTab === 'roles'" (click)="changeTab('roles')">Roles</button>
     <button [class.active]="activeTab === 'grafana-roles'" (click)="changeTab('grafana-roles')">Roles Grafana</button>
     <button [class.active]="activeTab === 'auditoria'" (click)="changeTab('auditoria')">Auditoría</button>
-    <button [class.active]="activeTab === 'subdimensiones'" (click)="changeTab('subdimensiones')">Subdimensiones</button>
+    <button [class.active]="activeTab === 'subdimensiones'"
+      (click)="changeTab('subdimensiones')">Subdimensiones</button>
   </div>
-  
+
   <div class="tab-content" *ngIf="activeTab === 'subdimensiones'">
     <app-mde-crud></app-mde-crud>
   </div>
@@ -24,7 +25,8 @@
       <form [formGroup]="userForm" (ngSubmit)="selectedUser ? updateUser() : createUser()">
         <div class="form-group">
           <label>Nombre de usuario *</label>
-          <input type="text" formControlName="username" placeholder="Ingrese nombre de usuario" [disabled]="!!selectedUser">
+          <input type="text" formControlName="username" placeholder="Ingrese nombre de usuario"
+            [attr.disabled]="selectedUser ? 'disabled' : null">
           <div class="error-message" *ngIf="userForm.get('username')?.invalid && userForm.get('username')?.touched">
             <span *ngIf="userForm.get('username')?.errors?.['required']">Este campo es requerido</span>
           </div>
@@ -104,7 +106,8 @@
               <span *ngIf="!user.roles || user.roles.length === 0" class="no-roles">Sin roles</span>
             </td>
             <td>
-              <span *ngFor="let role of user.grafanaRoles" class="role-badge grafana-role"> {{ role.name }} ({{ role.id }})</span>
+              <span *ngFor="let role of user.grafanaRoles" class="role-badge grafana-role"> {{ role.name }} ({{ role.id
+                }})</span>
               <span *ngIf="!user.grafanaRoles || user.grafanaRoles.length === 0" class="no-roles">Sin roles</span>
             </td>
             <td class="actions">
@@ -123,7 +126,7 @@
   <div class="tab-content" *ngIf="activeTab === 'roles'">
     <div class="user-list">
       <h2>Roles del Sistema</h2>
-      
+
       <table>
         <thead>
           <tr>
@@ -158,7 +161,7 @@
   <div class="tab-content" *ngIf="activeTab === 'grafana-roles'">
     <div class="user-list">
       <h2>Roles de Grafana</h2>
-     
+
       <table>
         <thead>
           <tr>
@@ -273,12 +276,8 @@
     <div class="modal-body">
       <div class="roles-container">
         <div *ngFor="let role of roles" class="role-checkbox">
-          <input 
-            type="checkbox" 
-            [id]="'modal-role-' + role.id" 
-            [value]="role.id" 
-            (change)="onRoleChange($event, role.id)"
-            [checked]="isRoleSelected(role.id)"
+          <input type="checkbox" [id]="'modal-role-' + role.id" [value]="role.id"
+            (change)="onRoleChange($event, role.id)" [checked]="isRoleSelected(role.id)"
             [disabled]="roleAssignmentInProgress">
           <label [for]="'modal-role-' + role.id">{{ role.name }}</label>
           <small *ngIf="role.description" class="role-description">{{ role.description }}</small>
@@ -305,12 +304,8 @@
     <div class="modal-body">
       <div class="roles-container">
         <div *ngFor="let role of grafanaRoles" class="role-checkbox">
-          <input 
-            type="checkbox" 
-            [id]="'modal-grafana-role-' + role.id" 
-            [value]="role.id" 
-            (change)="onRoleChange($event, role.id, true)"
-            [checked]="isRoleSelected(role.id, true)"
+          <input type="checkbox" [id]="'modal-grafana-role-' + role.id" [value]="role.id"
+            (change)="onRoleChange($event, role.id, true)" [checked]="isRoleSelected(role.id, true)"
             [disabled]="roleAssignmentInProgress">
           <label [for]="'modal-grafana-role-' + role.id">{{ role.name }}</label>
           <small *ngIf="role.description" class="role-description">{{ role.description }}</small>
