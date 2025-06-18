@@ -44,7 +44,7 @@ export class UsuariosComponent implements OnInit {
     action: ''
   };
 
-  apiUrl = 'http://flask-fiware.apps.preprodalcaldia.medellin.gov.co/api/keycloak';
+  apiUrl = 'https://www.medellin.gov.co/flask-fiware/api/keycloak';
 
   constructor(private http: HttpClient, private fb: FormBuilder) {
     this.initUserForm();
@@ -627,7 +627,7 @@ async viewUserRoles(userId: string) {
   this.loading = true;
   try {
     const response = await this.http.get<any>(
-      `http://flask-fiware.apps.preprodalcaldia.medellin.gov.co/api/keycloak/userall/${userId}`,
+      `https://www.medellin.gov.co/flask-fiware/api/keycloak/userall/${userId}`,
       { headers: this.getHeaders() }
     ).toPromise();
     
