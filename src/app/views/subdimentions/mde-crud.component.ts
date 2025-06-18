@@ -28,10 +28,6 @@ interface ApiPayload {
 })
 export class MdeCrudComponent implements OnInit {
   readonly baseUrl = 'http://flask-fiware.apps.preprodalcaldia.medellin.gov.co/api/keycloak';
-  readonly loginCredentials = {
-    username: 'grafana3@sysman.com.co',
-    password: '1234'
-  };
   
   isLoading = false;
   configuraciones: DimensionConfig[] = [];
@@ -51,50 +47,7 @@ export class MdeCrudComponent implements OnInit {
   constructor() {}
 
   ngOnInit(): void {
-    this.initializeApp();
-  }
-
-  async initializeApp(): Promise<void> {
-    try {
-      // Primero obtenemos el token
-      const token = await this.getAuthToken();
-      localStorage.setItem('access_token', token);
-      
-      // Luego cargamos las configuraciones
-      await this.loadConfigurations();
-    } catch (error) {
-      this.handleApiError('Error de inicialización', error);
-    }
-  }
-
-  async getAuthToken(): Promise<string> {
-    this.isLoading = true;
-    try {
-      const response = await fetch(`${this.baseUrl}/login`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(this.loginCredentials)
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
-      
-      if (!data.access_token) {
-        throw new Error('No se recibió token en la respuesta');
-      }
-
-      return data.access_token;
-    } catch (error) {
-      this.handleApiError('Error de autenticación', error);
-      throw error;
-    } finally {
-      this.isLoading = false;
-    }
+    this.loadConfigurations();
   }
 
   get currentPageRange(): string {
@@ -107,19 +60,10 @@ export class MdeCrudComponent implements OnInit {
     return this.configuracionesFiltradas.length;
   }
 
-  private checkToken(): boolean {
-    const token = localStorage.getItem('access_token');
+  async loadConfigurations(): Promise<void> {
+    const token = localStorage.getItem('access_tokenadmin');
     if (!token) {
-      this.showError('Error de autenticación', 'No se encontró token de acceso. Por favor inicie sesión primero.');
-      return false;
-    }
-    return true;
-  }
-
- async loadConfigurations(): Promise<void> {
-    const token = localStorage.getItem('access_token'); // Token normal para consultas
-    if (!token) {
-      this.showError('Error', 'No se encontró token de acceso');
+      this.showError('Error', 'No se encontró token de acceso admin');
       return;
     }
 
@@ -172,14 +116,9 @@ export class MdeCrudComponent implements OnInit {
     this.p = 1;
   }
 
- async toggleActivation(config: DimensionConfig): Promise<void> {
+  async toggleActivation(config: DimensionConfig): Promise<void> {
     if (!this.selectedTipoAcceso) {
       this.showError('Error', 'Seleccione un tipo de acceso primero');
-      return;
-    }
-
-    if (!localStorage.getItem('access_tokenadmin')) {
-      this.showError('Error', 'No tiene permisos de administrador');
       return;
     }
 
@@ -191,17 +130,17 @@ export class MdeCrudComponent implements OnInit {
       console.error('Error:', error);
     }
   }
- async updateConfiguration(config: DimensionConfig, nuevoEstado: boolean): Promise<void> {
-    if (!this.checkToken()) return;
+
+  async updateConfiguration(config: DimensionConfig, nuevoEstado: boolean): Promise<void> {
+    const token = localStorage.getItem('access_tokenadmin');
+    if (!token) {
+      this.showError('Error', 'No se encontró token de acceso admin');
+      return;
+    }
 
     this.isLoading = true;
     
     try {
-      const tokenAdmin = localStorage.getItem('access_tokenadmin'); // Token específico para admin
-      if (!tokenAdmin) {
-        throw new Error('No se encontró token de administrador');
-      }
-
       const payload: ApiPayload = {
         rol: this.selectedTipoAcceso,
         config: [{
@@ -214,7 +153,7 @@ export class MdeCrudComponent implements OnInit {
       const response = await fetch(`${this.baseUrl}/userinfo`, {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${tokenAdmin}`, // Usamos token admin aquí
+          'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
         },
         body: JSON.stringify(payload)
@@ -231,16 +170,11 @@ export class MdeCrudComponent implements OnInit {
         confirmButtonText: 'Entendido'
       });
       
-      // Recargamos configuraciones con el token normal
-      const tokenNormal = localStorage.getItem('access_token');
-      if (tokenNormal) {
-        localStorage.setItem('access_token', tokenNormal);
-        await this.loadConfigurations();
-      }
+      // Recargamos las configuraciones después de la actualización
+      await this.loadConfigurations();
       
     } catch (error: unknown) {
-      this.handleApiError('Error al actualizar configuración used no cuenta con los permisos para hacer esta accion', error);
-      throw error;
+      this.handleApiError('Error al actualizar configuración. Usuario no cuenta con los permisos para hacer esta acción', error);
     } finally {
       this.isLoading = false;
     }

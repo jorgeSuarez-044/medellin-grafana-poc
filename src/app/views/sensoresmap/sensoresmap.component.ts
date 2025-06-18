@@ -6,6 +6,9 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Observable } from 'rxjs';
 import { FormsModule } from '@angular/forms';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+
+// Agrega estas propiedades
 
 interface NoiseSensor {
   entity_id: string;
@@ -37,8 +40,8 @@ export class NoiseSensorMapComponent implements OnInit, AfterViewInit {
   @ViewChild('map') mapContainer!: ElementRef;
   private map: maplibregl.Map | null = null;
   private apiUrl = 'http://flask-fiware.apps.preprodalcaldia.medellin.gov.co/api/sensores-ruido';
-  
-  // Datos y estado
+  urlGrafanaBase = 'http://grafana-fiware.apps.preprodalcaldia.medellin.gov.co/territoriointeligente/d/f36b2714-61d2-45cd-91ac-58b622840b4e/sensores-ruido-2025?orgId=1&kiosk';
+urlGrafanaSegura: SafeResourceUrl;
   sensors: any[] = [];
   selectedSensor: string = '';
   selectedSensorDetails: any = null;
@@ -59,11 +62,17 @@ export class NoiseSensorMapComponent implements OnInit, AfterViewInit {
   errorMessage: string = '';
   errorHistoric: string | null = null;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private sanitizer: DomSanitizer) {
+     this.urlGrafanaSegura = this.inicializarUrlGrafana();
+  }
+private inicializarUrlGrafana(): SafeResourceUrl {
+  return this.sanitizer.bypassSecurityTrustResourceUrl(this.urlGrafanaBase);
+}
 
   ngOnInit(): void {
     this.loadSensors();
     this.setDefaultDates();
+      this.actualizarUrlGrafana();
   }
 
   ngAfterViewInit(): void {
@@ -103,7 +112,18 @@ export class NoiseSensorMapComponent implements OnInit, AfterViewInit {
       }
     });
   }
+actualizarUrlGrafana() {
+  let urlFinal = this.urlGrafanaBase;
+  
+  if (this.desdeFecha && this.hastaFecha) {
+    const desdeTimestamp = new Date(this.desdeFecha).getTime();
+    const hastaTimestamp = new Date(this.hastaFecha).getTime() + 86399999; // Para incluir todo el día
+    
+    urlFinal += `&from=${desdeTimestamp}&to=${hastaTimestamp}`;
+  }
 
+  this.urlGrafanaSegura = this.sanitizer.bypassSecurityTrustResourceUrl(urlFinal);
+}
   loadSensorData(): void {
     this.loading = true;
     this.error = false;

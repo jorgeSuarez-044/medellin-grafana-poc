@@ -38,15 +38,15 @@
         </div>
       </div>
 
-      <div>
-        <label for="desde">Desde:</label>
-        <input type="date" id="desde" [(ngModel)]="desdeFecha">
-      </div>
+   <div>
+  <label for="desde">Desde:</label>
+  <input type="date" id="desde" [(ngModel)]="desdeFecha" (change)="actualizarUrlGrafana()">
+</div>
 
-      <div>
-        <label for="hasta">Hasta:</label>
-        <input type="date" id="hasta" [(ngModel)]="hastaFecha">
-      </div>
+<div>
+  <label for="hasta">Hasta:</label>
+  <input type="date" id="hasta" [(ngModel)]="hastaFecha" (change)="actualizarUrlGrafana()">
+</div>
       <div>
         <button (click)="getHistoricData()" [disabled]="!selectedSensor || loadingHistoric">
           {{ loadingHistoric ? 'Cargando...' : 'Consultar' }}
@@ -90,10 +90,11 @@
 
 
         <div class="half-layout">
-          <iframe
-            src="http://grafana-fiware.apps.preprodalcaldia.medellin.gov.co/territoriointeligente/d/f36b2714-61d2-45cd-91ac-58b622840b4e/sensores-ruido-2025?orgId=1&kiosk=tv"
-            allowfullscreen style="width: 90%; height: 100%; border: none; border-radius: 12px;">
-          </iframe>
+      <iframe 
+  [src]="urlGrafanaSegura" 
+  allowfullscreen 
+  style="width: 90%; height: 100%; border: none; border-radius: 12px;">
+</iframe>
         </div>
 
 
