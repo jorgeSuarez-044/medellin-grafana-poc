@@ -12,6 +12,6 @@ export default `<html lang="en" data-beasties-container><head><link rel="preconn
 
 <body>
   <app-root ng-version="19.0.3" ng-server-context="ssg"><router-outlet></router-outlet><app-en-construccion _nghost-ng-c2115872268><div _ngcontent-ng-c2115872268 class="construction-container"><div _ngcontent-ng-c2115872268 class="construction-content animate__animated animate__bounceIn"><h1 _ngcontent-ng-c2115872268>🚧 Página en construcción 🚧</h1><p _ngcontent-ng-c2115872268>Estamos trabajando duro para traerte esta funcionalidad pronto.</p><div _ngcontent-ng-c2115872268 class="construction-worker animate__animated animate__wobble animate__infinite"> 👷 </div><button _ngcontent-ng-c2115872268 routerlink="/inicio" class="back-button" tabindex="0"> Volver al inicio </button></div></div></app-en-construccion><!----></app-root>
-<link rel="modulepreload" href="chunk-PZB6AWVE.js"><script src="polyfills-FFHMD2TL.js" type="module"></script><script src="main-J5ET3EKH.js" type="module"></script>
+<link rel="modulepreload" href="chunk-PZB6AWVE.js"><script src="polyfills-FFHMD2TL.js" type="module"></script><script src="main-PF5NW7OR.js" type="module"></script>
 
 </body></html>`;
