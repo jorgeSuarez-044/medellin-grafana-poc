@@ -1,5 +1,4 @@
-export default `
-<html lang="en" data-beasties-container="">
+export default `<html lang="en" data-beasties-container="">
 
 <head><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
   <meta charset="utf-8">
@@ -14,6 +13,6 @@ export default `
 
 <body ngcm="">
   <app-root></app-root>
-<link rel="modulepreload" href="chunk-PZB6AWVE.js"><script src="polyfills-FFHMD2TL.js" type="module"></script><script src="main-Z44LNOH4.js" type="module"></script></body>
+<link rel="modulepreload" href="chunk-PZB6AWVE.js"><script src="polyfills-FFHMD2TL.js" type="module"></script><script src="main-JDJHYCQT.js" type="module"></script></body>
 
 </html>`;
