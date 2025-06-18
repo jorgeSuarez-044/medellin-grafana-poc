@@ -576,20 +576,7 @@ assignSingleGrafanaRole(userId: string, roleId: string): Promise<any> {
               this.resetFormAndReload();
               this.loading = false;
               
-              Swal.fire({
-                title: 'Usuario creado',
-                text: '¿Desea asignar roles ahora?',
-                icon: 'success',
-                showCancelButton: true,
-                confirmButtonText: 'Sí, asignar roles',
-                cancelButtonText: 'Más tarde',
-                confirmButtonColor: '#334155'
-              }).then((result) => {
-                if (result.isConfirmed) {
-                  this.editUser(response);
-                  this.openRolesModal();
-                }
-              });
+           
             })
             .catch(error => {
               this.showError('Error', 'Ocurrió un error al completar la creación del usuario');
@@ -691,9 +678,7 @@ closeRolesViewModal() {
     this.selectedUser = user;
     this.selectedRoles = user.roles ? user.roles.map((r: any) => r.id) : [];
     this.selectedGrafanaRoles = user.grafanaRoles ? user.grafanaRoles.map((r: any) => r.id) : [];
-     if (this.selectedUser) {
-    this.userForm.get('username')?.disable(); // 👈 Bloqueo definitivo
-  }
+ 
     this.userForm.patchValue({
       username: user.username,
       email: user.email,
