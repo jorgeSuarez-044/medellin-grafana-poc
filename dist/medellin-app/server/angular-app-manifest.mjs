@@ -7,128 +7,128 @@ export default {
   routes: [
   {
     "renderMode": 2,
-    "route": "/"
+    "route": "/territoriointeligente/visualizador"
   },
   {
     "renderMode": 2,
-    "route": "/login"
+    "route": "/territoriointeligente/visualizador/login"
   },
   {
     "renderMode": 2,
-    "route": "/inicio"
+    "route": "/territoriointeligente/visualizador/inicio"
   },
   {
     "renderMode": 2,
-    "route": "/menu"
+    "route": "/territoriointeligente/visualizador/menu"
   },
   {
     "renderMode": 2,
-    "route": "/ambiente/residuos/camiones/dashboard"
+    "route": "/territoriointeligente/visualizador/ambiente/residuos/camiones/dashboard"
   },
   {
     "renderMode": 2,
-    "route": "/ambiente/residuos/camiones/mapa"
+    "route": "/territoriointeligente/visualizador/ambiente/residuos/camiones/mapa"
   },
   {
     "renderMode": 2,
-    "route": "/ambiente/calidad/ruido/dashboard"
+    "route": "/territoriointeligente/visualizador/ambiente/calidad/ruido/dashboard"
   },
   {
     "renderMode": 2,
-    "route": "/ambiente/calidad/ruido/mapa"
+    "route": "/territoriointeligente/visualizador/ambiente/calidad/ruido/mapa"
   },
   {
     "renderMode": 2,
-    "route": "/ambiente/calidad/siata/dashboard"
+    "route": "/territoriointeligente/visualizador/ambiente/calidad/siata/dashboard"
   },
   {
     "renderMode": 2,
-    "route": "/ambiente/calidad/siata/mapa"
+    "route": "/territoriointeligente/visualizador/ambiente/calidad/siata/mapa"
   },
   {
     "renderMode": 2,
-    "route": "/reportes"
+    "route": "/territoriointeligente/visualizador/reportes"
   },
   {
     "renderMode": 2,
-    "route": "/economico/digital/wifi/dashboard"
+    "route": "/territoriointeligente/visualizador/economico/digital/wifi/dashboard"
   },
   {
     "renderMode": 2,
-    "route": "/economico/digital/wifi/mapa"
+    "route": "/territoriointeligente/visualizador/economico/digital/wifi/mapa"
   },
   {
     "renderMode": 2,
-    "route": "/habitat/movilidad/vamosmed/dashboard"
+    "route": "/territoriointeligente/visualizador/habitat/movilidad/vamosmed/dashboard"
   },
   {
     "renderMode": 2,
-    "route": "/habitat/movilidad/vamosmed/mapa"
+    "route": "/territoriointeligente/visualizador/habitat/movilidad/vamosmed/mapa"
   },
   {
     "renderMode": 2,
-    "route": "/habitat/movilidad/dashboard"
+    "route": "/territoriointeligente/visualizador/habitat/movilidad/dashboard"
   },
   {
     "renderMode": 2,
-    "route": "/perfil/usuarios"
+    "route": "/territoriointeligente/visualizador/perfil/usuarios"
   },
   {
     "renderMode": 2,
-    "route": "/gobernanza/participacion/pqrs/dashboard"
+    "route": "/territoriointeligente/visualizador/gobernanza/participacion/pqrs/dashboard"
   },
   {
     "renderMode": 2,
-    "route": "/whatsapp"
+    "route": "/territoriointeligente/visualizador/whatsapp"
   },
   {
     "renderMode": 2,
-    "route": "/calidad/turismo/dashboard"
+    "route": "/territoriointeligente/visualizador/calidad/turismo/dashboard"
   },
   {
     "renderMode": 2,
-    "route": "/calidad/turismo/map"
+    "route": "/territoriointeligente/visualizador/calidad/turismo/map"
   },
   {
     "renderMode": 2,
-    "route": "/mapas/reportes"
+    "route": "/territoriointeligente/visualizador/mapas/reportes"
   },
   {
     "renderMode": 2,
-    "route": "/en-construccion"
+    "route": "/territoriointeligente/visualizador/en-construccion"
   },
   {
     "renderMode": 2,
-    "redirectTo": "/en-construccion",
-    "route": "/**"
+    "redirectTo": "/territoriointeligente/visualizador/en-construccion",
+    "route": "/territoriointeligente/visualizador/**"
   }
 ],
   assets: {
-    'index.csr.html': {size: 23597, hash: '1dfc6e784777aa1adb62ed103008a97935b449c4135e5998ca0f4c89db63b45d', text: () => import('./assets-chunks/index_csr_html.mjs').then(m => m.default)},
-    'index.server.html': {size: 17171, hash: 'b76041c9a53f848d0579f406313dd3ab77210f644d5ae57370e3cec71f59ac8c', text: () => import('./assets-chunks/index_server_html.mjs').then(m => m.default)},
-    'inicio/index.html': {size: 32299, hash: '776a6880ae8b3adb5c17a619788e8b8858bb46b8bc8700dc245fdc7006f3ed46', text: () => import('./assets-chunks/inicio_index_html.mjs').then(m => m.default)},
-    'login/index.html': {size: 28258, hash: '24e776de0074e04eabd735a106ffe70fa89155f68a0699d3556d324cb4de6b09', text: () => import('./assets-chunks/login_index_html.mjs').then(m => m.default)},
-    'index.html': {size: 28258, hash: '24e776de0074e04eabd735a106ffe70fa89155f68a0699d3556d324cb4de6b09', text: () => import('./assets-chunks/index_html.mjs').then(m => m.default)},
-    'ambiente/residuos/camiones/mapa/index.html': {size: 31738, hash: 'c0a76c85b650b94d3df28faf822c081f7e2380a175ba55c9149d0e0c2f22fcdd', text: () => import('./assets-chunks/ambiente_residuos_camiones_mapa_index_html.mjs').then(m => m.default)},
-    'ambiente/residuos/camiones/dashboard/index.html': {size: 31548, hash: 'd56a3cc77c68a4d6f3c12ab54cc97aa88a99f58ab6d4424bbe29588c826e67dd', text: () => import('./assets-chunks/ambiente_residuos_camiones_dashboard_index_html.mjs').then(m => m.default)},
-    'ambiente/calidad/ruido/dashboard/index.html': {size: 30817, hash: '9dedeedec3615461466d72fd4ea7314fa1af1ccd80632c938e84b3e6613b5280', text: () => import('./assets-chunks/ambiente_calidad_ruido_dashboard_index_html.mjs').then(m => m.default)},
-    'ambiente/calidad/siata/mapa/index.html': {size: 32023, hash: 'f17b1663ccf351f63f813810f48385462487384bbed938b33159ed1d4aadedae', text: () => import('./assets-chunks/ambiente_calidad_siata_mapa_index_html.mjs').then(m => m.default)},
-    'ambiente/calidad/siata/dashboard/index.html': {size: 33295, hash: 'a5bc0c49cde69b344553d005c91ca466c2d4b71cd350554731f7194f3352e92e', text: () => import('./assets-chunks/ambiente_calidad_siata_dashboard_index_html.mjs').then(m => m.default)},
-    'reportes/index.html': {size: 31885, hash: 'c9017472828d26466b1d18a6d3efea0dfa6a17a39c74251a621d66dd6b15d419', text: () => import('./assets-chunks/reportes_index_html.mjs').then(m => m.default)},
-    'economico/digital/wifi/dashboard/index.html': {size: 32345, hash: '91ee9b95e526506677c7da68ee5f254a876a394d510c6338c5de900c396808ed', text: () => import('./assets-chunks/economico_digital_wifi_dashboard_index_html.mjs').then(m => m.default)},
-    'habitat/movilidad/vamosmed/dashboard/index.html': {size: 31678, hash: 'ed2765259acf7ed36cf2f2f9f4d6cd728e1717f5c88780ba03994ad386d2f2ba', text: () => import('./assets-chunks/habitat_movilidad_vamosmed_dashboard_index_html.mjs').then(m => m.default)},
-    'habitat/movilidad/vamosmed/mapa/index.html': {size: 31638, hash: '64b2862a6864601ce1caa6707fda5bf7bb2cf9a47cb66645a7b5273c14718802', text: () => import('./assets-chunks/habitat_movilidad_vamosmed_mapa_index_html.mjs').then(m => m.default)},
-    'habitat/movilidad/dashboard/index.html': {size: 31305, hash: '5a71103fc4d441094963abaf88fabac28eadf3594d2c48cdb04a3284a93b1ec9', text: () => import('./assets-chunks/habitat_movilidad_dashboard_index_html.mjs').then(m => m.default)},
-    'economico/digital/wifi/mapa/index.html': {size: 125097, hash: 'b8b559f06c52ef9a49f9b44a8ac7469d2b96040b68e693cbb66d9cda727d7f4e', text: () => import('./assets-chunks/economico_digital_wifi_mapa_index_html.mjs').then(m => m.default)},
-    'gobernanza/participacion/pqrs/dashboard/index.html': {size: 33677, hash: 'fc5f15425660a0177cf2f24b3bfb164d837f0355733ddb92443f55e59d7b5af9', text: () => import('./assets-chunks/gobernanza_participacion_pqrs_dashboard_index_html.mjs').then(m => m.default)},
-    'whatsapp/index.html': {size: 31167, hash: '70e0e8fcf7e56920072dc117ca2f86033685475a179acee53c13ab582ae91673', text: () => import('./assets-chunks/whatsapp_index_html.mjs').then(m => m.default)},
-    'calidad/turismo/dashboard/index.html': {size: 32935, hash: 'fdcd1ffae6361663594ca27996bde7fae660fa1160c989d438ad3f42ef44ccc4', text: () => import('./assets-chunks/calidad_turismo_dashboard_index_html.mjs').then(m => m.default)},
-    'menu/index.html': {size: 30263, hash: 'b63b8f100ec8e6a0ea72f4387160b6c33e7a4caba7d3c19a6c4b6c0b443face4', text: () => import('./assets-chunks/menu_index_html.mjs').then(m => m.default)},
-    'calidad/turismo/map/index.html': {size: 31764, hash: '525635a8374f9c9a27029beb1210f1dfa5a9a7bb436a82765df641525cfe75e4', text: () => import('./assets-chunks/calidad_turismo_map_index_html.mjs').then(m => m.default)},
-    'mapas/reportes/index.html': {size: 31920, hash: 'b74f52948d1e9dcdb47c7697ed55bef48927425cd41fe27718240453e1cbbee1', text: () => import('./assets-chunks/mapas_reportes_index_html.mjs').then(m => m.default)},
-    'en-construccion/index.html': {size: 26518, hash: 'ed9e463b03ba334cdf80beaaca9bda4a5473832b65d6aeae8e903ee9d54e0c42', text: () => import('./assets-chunks/en-construccion_index_html.mjs').then(m => m.default)},
-    'ambiente/calidad/ruido/mapa/index.html': {size: 48009, hash: 'f3eaabeb3b267de7d705f2145d77abcac03120513bcdf841ea9e9ffe08aeaf26', text: () => import('./assets-chunks/ambiente_calidad_ruido_mapa_index_html.mjs').then(m => m.default)},
-    'perfil/usuarios/index.html': {size: 72812, hash: '5e3754198be68504aa01627448fc6dfbc04098b38c25713d0a195340387ed71b', text: () => import('./assets-chunks/perfil_usuarios_index_html.mjs').then(m => m.default)},
+    'index.csr.html': {size: 23632, hash: '1e8ddfc107ca0c6867c7c86eb1219b35ff79fa26d83e30ead60d3982bd607677', text: () => import('./assets-chunks/index_csr_html.mjs').then(m => m.default)},
+    'index.server.html': {size: 17206, hash: '8e4dadae17d952a00b989990cf308b7d949e194f12e6dd783a7b0d8cd5a2b4ba', text: () => import('./assets-chunks/index_server_html.mjs').then(m => m.default)},
+    'territoriointeligente/visualizador/login/index.html': {size: 28293, hash: 'e99d63255a928b464033b1ca54c4a70b6db8aded8cf705c468f016ea46b9dac0', text: () => import('./assets-chunks/territoriointeligente_visualizador_login_index_html.mjs').then(m => m.default)},
+    'territoriointeligente/visualizador/ambiente/residuos/camiones/dashboard/index.html': {size: 31583, hash: '8438fac7aedabacb5883ab603edbcc9549078754de46da319da8ee24187c9a78', text: () => import('./assets-chunks/territoriointeligente_visualizador_ambiente_residuos_camiones_dashboard_index_html.mjs').then(m => m.default)},
+    'territoriointeligente/visualizador/index.html': {size: 28293, hash: 'e99d63255a928b464033b1ca54c4a70b6db8aded8cf705c468f016ea46b9dac0', text: () => import('./assets-chunks/territoriointeligente_visualizador_index_html.mjs').then(m => m.default)},
+    'territoriointeligente/visualizador/ambiente/residuos/camiones/mapa/index.html': {size: 31773, hash: '2b4b15eb48551cc695057cf7d44e4c0af595cc06aca454e87f660df80cb3ce72', text: () => import('./assets-chunks/territoriointeligente_visualizador_ambiente_residuos_camiones_mapa_index_html.mjs').then(m => m.default)},
+    'territoriointeligente/visualizador/ambiente/calidad/ruido/dashboard/index.html': {size: 30852, hash: '38dd5a742f7c63dc2d1432c174ebee6bce1f89b3f316fd13d0b0e06e05390bbf', text: () => import('./assets-chunks/territoriointeligente_visualizador_ambiente_calidad_ruido_dashboard_index_html.mjs').then(m => m.default)},
+    'territoriointeligente/visualizador/ambiente/calidad/siata/dashboard/index.html': {size: 33330, hash: '1283e697cbc96d9409c57e5e1fc2af0bab80a339099c6b5e8214fb88f9d099ec', text: () => import('./assets-chunks/territoriointeligente_visualizador_ambiente_calidad_siata_dashboard_index_html.mjs').then(m => m.default)},
+    'territoriointeligente/visualizador/ambiente/calidad/siata/mapa/index.html': {size: 32058, hash: '33b44c24f63c47e1c012996272478a1874a931c54fc4212e14621139d4c541ea', text: () => import('./assets-chunks/territoriointeligente_visualizador_ambiente_calidad_siata_mapa_index_html.mjs').then(m => m.default)},
+    'territoriointeligente/visualizador/reportes/index.html': {size: 31920, hash: '8ed7d0620984b30a44673b063e76f825ba9cf0872195a8f2ac93c551104cefea', text: () => import('./assets-chunks/territoriointeligente_visualizador_reportes_index_html.mjs').then(m => m.default)},
+    'territoriointeligente/visualizador/economico/digital/wifi/dashboard/index.html': {size: 32380, hash: 'a4d322f13a0b1df172127ed6c533bc9b561cef4b8d4535eee778c119a84bd60b', text: () => import('./assets-chunks/territoriointeligente_visualizador_economico_digital_wifi_dashboard_index_html.mjs').then(m => m.default)},
+    'territoriointeligente/visualizador/inicio/index.html': {size: 32334, hash: '8a6e44fa9e08e6c10a643e9d7644bb9177c297e0ecfaec1b884f7e6db0eaf2ee', text: () => import('./assets-chunks/territoriointeligente_visualizador_inicio_index_html.mjs').then(m => m.default)},
+    'territoriointeligente/visualizador/habitat/movilidad/vamosmed/dashboard/index.html': {size: 31713, hash: 'b8efe75b9fa54428767b5ea2c885601ba2fbd99cff7452c9b19b6c5a2ced8ce1', text: () => import('./assets-chunks/territoriointeligente_visualizador_habitat_movilidad_vamosmed_dashboard_index_html.mjs').then(m => m.default)},
+    'territoriointeligente/visualizador/menu/index.html': {size: 30298, hash: '523ae66a7d5587e3d3055a02595371450bdf35903a39f530e505943cbfaf83f3', text: () => import('./assets-chunks/territoriointeligente_visualizador_menu_index_html.mjs').then(m => m.default)},
+    'territoriointeligente/visualizador/habitat/movilidad/vamosmed/mapa/index.html': {size: 31673, hash: '5fbe07278834c1e33b23086236bc4c836591555ea127d74a6ff6ce1725df3481', text: () => import('./assets-chunks/territoriointeligente_visualizador_habitat_movilidad_vamosmed_mapa_index_html.mjs').then(m => m.default)},
+    'territoriointeligente/visualizador/economico/digital/wifi/mapa/index.html': {size: 125132, hash: '95ad33340a3015c12de50e504227d4e2b2ee43b13bc576ef9d5687e835e99a6e', text: () => import('./assets-chunks/territoriointeligente_visualizador_economico_digital_wifi_mapa_index_html.mjs').then(m => m.default)},
+    'territoriointeligente/visualizador/habitat/movilidad/dashboard/index.html': {size: 31340, hash: '92a1d457d3dae2b2ae27369c88a7532fb4ad88a0ee8344b8ff10dee4b9802ce5', text: () => import('./assets-chunks/territoriointeligente_visualizador_habitat_movilidad_dashboard_index_html.mjs').then(m => m.default)},
+    'territoriointeligente/visualizador/gobernanza/participacion/pqrs/dashboard/index.html': {size: 33712, hash: '21f99ea6566a8d667b7d71cf5979bf188b33c49978be264089032719f40a2c2e', text: () => import('./assets-chunks/territoriointeligente_visualizador_gobernanza_participacion_pqrs_dashboard_index_html.mjs').then(m => m.default)},
+    'territoriointeligente/visualizador/whatsapp/index.html': {size: 31202, hash: '8109792b1e5c0f424f0a8621d334384838f5534addfaa341b49bf96be11ccc07', text: () => import('./assets-chunks/territoriointeligente_visualizador_whatsapp_index_html.mjs').then(m => m.default)},
+    'territoriointeligente/visualizador/calidad/turismo/map/index.html': {size: 31799, hash: 'aca9eeec1706b9a22b0cd5d4b52dd131f51b9f8c6d081e5cc3f18ee00e573eb2', text: () => import('./assets-chunks/territoriointeligente_visualizador_calidad_turismo_map_index_html.mjs').then(m => m.default)},
+    'territoriointeligente/visualizador/calidad/turismo/dashboard/index.html': {size: 32970, hash: '33f4a8ba439fa5e0852273b5807526a8a68eb199d93093d1909f15bb140f59cf', text: () => import('./assets-chunks/territoriointeligente_visualizador_calidad_turismo_dashboard_index_html.mjs').then(m => m.default)},
+    'territoriointeligente/visualizador/mapas/reportes/index.html': {size: 31955, hash: '75b0fb28a571ffeeeae00fe65a5dceba3274306a6c7afcdfba1dad9ebf4e1905', text: () => import('./assets-chunks/territoriointeligente_visualizador_mapas_reportes_index_html.mjs').then(m => m.default)},
+    'territoriointeligente/visualizador/en-construccion/index.html': {size: 26553, hash: '980d69ef46c5e6489aab8d03bdb9aeca56804a0d583b8fbf625156e500c5fa69', text: () => import('./assets-chunks/territoriointeligente_visualizador_en-construccion_index_html.mjs').then(m => m.default)},
+    'territoriointeligente/visualizador/ambiente/calidad/ruido/mapa/index.html': {size: 48044, hash: '2aeffda25755258d694a538df737f1e19f9076800d12f58838c131f92f6251ef', text: () => import('./assets-chunks/territoriointeligente_visualizador_ambiente_calidad_ruido_mapa_index_html.mjs').then(m => m.default)},
+    'territoriointeligente/visualizador/perfil/usuarios/index.html': {size: 72847, hash: '3af6a5edb7e9cbd7f0cf753a61883f67dcf58b04fb927e14e59e019749132f94', text: () => import('./assets-chunks/territoriointeligente_visualizador_perfil_usuarios_index_html.mjs').then(m => m.default)},
     'styles-CXQUZ3PB.css': {size: 6979, hash: 'mYIPdabeAag', text: () => import('./assets-chunks/styles-CXQUZ3PB_css.mjs').then(m => m.default)}
   },
 };
