@@ -8,6 +8,7 @@ interface DimensionConfig {
   activa: boolean;
   dimension: string;
   subdimension: string;
+  rol: string;
 }
 
 interface ApiPayload {
@@ -103,18 +104,18 @@ export class MdeCrudComponent implements OnInit {
     this.dimensions = [...new Set(this.configuraciones.map(item => item.dimension))];
     this.subdimensions = [...new Set(this.configuraciones.map(item => item.subdimension))];
   }
-
-  applyFilters(): void {
-    this.configuracionesFiltradas = this.configuraciones.filter(item => {
-      const matchesDimension = !this.selectedDimension || item.dimension === this.selectedDimension;
-      const matchesSearch = !this.searchTerm || 
-        item.dimension.toLowerCase().includes(this.searchTerm.toLowerCase()) || 
-        item.subdimension.toLowerCase().includes(this.searchTerm.toLowerCase());
-      
-      return matchesDimension && matchesSearch;
-    });
-    this.p = 1;
-  }
+applyFilters(): void {
+  this.configuracionesFiltradas = this.configuraciones.filter(item => {
+    const matchesDimension = !this.selectedDimension || item.dimension === this.selectedDimension;
+    const matchesSearch = !this.searchTerm || 
+      item.dimension.toLowerCase().includes(this.searchTerm.toLowerCase()) || 
+      item.subdimension.toLowerCase().includes(this.searchTerm.toLowerCase());
+    const matchesRol = !this.selectedTipoAcceso || item.rol === this.selectedTipoAcceso;
+    
+    return matchesDimension && matchesSearch && matchesRol;
+  });
+  this.p = 1;
+}
 
   async toggleActivation(config: DimensionConfig): Promise<void> {
     if (!this.selectedTipoAcceso) {
@@ -131,55 +132,54 @@ export class MdeCrudComponent implements OnInit {
     }
   }
 
-  async updateConfiguration(config: DimensionConfig, nuevoEstado: boolean): Promise<void> {
-    const token = localStorage.getItem('access_tokenadmin');
-    if (!token) {
-      this.showError('Error', 'No se encontró token de acceso admin');
-      return;
-    }
-
-    this.isLoading = true;
-    
-    try {
-      const payload: ApiPayload = {
-        rol: this.selectedTipoAcceso,
-        config: [{
-          dimension: config.dimension,
-          subdimension: config.subdimension,
-          activa: nuevoEstado
-        }]
-      };
-
-      const response = await fetch(`${this.baseUrl}/userinfo`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(payload)
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      await Swal.fire({
-        icon: 'success',
-        title: 'Configuración actualizada',
-        text: `El estado de ${config.dimension} - ${config.subdimension} ha sido modificado a ${nuevoEstado ? 'activo' : 'inactivo'} como ${this.selectedTipoAcceso}.`,
-        confirmButtonText: 'Entendido'
-      });
-      
-      // Recargamos las configuraciones después de la actualización
-      await this.loadConfigurations();
-      
-    } catch (error: unknown) {
-      this.handleApiError('Error al actualizar configuración. Usuario no cuenta con los permisos para hacer esta acción', error);
-    } finally {
-      this.isLoading = false;
-    }
+ async updateConfiguration(config: DimensionConfig, nuevoEstado: boolean): Promise<void> {
+  const token = localStorage.getItem('access_tokenadmin');
+  if (!token) {
+    this.showError('Error', 'No se encontró token de acceso admin');
+    return;
   }
 
+  this.isLoading = true;
+  
+  try {
+    const payload: ApiPayload = {
+      rol: this.selectedTipoAcceso,
+      config: [{
+        dimension: config.dimension,
+        subdimension: config.subdimension,
+        activa: nuevoEstado
+      }]
+    };
+
+    const response = await fetch(`${this.baseUrl}/userinfo`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(payload)
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    await Swal.fire({
+      icon: 'success',
+      title: 'Configuración actualizada',
+      text: `El estado de ${config.dimension} - ${config.subdimension} ha sido modificado a ${nuevoEstado ? 'activo' : 'inactivo'} como ${this.selectedTipoAcceso}.`,
+      confirmButtonText: 'Entendido'
+    });
+    
+    // Recargamos las configuraciones después de la actualización
+    await this.loadConfigurations();
+    
+  } catch (error: unknown) {
+    this.handleApiError('Error al actualizar configuración. Usuario no cuenta con los permisos para hacer esta acción', error);
+  } finally {
+    this.isLoading = false;
+  }
+}
   private handleApiError(title: string, error: unknown): void {
     let errorMessage = 'Ocurrió un error inesperado';
     

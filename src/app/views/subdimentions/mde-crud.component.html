@@ -18,14 +18,14 @@
           </select>
         </div>
         
-        <div class="col-md-3">
-          <label for="tipoAcceso" class="form-label">Tipo de Acceso:</label>
-          <select id="tipoAcceso" class="form-select" [(ngModel)]="selectedTipoAcceso">
-            <option value="" disabled selected>Seleccione un tipo</option>
-            <option value="editor">Editor</option>
-            <option value="visualizador">Visualizador</option>
-          </select>
-        </div>
+     <div class="col-md-3">
+  <label for="tipoAcceso" class="form-label">Tipo de Acceso:</label>
+  <select id="tipoAcceso" class="form-select" [(ngModel)]="selectedTipoAcceso" (change)="applyFilters()">
+    <option value="">Todos los tipos</option>
+    <option value="editor">Editor</option>
+    <option value="visualizador">Visualizador</option>
+  </select>
+</div>
         
         <div class="col-md-6">
           <label for="searchInput" class="form-label">Buscar:</label>
