@@ -44,7 +44,7 @@ export class UsuariosComponent implements OnInit {
     action: ''
   };
 
-  apiUrl = 'http://nepqas.medellin.gov.co/territoriointeligente/api/keycloak';
+  apiUrl = 'http://nepqas.medellin.gov.co/flask-fiware/api/keycloak';
 
   constructor(private http: HttpClient, private fb: FormBuilder) {
     this.initUserForm();

@@ -28,7 +28,7 @@ interface ApiPayload {
   styleUrls: ['./mde-crud.component.scss'],
 })
 export class MdeCrudComponent implements OnInit {
-  readonly baseUrl = 'http://nepqas.medellin.gov.co/territoriointeligente/api/keycloak';
+  readonly baseUrl = 'http://nepqas.medellin.gov.co/flask-fiware/api/keycloak';
   
   isLoading = false;
   configuraciones: DimensionConfig[] = [];
