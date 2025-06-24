@@ -181,7 +181,7 @@ fetchData(): void {
   this.isLoading = true;
   this.error = false;
 
-  this.http.get<any[]>('http://flask-fiware.apps.preprodalcaldia.medellin.gov.co/api/wifi-dane/all')
+  this.http.get<any[]>('http://nepqas.medellin.gov.co/territoriointeligente/api/wifi-dane/all')
     .pipe(
       timeout(60000),
       catchError(err => {

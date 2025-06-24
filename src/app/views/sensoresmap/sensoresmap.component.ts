@@ -39,8 +39,8 @@ interface HistoricData {
 export class NoiseSensorMapComponent implements OnInit, AfterViewInit {
   @ViewChild('map') mapContainer!: ElementRef;
   private map: maplibregl.Map | null = null;
-  private apiUrl = 'http://flask-fiware.apps.preprodalcaldia.medellin.gov.co/api/sensores-ruido';
-  urlGrafanaBase = 'http://grafana-fiware.apps.preprodalcaldia.medellin.gov.co/territoriointeligente/d/f36b2714-61d2-45cd-91ac-58b622840b4e/sensores-ruido-2025?orgId=1&kiosk';
+  private apiUrl = 'http://nepqas.medellin.gov.co/territoriointeligente/api/sensores-ruido';
+  urlGrafanaBase = 'http://nepqas.medellin.gov.co/territoriointeligente/d/f36b2714-61d2-45cd-91ac-58b622840b4e/sensores-ruido-2025?orgId=1&kiosk';
 urlGrafanaSegura: SafeResourceUrl;
   sensors: any[] = [];
   selectedSensor: string = '';
