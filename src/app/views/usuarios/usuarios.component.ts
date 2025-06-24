@@ -627,7 +627,7 @@ async viewUserRoles(userId: string) {
   this.loading = true;
   try {
     const response = await this.http.get<any>(
-      `http://nepqas.medellin.gov.co/territoriointeligente/api/keycloak/userall/${userId}`,
+      `http://nepqas.medellin.gov.co/flask-fiware/api/keycloak/userall/${userId}`,
       { headers: this.getHeaders() }
     ).toPromise();
     
