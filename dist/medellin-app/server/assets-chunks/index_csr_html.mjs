@@ -14,6 +14,6 @@ export default `
 
 <body ngcm="">
   <app-root></app-root>
-<link rel="modulepreload" href="chunk-PZB6AWVE.js"><script src="polyfills-FFHMD2TL.js" type="module"></script><script src="main-HM6EGKG5.js" type="module"></script></body>
+<link rel="modulepreload" href="chunk-PZB6AWVE.js"><script src="polyfills-FFHMD2TL.js" type="module"></script><script src="main-52NMGQBC.js" type="module"></script></body>
 
 </html>`;
